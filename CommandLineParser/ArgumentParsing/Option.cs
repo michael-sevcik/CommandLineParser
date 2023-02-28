@@ -20,6 +20,8 @@ namespace ArgumentParsing
         /// Determines whether a given option may, or must have parameters.
         /// </summary>
         public bool IsParametrized { get; init; }
+
+        
     }
 
     /// <summary>
@@ -55,9 +57,9 @@ namespace ArgumentParsing
     public abstract class ParameterOption : Option
     {
         /// <summary>
-        /// Determines whether a option requires parameter.
+        /// Determines whether an option requires parameter.
         /// </summary>
-        public bool IsParameterMandatory { get; init; }
+        public bool IsParameterRequired { get; init; }
 
         /// <summary>
         /// Parses the parameter.
@@ -289,16 +291,20 @@ namespace ArgumentParsing
         }
     }
 
+
+    /// <summary>
+    /// This class enables users create an instance of class based on their preferences
+    /// i. e. if they want required/optional NoParameterOption/ParameterOption/MultipleParameterOption 
+    /// and with the parametrized options of which types should parameters be (int,string,bool,enum).
+    /// </summary>
     public static class OptionFactory
     {
         /// <summary>
-        /// 
-        /// </summary>
-        /// // TODO: 
-        /// <param name="line"></param>
+        /// Creates desired instance of Option, based on user preferencies defined in OptionSpecifics parameter.
+        /// </summary> 
+        /// <param name="OptionSpecifics"></param>
         /// <returns></returns>
-        /// <exception cref="NotImplementedException"></exception>
-        public static Option CreateOption(string line)
+        public static Option CreateOption(string OptionSpecifics)
         {
             throw new NotImplementedException();
         }
