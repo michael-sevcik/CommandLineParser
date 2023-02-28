@@ -96,7 +96,9 @@ namespace ArgumentParsing
         public abstract bool TryParse(string param);
     }
 
-    
+    /// <summary>
+    /// Abstract base class for options more than one possible parameters.
+    /// </summary>
     public abstract class MultipleParameterOption : ParameterOption
     {
         /// <summary>
@@ -104,7 +106,6 @@ namespace ArgumentParsing
         /// </summary>
         public char Delimiter { get; init; }
     }
-
 
     /// <summary>
     /// This class represents option, which takes 0 to 1 int parameters based on isParameterRequired property.
@@ -175,7 +176,6 @@ namespace ArgumentParsing
 
     }
 
-
     /// <summary>
     /// This class represents option, which takes 0-1(based on isParameterRequired property.) to unlimited int parameters.
     /// </summary>
@@ -241,7 +241,6 @@ namespace ArgumentParsing
         }
     }
 
-
     /// <summary>
     /// This class represents option, which takes 0 to 1 string arguments based on isParameterRequired property..
     /// </summary>
@@ -278,9 +277,11 @@ namespace ArgumentParsing
         }
 
     }
+
     /// <summary>
     /// This class represents option, which takes 0-1(based on isParameterRequired property.) to unlimited string options.
     /// </summary>
+
     public class MultipleStringOption : MultipleParameterOption
     {
         Action<string[]?> saveAction;
@@ -312,6 +313,7 @@ namespace ArgumentParsing
             throw new NotImplementedException();
         }
     }
+    
     /// <summary>
     /// This class represents option, which takes 0 to 1 bool arguments based on isParameterRequired property.
     /// </summary>
@@ -351,6 +353,7 @@ namespace ArgumentParsing
             throw new NotImplementedException();
         }
     }
+
     /// <summary>
     /// This class represents option, which takes 0-1(based on isParameterRequired field) to unlimited bool options.
     /// </summary>
@@ -436,10 +439,10 @@ namespace ArgumentParsing
     /// one of the user-defined Enum's option names. To use this class you need to create your own Enum type,
     /// which specifies what kind of string arguments the option accepts.
     /// </summary>
-    /// <typeparam name="T"></typeparam>
-    public class MultipleEnumOption<T> : ParameterOption where T : Enum
+    /// <typeparam name="TEnum"></typeparam>
+    public class MultipleEnumOption<TEnum> : ParameterOption where TEnum : Enum
     {
-        Action<T[]?> saveAction;
+        Action<TEnum[]?> saveAction;
 
         // TODO: Consider creating a synonyms struct.
         /// <summary>
@@ -452,7 +455,7 @@ namespace ArgumentParsing
         /// <param name="isMandatory"> Specifies whether option is mandatory i. e. must be present on command line.</param>
         /// <param name="shortSynonyms"> Specifies what kind of short synonyms should option represent (e.g. "-v").</param>
         /// <param name="longSynonyms"> Specifies what kind of long synonyms should option represent. (e.g. "--version")</param>
-        public MultipleEnumOption(Action<T[]?> action, bool isParameterRequired, bool isMandatory, char[]? shortSynonyms = null, string[]? longSynonyms = null)
+        public MultipleEnumOption(Action<TEnum[]?> action, bool isParameterRequired, bool isMandatory, char[]? shortSynonyms = null, string[]? longSynonyms = null)
         {
             this.saveAction = action;
             this.IsParameterRequired = IsParameterRequired;
@@ -473,7 +476,6 @@ namespace ArgumentParsing
             throw new NotImplementedException();
         }
     }
-
 
     /// <summary>
     /// This class enables users create an instance of class based on their preferences
