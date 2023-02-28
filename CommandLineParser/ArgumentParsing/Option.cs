@@ -55,7 +55,7 @@ namespace ArgumentParsing
     public abstract class ParameterOption : Option
     {
         /// <summary>
-        /// Determines whether a option requires parameter.
+        /// Determines whether an option requires parameter.
         /// </summary>
         public bool IsParameterMandatory { get; init; }
 
@@ -243,27 +243,24 @@ namespace ArgumentParsing
         }
     }
 
-    enum OptionType
-    {
-        NoParameter,
-        Int,
-        MultipleInt,
-        String,
-        MultipleString,
-        Bool,
-        MultipleBool
-    }    
-    
+    /// <summary>
+    /// Represents a option, which takes 0 to 1 string arguments that matches one of the Enum's option names.
+    /// </summary>
+    /// <typeparam name="T">Enum type is used to specify matchable strings.</typeparam>
     public class EnumOption <T> : ParameterOption where T : Enum
     {
-        Action<T> saveAction;
+        Action<T?> saveAction;
 
-        // TODO: Consider using default value instead of nullable type.
-        public EnumOption(Action<T> action, bool mandatory)
+        /// <summary>
+        /// Creates an instance of <see cref="EnumOption{T}"/>.
+        /// </summary>
+        /// <param name="action">Specifies action, which should be executed with enum parameters or null if
+        /// there were no parameters present on command line.</param>
+        /// <param name="mandatory"></param>
+        public EnumOption(Action<T?> action, bool mandatory)
         {
             this.saveAction = action;
             this.IsMandatory = mandatory;
-            Enum.GetNames(typeof(T));
         }
 
         public override bool TryParse(string param)
@@ -272,6 +269,10 @@ namespace ArgumentParsing
         }
     }
 
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <typeparam name="T"></typeparam>
     public class MultipleEnumOption<T> : ParameterOption where T : Enum
     {
         Action<T[]> saveAction;
