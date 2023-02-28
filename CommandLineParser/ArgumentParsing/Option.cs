@@ -137,7 +137,7 @@ namespace ArgumentParsing
         /// <summary>
         /// Parses the parameter.
         /// </summary>
-        /// Accepts any string param that is parseable by Int32.TryPase method.
+        /// Accepts any string parameter that is parseable by Int32.TryPase method.
         /// <param name="param">Corresponding parameter</param>
         /// <returns>True if parseable parameter was passed, otherwise false.</returns>
         public override bool TryParse(string param)
@@ -152,7 +152,6 @@ namespace ArgumentParsing
         /// <param name="lowerBound">Smallest number to accept by option in its parameter. If no lower bound
         /// desired leave as null i. e. don't call this option at all.
         /// </param>     
-        /// <exception cref="NotImplementedException"></exception>
         public void SetLowerBound(int? lowerBound)
         {
             throw new NotImplementedException();
@@ -165,7 +164,6 @@ namespace ArgumentParsing
         /// <param name="upperBound">Biggest number to accept by option in its parameter. If no biggest bound
         /// desired leave as null i. e. don't call this option at all.
         /// </param>     
-        /// <exception cref="NotImplementedException"></exception>
         public void SetUpperBound (int? upperBound)
         {
             throw new NotImplementedException();
@@ -202,7 +200,12 @@ namespace ArgumentParsing
 
         }
 
-        /// <inheritdoc/>
+        /// <summary>
+        /// Parses the parameter.
+        /// </summary>
+        /// Accepts any string parameter that is  after splitting by the delimiter parseable by Int32.TryPase method.
+        /// <param name="param">Corresponding parameter</param>
+        /// <returns>True if parseable parameter was passed, otherwise false.</returns>
         public override bool TryParse(string param)
         {
             throw new NotImplementedException();
@@ -215,7 +218,6 @@ namespace ArgumentParsing
         /// <param name="lowerBound">Smallest number to accept by option in its parameter. If no lower bound
         /// desired leave as null i. e. dont call this option at all.
         /// </param>     
-        /// <exception cref="NotImplementedException"></exception>
         public void SetLowerBound(int? lowerBound)
         {
             throw new NotImplementedException();
