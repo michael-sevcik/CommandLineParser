@@ -469,6 +469,4 @@ namespace ArgumentParsing
 
         
     }
-
-    // TODO: consider array options.
 }
