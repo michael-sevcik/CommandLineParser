@@ -314,15 +314,24 @@ namespace ArgumentParsing
     /// <summary>
     /// This class enables users create an instance of class based on their preferences
     /// i. e. if they want required/optional NoParameterOption/ParameterOption/MultipleParameterOption 
-    /// and with the parametrized options of which types should parameters be (int,string,bool,enum).
+    /// and with the parametrized options of which types should parameters be (int,string,bool). Enum option must be created
+    /// the casual way.
     /// </summary>
     public static class OptionFactory
     {
         /// <summary>
         /// Creates desired instance of Option, based on user preferences defined in OptionSpecifics parameter.
         /// </summary> 
-        /// <param name="OptionSpecifics"></param>
-        /// <returns></returns>
+        /// <param name="OptionSpecifics">
+        /// Specifies what kind of option user desires. Enter string in following format:
+        /// add ":m" if you want the option to be mandatory, otherwise it will be not. 
+        /// add ":p" if you want the option to be parametrized, otherwise it will be not.
+        /// if :p is present user must add one of the following: ":int" ":string" ":bool" which specifies what kind of 
+        /// parameters should option take.
+        /// if :p is present user can add ":r" to specifie that the option must take at least one parameter,
+        /// otherwise 0 parameter is valid for an option.
+        /// </param>
+        /// <returns>Returns adequate class for users desire based on the string that he provided.</returns>
         public static Option CreateOption(string OptionSpecifics)
         {
             throw new NotImplementedException();
