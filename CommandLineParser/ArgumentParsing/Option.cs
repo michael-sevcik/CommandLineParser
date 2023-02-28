@@ -333,7 +333,13 @@ namespace ArgumentParsing
             this.longSynonyms = longSynonyms;
         }
 
-        /// <inheritdoc/>
+        /// <summary>
+        /// This method is used for parsing command line parameter following the option.
+        /// </summary>
+        /// <param name="param">Parameter that follows this option.</param>
+        /// <returns>Returns true if the param was one of the following: "1", "0", "true","false" ; ignorecase.
+        /// Otherwise returns false.
+        /// </returns>
         public override bool TryParse(string param)
         {
             throw new NotImplementedException();
@@ -365,8 +371,13 @@ namespace ArgumentParsing
             this.shortSynonyms = shortSynonyms;
             this.longSynonyms = longSynonyms;
         }
-
-        /// <inheritdoc/>
+        /// <summary>
+        /// This method is used for parsing command line parameters following the option.
+        /// </summary>
+        /// <param name="param">One of the possibly following parameters.</param>
+        /// <returns>Returns true if parsing was succesful, that means the parameter was one of the following:  "1", "0", "true","false" ; ignorecase.
+        /// Otherwise returns false.
+        /// </returns>
         public override bool TryParse(string param)
         {
             throw new NotImplementedException();
@@ -401,7 +412,13 @@ namespace ArgumentParsing
             this.longSynonyms = longSynonyms;
         }
 
-        /// <inheritdoc/>
+        /// <summary>
+        /// This method is used for parsing command line parameter following the option.
+        /// </summary>
+        /// <param name="param">Parameter that follows this option.</param>
+        /// <returns>Returns true if parsing was succesful, that means the parameter matches one of the Enum´s option names.
+        /// Otherwise returns false.
+        /// </returns>
         public override bool TryParse(string param)
         {
             throw new NotImplementedException();
@@ -438,7 +455,13 @@ namespace ArgumentParsing
             this.longSynonyms = longSynonyms;
         }
 
-        /// <inheritdoc/>
+        /// <summary>
+        /// This method is used for parsing command line parameters following the option.
+        /// </summary>
+        /// <param name="param">one of the possibly following parameters.</param>
+        /// <returns>Returns true if parsing was succesful, that means the parameter matches one of the Enum´s option names.
+        /// Otherwise returns false.
+        /// </returns>
         public override bool TryParse(string param)
         {
             throw new NotImplementedException();
