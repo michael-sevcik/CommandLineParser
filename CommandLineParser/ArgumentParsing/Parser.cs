@@ -6,9 +6,17 @@ using System.Threading.Tasks;
 
 namespace ArgumentParsing
 {
+    /// <summary>
+    /// The Parser class enables parsing of command-line inputs.
+    /// </summary>
     public class Parser
     {
         protected OptionSet options;
+
+        /// <summary>
+        /// Creates instance of Parser that parses given Options.
+        /// </summary>
+        /// <param name="optionSet"></param>
         public Parser(OptionSet optionSet)
         {
             this.options = optionSet;

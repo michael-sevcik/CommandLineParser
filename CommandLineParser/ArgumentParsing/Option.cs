@@ -92,10 +92,10 @@ namespace ArgumentParsing
         /// <param name="action">Specifies action, which should be executed with int option parameter or null if 
         /// mandatory is set to false.
         /// </param>
-        /// <param name="isParameterRequired"> Specifies wether the option requires at least one parameter present on
+        /// <param name="isParameterRequired"> Specifies whether the option requires at least one parameter present on
         /// command line.
         /// </param>
-        /// <param name="isMandatory"> Specifies wether option is mandatory i. e. must be present on command line.</param>
+        /// <param name="isMandatory"> Specifies whether option is mandatory i. e. must be present on command line.</param>
 
         public IntOption(Action<int?> action, bool isParameterRequired,bool isMandatory)
         {
@@ -126,10 +126,10 @@ namespace ArgumentParsing
         /// <param name="action">Specifies action, which should be executed with int parameters or null if
         /// there were no parameters present on command line.
         /// </param>
-        /// <param name="isParameterRequired"> Specifies wether the option requires at least one parameter present on
+        /// <param name="isParameterRequired"> Specifies whether the option requires at least one parameter present on
         /// command line.
         /// </param>
-        /// <param name="isMandatory"> Specifies wether option is mandatory i. e. must be present on command line.</param>
+        /// <param name="isMandatory"> Specifies whether option is mandatory i. e. must be present on command line.</param>
         public MultipleIntOption(Action<int[]?> action, bool isParameterRequired, bool isMandatory)
         {
             this.saveAction = action;
@@ -157,10 +157,10 @@ namespace ArgumentParsing
         /// <param name="action">Specifies action, which should be executed with string parameter
         /// or null if there was no parameter present on command line.
         /// </param>
-        /// <param name="isParameterRequired"> Specifies wether the option requires at least one parameter present on
+        /// <param name="isParameterRequired"> Specifies whether the option requires at least one parameter present on
         /// command line.
         /// </param>
-        /// <param name="isMandatory"> Specifies wether option is mandatory i. e. must be present on command line.</param>
+        /// <param name="isMandatory"> Specifies whether option is mandatory i. e. must be present on command line.</param>
         public StringOption(Action<string?> action, bool isParameterRequired, bool isMandatory)
         {
             this.saveAction = action;
@@ -187,10 +187,10 @@ namespace ArgumentParsing
         /// <param name="action">Specifies action, which should be executed with string parameters or null if
         /// there were no parameters present on command line.
         /// </param>
-        /// <param name="isParameterRequired"> Specifies wether the option requires at least one parameter present on
+        /// <param name="isParameterRequired"> Specifies whether the option requires at least one parameter present on
         /// command line.
         /// </param>
-        /// <param name="isMandatory"> Specifies wether option is mandatory i. e. must be present on command line.</param>
+        /// <param name="isMandatory"> Specifies whether option is mandatory i. e. must be present on command line.</param>
         public MultipleStringOption(Action<string[]?> action, bool isParameterRequired, bool isMandatory)
         {
             this.saveAction = action;
@@ -215,10 +215,10 @@ namespace ArgumentParsing
         /// <param name="action">Specifies action, which should be executed with bool parameter
         /// or null if there was no parameter present on command line.
         /// </param>
-        /// <param name="isParameterRequired"> Specifies wether the option requires at least one parameter present on
+        /// <param name="isParameterRequired"> Specifies whether the option requires at least one parameter present on
         /// command line.
         /// </param>
-        /// <param name="isMandatory"> Specifies wether option is mandatory i. e. must be present on command line.</param>
+        /// <param name="isMandatory"> Specifies whether option is mandatory i. e. must be present on command line.</param>
         public BoolOption(Action<bool> action, bool isParameterRequired, bool isMandatory)
         {
             this.saveAction = action;
@@ -242,10 +242,10 @@ namespace ArgumentParsing
         /// <param name="action">Specifies action, which should be executed with bool parameters or null if
         /// there were no parameters present on command line.
         /// </param>
-        /// <param name="isParameterRequired"> Specifies wether the option requires at least one parameter present on
+        /// <param name="isParameterRequired"> Specifies whether the option requires at least one parameter present on
         /// command line.
         /// </param>
-        /// <param name="isMandatory"> Specifies wether option is mandatory i. e. must be present on command line.</param>
+        /// <param name="isMandatory"> Specifies whether option is mandatory i. e. must be present on command line.</param>
         public MultipleBoolOption(Action<bool[]?> action, bool isParameterRequired, bool isMandatory)
         {
             this.saveAction = action;
@@ -271,10 +271,10 @@ namespace ArgumentParsing
         /// </summary>
         /// <param name="action">Specifies action, which should be executed with enum parameters or null if
         /// there were no parameters present on command line.</param>
-        /// <param name="isParameterRequired"> Specifies wether the option requires at least one parameter present on
+        /// <param name="isParameterRequired"> Specifies whether the option requires at least one parameter present on
         /// command line.
         /// </param>
-        /// <param name="isMandatory"> Specifies wether option is mandatory i. e. must be present on command line.</param>
+        /// <param name="isMandatory"> Specifies whether option is mandatory i. e. must be present on command line.</param>
         public EnumOption(Action<T?> action, bool isParameterRequired, bool isMandatory)
         {
             this.saveAction = action;
