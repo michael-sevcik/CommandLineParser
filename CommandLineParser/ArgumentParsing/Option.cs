@@ -6,39 +6,73 @@ using System.Threading.Tasks;
 
 namespace ArgumentParsing
 {
-    
+    /// <summary>
+    /// Abstract base class implementation.
+    /// </summary>
     public abstract class Option
     {
-       
+        /// <summary>
+        /// Determines whether a given option must occur in a parsed command. 
+        /// </summary>
         public bool IsMandatory { get; init; }
 
+        /// <summary>
+        /// Determines whether a given option may, or must have parameters.
+        /// </summary>
         public bool IsParametrized { get; init; }
     }
+
+    /// <summary>
+    /// Instance class of options with no parameters.
+    /// </summary>
     public class NoParameterOption : Option
     {
         Action action;
+
+        /// <summary>
+        /// Constructs instance of <see cref="NoParameterOption"/>.
+        /// </summary>
+        /// <param name="isMandatory">Determines whether a given option must occur in a parsed command.</param>
+        /// <param name="action">Encapsulated method to call, when the option occurs in the parsed command.</param>
         public NoParameterOption(bool isMandatory, Action action)
         {
             this.IsMandatory = isMandatory;
             this.action = action;
         }
 
+        /// <summary>
+        /// Method to call when option occurs in the parsed command-line.
+        /// </summary>
         public void TakeAction()
         {
             action();
         }
     }
 
-
+    /// <summary>
+    /// Abstract class for parametrized options.
+    /// </summary>
     public abstract class ParameterOption : Option
     {
+        /// <summary>
+        /// Determines whether a option requires parameter.
+        /// </summary>
         public bool IsParameterMandatory { get; init; }
+
+        /// <summary>
+        /// Parses the parameter.
+        /// </summary>
+        /// <param name="param">Parameter which followed the option.</param>
+        /// <returns>True if parsing was successful, otherwise false.</returns>
         public abstract bool TryParse(string param);
     }
 
     
     public abstract class MultipleParameterOption : ParameterOption
     {
+        /// <summary>
+        /// Delimits multiple parameters entries. 
+        /// </summary>
         public char Delimiter { get; init; }
     }
 
@@ -57,7 +91,6 @@ namespace ArgumentParsing
         }
        
        
-
         public override bool TryParse(string param)
         {
             throw new NotImplementedException();

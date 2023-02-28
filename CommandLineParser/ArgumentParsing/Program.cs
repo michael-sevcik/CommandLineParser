@@ -2,13 +2,17 @@
 
 internal class Program
 {
+    static void Experiment(int[]? ints)
+    {
+        foreach (var i in ints) { Console.WriteLine(i); }
+    }
     static void Main(string[] args)
     {
-        int x = 7;
-        IntOption IO = new IntOption(ref x);
-        IO._output = 100;
-        Console.WriteLine(x);
-
-        ParamOutput<int> ahoj;
+        int[] ints = { 1, 2,3 };
+        Experiment(ints);
+        Action<int[]?> action = new(Experiment);
+        MultipleIntOption mio = new(action, true);
+        action(ints);
+        
     }
 }
