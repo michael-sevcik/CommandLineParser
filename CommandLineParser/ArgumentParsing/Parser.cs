@@ -45,9 +45,11 @@ namespace ArgumentParsing
 
     /// <summary>
     /// The OptionSet class is used to define the set of options that can be parsed by the Parser class.
-    /// 
-    /// <Remarks>If two or more options with the same identifier are added to the OptionSet, Find method could behave nondeterministically.</Remarks>
     /// </summary>
+    /// 
+    /// <Remarks>
+    /// If two or more options with the same identifier are added to the OptionSet, Find method could behave nondeterministically.
+    /// </Remarks>
     public class OptionSet
     {
         private Dictionary<string, Option> longOptions = new();
@@ -71,10 +73,7 @@ namespace ArgumentParsing
         public Option Find(string optionIdentifier)
         {
             throw new NotImplementedException();
-        }
-
-       
-        
+        }        
     }
 
 
