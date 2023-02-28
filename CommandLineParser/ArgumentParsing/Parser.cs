@@ -79,7 +79,10 @@ namespace ArgumentParsing
         /// Adds the option to the OptionSet.
         /// </summary>
         /// <param name="option"><see cref="Option"> instance to be added.</param>
-        /// <returns>True </returns>
+        /// <returns>Returns true if there were no problems adding an option to the OptionSet,
+        /// returns false if an error occured, such as synonyms colliding with already added options, no short options and
+        /// no long options at the same time and other undefined behaviour.
+        /// </returns>
         public bool Add(Option option)
         {
             throw new NotImplementedException();
