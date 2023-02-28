@@ -11,26 +11,34 @@ namespace ArgumentParsing
     /// </summary>
     public class Parser
     {
+        private List<string> _plainParamethers = new List<string>();
         protected OptionSet options;
 
         /// <summary>
-        /// Creates instance of Parser that parses given Options.
+        /// Creates instance of Parser that parses given options.
         /// </summary>
-        /// <param name="optionSet"></param>
+        /// <param name="optionSet">Set of options used for parsing.</param>
         public Parser(OptionSet optionSet)
         {
             this.options = optionSet;
         }
+
+        /// <summary>
+        /// Parses a given command.
+        /// </summary>
+        /// <param name="args">Command line arguments.</param>
+        /// <returns>True when parsing was successful, otherwise false.</returns>
         public bool ParseCommandLine(string [] args)
         {
             throw new NotImplementedException();
         }
 
-        public void GetPlainParameters()
-        {
-            throw new NotImplementedException();
-
-        }
+        /// <summary>
+        /// Gets parameters that are not options and are not belonging to a option.
+        /// </summary>
+        /// <returns>List of plain parameters.</returns>
+        public List<string> GetPlainParameters() 
+            => _plainParamethers;
     }
 
     
