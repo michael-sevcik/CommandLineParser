@@ -374,7 +374,7 @@ namespace ArgumentParsing
         /// add ":p" if you want the option to be parametrized, otherwise it will be not.
         /// if :p is present user must add one of the following: ":int" ":string" ":bool" which specifies what kind of 
         /// parameters should option take.
-        /// if :p is present user can add ":r" to specifie that the option must take at least one parameter,
+        /// if :p is present user can add ":r" to specify that the option must take at least one parameter,
         /// otherwise 0 parameter is valid for an option.
         /// </param>
         /// <returns>Returns adequate class for users desire based on the string that he provided.</returns>
