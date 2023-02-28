@@ -43,12 +43,22 @@ namespace ArgumentParsing
     }
 
 
-
+    /// <summary>
+    /// This class represents option, which takes 0 to 1 int parameters based on is mandatory field.
+    /// </summary>
     public class IntOption : ParameterOption
     {
         Action<int?> saveAction;
 
-        // TODO: Consider using default value instead of nullable type.
+        /// <summary>
+        /// Constructs an instance of <see cref="IntOption"/>.
+        /// </summary>
+        /// <param name="action">Specifices action, wihich should be executed with int option parameter or null if 
+        /// mandatory is set to false.
+        /// </param>
+        /// <param name="mandatory"> Specifices wether the option requires at least one parameter present on
+        /// command line.
+        /// </param>
         public IntOption(Action<int?> action, bool mandatory)
         {
             this.saveAction = action;
@@ -66,10 +76,21 @@ namespace ArgumentParsing
     }
 
     
-
+    /// <summary>
+    /// This class represents option, which takes 0-1(based on mandatory field) to unlimited int parameters.
+    /// </summary>
     public class MultipleIntOption : MultipleParameterOption
     {
         Action<int[]?> saveAction;
+        /// <summary>
+        /// Creates an instance of <see cref="MultipleIntOption"/>.
+        /// </summary>
+        /// <param name="action">Specifices action, which should be executed with int parameters or null if
+        /// there were no parameters present on command line.
+        /// </param>
+        /// <param name="mandatory"> Specifices wether the option requires at least one parameter present on
+        /// command line.
+        /// </param>
         public MultipleIntOption(Action<int[]?> action, bool mandatory)
         {
             this.saveAction = action;
@@ -83,12 +104,22 @@ namespace ArgumentParsing
     }
 
 
-
+    /// <summary>
+    /// This class represents option, which takes 0 to 1 string arguments based on mandatory field.
+    /// </summary>
     public class StringOption : ParameterOption
     {
         Action<string?> saveAction;
 
-        // TODO: Consider using default value instead of nullable type.
+        /// <summary>
+        /// Creates an instance of <see cref="StringOption"/>.
+        /// </summary>
+        /// <param name="action">Specifices action, which should be exectued with string parameter
+        /// or null if there was no parameter present on command line.
+        /// </param>
+        /// <param name="mandatory"> Specifices wether the option requires at least one parameter present on
+        /// command line.
+        /// </param>
         public StringOption(Action<string?> action, bool mandatory)
         {
             this.saveAction = action;
@@ -102,10 +133,21 @@ namespace ArgumentParsing
         }
 
     }
-
+    /// <summary>
+    /// This class represents option, which takes 0-1(based on is mandatory field) to unlimited string options.
+    /// </summary>
     public class MultipleStringOption : MultipleParameterOption
     {
         Action<string[]?> saveAction;
+        /// <summary>
+        /// Creates an instance of <see cref="MultipleStringOption"/>.
+        /// </summary>
+        /// <param name="action">Specifices action, which should be executed with string parameters or null if
+        /// there were no parameters present on command line.
+        /// </param>
+        /// <param name="mandatory"> Specifices wether the option requires at least one parameter present on
+        /// command line.
+        /// </param>
         public MultipleStringOption(Action<string[]?> action, bool mandatory)
         {
             this.saveAction = action;
@@ -117,10 +159,21 @@ namespace ArgumentParsing
             throw new NotImplementedException();
         }
     }
-
+    /// <summary>
+    /// This class represents option, which takes 0 to 1 bool arguments based on mandatory field.
+    /// </summary>
     class BoolOption : ParameterOption
     {
         private Action<bool> saveAction;
+        /// <summary>
+        /// Creates an instance of <see cref="BoolOption"/>.
+        /// </summary>
+        /// <param name="action">Specifices action, which should be exectued with bool parameter
+        /// or null if there was no parameter present on command line.
+        /// </param>
+        /// <param name="mandatory"> Specifices wether the option requires at least one parameter present on
+        /// command line.
+        /// </param>
         public BoolOption(Action<bool> action, bool mandatory)
         {
             this.saveAction = action;
@@ -131,10 +184,21 @@ namespace ArgumentParsing
             throw new NotImplementedException();
         }
     }
-
+    /// <summary>
+    /// This class represents option, which takes 0-1(based on is mandatory field) to unlimited bool options.
+    /// </summary>
     class MultipleBoolOption : ParameterOption
     {
         private Action<bool[]?> saveAction;
+        /// <summary>
+        /// Creates an instance of <see cref="MultipleBoolOption"/>.
+        /// </summary>
+        /// <param name="action">Specifices action, which should be executed with bool parameters or null if
+        /// there were no parameters present on command line.
+        /// </param>
+        /// <param name="mandatory"> Specifices wether the option requires at least one parameter present on
+        /// command line.
+        /// </param>
         public MultipleBoolOption(Action<bool[]?> action, bool mandatory)
         {
             this.saveAction = action;
