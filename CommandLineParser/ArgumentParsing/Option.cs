@@ -216,7 +216,7 @@ namespace ArgumentParsing
         /// is the smallest number to accept.
         /// </summary>
         /// <param name="lowerBound">Smallest number to accept by option in its parameter. If no lower bound
-        /// desired leave as null i. e. dont call this option at all.
+        /// desired leave as null i. e. don't call this option at all.
         /// </param>     
         public void SetLowerBound(int? lowerBound)
         {
@@ -228,7 +228,7 @@ namespace ArgumentParsing
         /// is the biggest number to accept.
         /// </summary>
         /// <param name="upperBound">Biggest number to accept by option in its parameter. If no biggest bound
-        /// desired leave as null i. e. dont call this option at all.
+        /// desired leave as null i. e. don't call this option at all.
         /// </param>     
         /// <exception cref="NotImplementedException"></exception>
         public void SetUpperBound(int? upperBound)
@@ -377,7 +377,7 @@ namespace ArgumentParsing
         /// This method is used for parsing command line parameters following the option.
         /// </summary>
         /// <param name="param">One of the possibly following parameters.</param>
-        /// <returns>Returns true if parsing was succesful, that means the parameter was one of the following:  "1", "0", "true","false" ; ignorecase.
+        /// <returns>Returns true if parsing was successful, that means the parameter was one of the following:  "1", "0", "true","false" ; ignorecase.
         /// Otherwise returns false.
         /// </returns>
         public override bool TryParse(string param)
@@ -418,7 +418,7 @@ namespace ArgumentParsing
         /// This method is used for parsing command line parameter following the option.
         /// </summary>
         /// <param name="param">Parameter that follows this option.</param>
-        /// <returns>Returns true if parsing was succesful, that means the parameter matches one of the Enum´s option names.
+        /// <returns>Returns true if parsing was successful, that means the parameter matches one of the Enum´s option names.
         /// Otherwise returns false.
         /// </returns>
         public override bool TryParse(string param)
@@ -461,7 +461,7 @@ namespace ArgumentParsing
         /// This method is used for parsing command line parameters following the option.
         /// </summary>
         /// <param name="param">one of the possibly following parameters.</param>
-        /// <returns>Returns true if parsing was succesful, that means the parameter matches one of the Enum´s option names.
+        /// <returns>Returns true if parsing was successful, that means the parameter matches one of the Enum´s option names.
         /// Otherwise returns false.
         /// </returns>
         public override bool TryParse(string param)
