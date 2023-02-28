@@ -49,6 +49,16 @@ namespace ArgumentParsing
         {
             throw new NotImplementedException();
         }
+
+        /// <summary>
+        /// Allows user set help string for --, which is shown when -h/--help is present on command line.
+        /// </summary>
+        /// <param name="PAHelpString">Help string to be shown next to -- in help page.</param>
+
+        public bool SetPlainArgumentHelpString(string PAHelpString)
+        {
+            throw new NotImplementedException();
+        }
     }
 
     
