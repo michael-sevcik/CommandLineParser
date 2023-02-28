@@ -92,14 +92,17 @@ namespace ArgumentParsing
         /// <param name="action">Specifies action, wihich should be executed with int option parameter or null if 
         /// mandatory is set to false.
         /// </param>
-        /// <param name="mandatory"> Specifies wether the option requires at least one parameter present on
+        /// <param name="isParameterRequired"> Specifies wether the option requires at least one parameter present on
         /// command line.
         /// </param>
-        public IntOption(Action<int?> action, bool mandatory)
+        /// <param name="isMandatory"
+
+        public IntOption(Action<int?> action, bool isParameterRequired,bool isMandatory)
         {
             this.saveAction = action;
-            this.IsMandatory = mandatory;
-            
+            this.IsParameterRequired = IsParameterRequired;
+            this.IsMandatory = isMandatory;
+
         }
        
        
