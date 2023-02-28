@@ -55,7 +55,7 @@ namespace ArgumentParsing
         /// </summary>
         /// <param name="PAHelpString">Help string to be shown next to -- in help page.</param>
 
-        public bool SetPlainArgumentHelpString(string PAHelpString)
+        public void SetPlainArgumentHelpString(string PAHelpString)
         {
             throw new NotImplementedException();
         }
