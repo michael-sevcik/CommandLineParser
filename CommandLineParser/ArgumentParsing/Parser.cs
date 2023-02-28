@@ -74,16 +74,26 @@ namespace ArgumentParsing
         {
             throw new NotImplementedException();
         }
-        
+
         /// <summary>
-        /// 
+        /// Looks for option that was added to the OptionSet and has the specified identifier.
         /// </summary>
-        /// <param name="optionIdentifier"></param>
-        /// <returns></returns>
-        public Option Find(string optionIdentifier)
+        /// <param name="shortIdentifier">Short identifier of an option.</param>
+        /// <returns>Returns an option if corresponding one was found, otherwise null.</returns>
+        public Option? Find(char shortIdentifier)
         {
             throw new NotImplementedException();
-        }        
+        }
+
+        /// <summary>
+        /// Looks for option that was added to the OptionSet and has the specified identifier.
+        /// </summary>
+        /// <param name="longIdentifier">Long identifier of an option.</param>
+        /// <returns>Returns an option if corresponding one was found, otherwise null.</returns>
+        public Option? Find(string longIdentifier)
+        {
+            throw new NotImplementedException();
+        }
     }
 
 
