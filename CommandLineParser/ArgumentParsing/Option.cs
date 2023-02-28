@@ -80,7 +80,7 @@ namespace ArgumentParsing
 
 
     /// <summary>
-    /// This class represents option, which takes 0 to 1 int parameters based on mandatory field.
+    /// This class represents option, which takes 0 to 1 int parameters based on isParameterRequired property.
     /// </summary>
     public class IntOption : ParameterOption
     {
@@ -95,7 +95,7 @@ namespace ArgumentParsing
         /// <param name="isParameterRequired"> Specifies wether the option requires at least one parameter present on
         /// command line.
         /// </param>
-        /// <param name="isMandatory"
+        /// <param name="isMandatory"> Specifies wether option is mandatory i. e. must be present on command line.</param>
 
         public IntOption(Action<int?> action, bool isParameterRequired,bool isMandatory)
         {
@@ -113,9 +113,9 @@ namespace ArgumentParsing
 
     }
 
-    
+
     /// <summary>
-    /// This class represents option, which takes 0-1(based on mandatory field) to unlimited int parameters.
+    /// This class represents option, which takes 0-1(based on isParameterRequired property.) to unlimited int parameters.
     /// </summary>
     public class MultipleIntOption : MultipleParameterOption
     {
@@ -126,13 +126,15 @@ namespace ArgumentParsing
         /// <param name="action">Specifies action, which should be executed with int parameters or null if
         /// there were no parameters present on command line.
         /// </param>
-        /// <param name="mandatory"> Specifies whether the option requires at least one parameter present on
+        /// <param name="isParameterRequired"> Specifies wether the option requires at least one parameter present on
         /// command line.
         /// </param>
-        public MultipleIntOption(Action<int[]?> action, bool mandatory)
+        /// <param name="isMandatory"> Specifies wether option is mandatory i. e. must be present on command line.</param>
+        public MultipleIntOption(Action<int[]?> action, bool isParameterRequired, bool isMandatory)
         {
             this.saveAction = action;
-            this.IsMandatory = mandatory;
+            this.IsParameterRequired = IsParameterRequired;
+            this.IsMandatory = isMandatory;
 
         }
         public override bool TryParse(string param)
@@ -143,7 +145,7 @@ namespace ArgumentParsing
 
 
     /// <summary>
-    /// This class represents option, which takes 0 to 1 string arguments based on mandatory field.
+    /// This class represents option, which takes 0 to 1 string arguments based on isParameterRequired property..
     /// </summary>
     public class StringOption : ParameterOption
     {
@@ -155,13 +157,15 @@ namespace ArgumentParsing
         /// <param name="action">Specifies action, which should be executed with string parameter
         /// or null if there was no parameter present on command line.
         /// </param>
-        /// <param name="mandatory"> Specifies whether the option requires at least one parameter present on
+        /// <param name="isParameterRequired"> Specifies wether the option requires at least one parameter present on
         /// command line.
         /// </param>
-        public StringOption(Action<string?> action, bool mandatory)
+        /// <param name="isMandatory"> Specifies wether option is mandatory i. e. must be present on command line.</param>
+        public StringOption(Action<string?> action, bool isParameterRequired, bool isMandatory)
         {
             this.saveAction = action;
-            this.IsMandatory = mandatory;
+            this.IsParameterRequired = IsParameterRequired;
+            this.IsMandatory = isMandatory;
 
         }
 
@@ -172,7 +176,7 @@ namespace ArgumentParsing
 
     }
     /// <summary>
-    /// This class represents option, which takes 0-1(based on mandatory field) to unlimited string options.
+    /// This class represents option, which takes 0-1(based on isParameterRequired property.) to unlimited string options.
     /// </summary>
     public class MultipleStringOption : MultipleParameterOption
     {
@@ -183,13 +187,15 @@ namespace ArgumentParsing
         /// <param name="action">Specifies action, which should be executed with string parameters or null if
         /// there were no parameters present on command line.
         /// </param>
-        /// <param name="mandatory"> Specifies whether the option requires at least one parameter present on
+        /// <param name="isParameterRequired"> Specifies wether the option requires at least one parameter present on
         /// command line.
         /// </param>
-        public MultipleStringOption(Action<string[]?> action, bool mandatory)
+        /// <param name="isMandatory"> Specifies wether option is mandatory i. e. must be present on command line.</param>
+        public MultipleStringOption(Action<string[]?> action, bool isParameterRequired, bool isMandatory)
         {
             this.saveAction = action;
-            this.IsMandatory = mandatory;
+            this.IsParameterRequired = IsParameterRequired;
+            this.IsMandatory = isMandatory;
 
         }
         public override bool TryParse(string param)
@@ -198,7 +204,7 @@ namespace ArgumentParsing
         }
     }
     /// <summary>
-    /// This class represents option, which takes 0 to 1 bool arguments based on mandatory field.
+    /// This class represents option, which takes 0 to 1 bool arguments based on isParameterRequired property.
     /// </summary>
     class BoolOption : ParameterOption
     {
@@ -209,13 +215,15 @@ namespace ArgumentParsing
         /// <param name="action">Specifies action, which should be executed with bool parameter
         /// or null if there was no parameter present on command line.
         /// </param>
-        /// <param name="mandatory"> Specifies whether the option requires at least one parameter present on
+        /// <param name="isParameterRequired"> Specifies wether the option requires at least one parameter present on
         /// command line.
         /// </param>
-        public BoolOption(Action<bool> action, bool mandatory)
+        /// <param name="isMandatory"> Specifies wether option is mandatory i. e. must be present on command line.</param>
+        public BoolOption(Action<bool> action, bool isParameterRequired, bool isMandatory)
         {
             this.saveAction = action;
-            this.IsMandatory = mandatory;
+            this.IsParameterRequired = IsParameterRequired;
+            this.IsMandatory = isMandatory;
         }
         public override bool TryParse(string param)
         {
@@ -234,13 +242,15 @@ namespace ArgumentParsing
         /// <param name="action">Specifies action, which should be executed with bool parameters or null if
         /// there were no parameters present on command line.
         /// </param>
-        /// <param name="mandatory"> Specifies whether the option requires at least one parameter present on
+        /// <param name="isParameterRequired"> Specifies wether the option requires at least one parameter present on
         /// command line.
         /// </param>
-        public MultipleBoolOption(Action<bool[]?> action, bool mandatory)
+        /// <param name="isMandatory"> Specifies wether option is mandatory i. e. must be present on command line.</param>
+        public MultipleBoolOption(Action<bool[]?> action, bool isParameterRequired, bool isMandatory)
         {
             this.saveAction = action;
-            this.IsMandatory = mandatory;
+            this.IsParameterRequired = IsParameterRequired;
+            this.IsMandatory = isMandatory;
         }
         public override bool TryParse(string param)
         {
@@ -261,11 +271,15 @@ namespace ArgumentParsing
         /// </summary>
         /// <param name="action">Specifies action, which should be executed with enum parameters or null if
         /// there were no parameters present on command line.</param>
-        /// <param name="mandatory"></param>
-        public EnumOption(Action<T?> action, bool mandatory)
+        /// <param name="isParameterRequired"> Specifies wether the option requires at least one parameter present on
+        /// command line.
+        /// </param>
+        /// <param name="isMandatory"> Specifies wether option is mandatory i. e. must be present on command line.</param>
+        public EnumOption(Action<T?> action, bool isParameterRequired, bool isMandatory)
         {
             this.saveAction = action;
-            this.IsMandatory = mandatory;
+            this.IsParameterRequired = IsParameterRequired;
+            this.IsMandatory = isMandatory;
         }
 
         public override bool TryParse(string param)
@@ -283,10 +297,11 @@ namespace ArgumentParsing
         Action<T[]> saveAction;
 
         // TODO: Consider using default value instead of null-able type.
-        public MultipleEnumOption(Action<T[]> action, bool mandatory)
+        public MultipleEnumOption(Action<T[]> action, bool isParameterRequired, bool isMandatory)
         {
             this.saveAction = action;
-            this.IsMandatory = mandatory;
+            this.IsParameterRequired = IsParameterRequired;
+            this.IsMandatory = isMandatory;
         }
 
         public override bool TryParse(string param)
