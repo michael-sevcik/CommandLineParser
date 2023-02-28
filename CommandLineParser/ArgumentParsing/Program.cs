@@ -11,7 +11,6 @@ internal class Program
         int[] ints = { 1, 2,3 };
         Experiment(ints);
         Action<int[]?> action = new(Experiment);
-        MultipleIntOption mio = new(action, true);
         action(ints);
         
     }

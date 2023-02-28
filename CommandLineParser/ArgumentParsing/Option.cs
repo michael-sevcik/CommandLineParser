@@ -23,8 +23,15 @@ namespace ArgumentParsing
         /// </summary>
         public bool IsParametrized { get; init; }
 
-        public char[] shortSynonyms { get; init; }
-        public string[] longSynonyms { get; init; }
+        /// <summary>
+        /// Array of char identifiers that represent the Option; e.g. 'f' - short identifier is used as "-f" on command-line.
+        /// </summary>
+        public char[]? shortSynonyms { get; init; }
+
+        /// <summary>
+        /// Array of string identifiers that represent the Option; e.g. "size" - long identifier is used as "--size on command-line".
+        /// </summary>
+        public string[]? longSynonyms { get; init; }
 
     }
 
@@ -307,7 +314,7 @@ namespace ArgumentParsing
         /// <summary>
         /// Creates an instance of <see cref="EnumOption{T}"/>.
         /// </summary>
-        /// <param name="action">Specifies action, which should be executed with enum parameters or null if
+        /// <param name="action">Specifies action, which should be executed with enum parameter or null if
         /// there were no parameters present on command line.</param>
         /// <param name="isParameterRequired"> Specifies whether the option requires at least one parameter present on
         /// command line.
@@ -337,10 +344,20 @@ namespace ArgumentParsing
     /// <typeparam name="T"></typeparam>
     public class MultipleEnumOption<T> : ParameterOption where T : Enum
     {
-        Action<T[]> saveAction;
+        Action<T[]?> saveAction;
 
-        // TODO: Consider using default value instead of null-able type.
-        public MultipleEnumOption(Action<T[]> action, bool isParameterRequired, bool isMandatory, char[] shortSynonyms, string[] longSynonyms)
+        // TODO: Consider creating a synonyms struct.
+        /// <summary>
+        /// Creates an instance of <see cref="MultipleEnumOption{T}"/>.
+        /// </summary>
+        /// <param name="action">Specifies action, which should be executed with enum parameters or null if
+        /// there were no parameters present on command line.</param>
+        /// <param name="isParameterRequired">Specifies whether the option requires at least one parameter present on
+        /// command line.</param>
+        /// <param name="isMandatory"> Specifies whether option is mandatory i. e. must be present on command line.</param>
+        /// <param name="shortSynonyms"> Specifies what kind of short synonyms should option represent (e.g. "-v").</param>
+        /// <param name="longSynonyms"> Specifies what kind of long synonyms should option represent. (e.g. "--version")</param>
+        public MultipleEnumOption(Action<T[]?> action, bool isParameterRequired, bool isMandatory, char[] shortSynonyms, string[] longSynonyms)
         {
             this.saveAction = action;
             this.IsParameterRequired = IsParameterRequired;
