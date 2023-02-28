@@ -20,6 +20,8 @@ namespace ArgumentParsing
         /// Determines whether a given option may, or must have parameters.
         /// </summary>
         public bool IsParametrized { get; init; }
+
+        
     }
 
     /// <summary>
@@ -57,7 +59,7 @@ namespace ArgumentParsing
         /// <summary>
         /// Determines whether an option requires parameter.
         /// </summary>
-        public bool IsParameterMandatory { get; init; }
+        public bool IsParameterRequired { get; init; }
 
         /// <summary>
         /// Parses the parameter.
@@ -78,7 +80,7 @@ namespace ArgumentParsing
 
 
     /// <summary>
-    /// This class represents option, which takes 0 to 1 int parameters based on is mandatory field.
+    /// This class represents option, which takes 0 to 1 int parameters based on mandatory field.
     /// </summary>
     public class IntOption : ParameterOption
     {
@@ -87,10 +89,10 @@ namespace ArgumentParsing
         /// <summary>
         /// Constructs an instance of <see cref="IntOption"/>.
         /// </summary>
-        /// <param name="action">Specifices action, wihich should be executed with int option parameter or null if 
+        /// <param name="action">Specifies action, wihich should be executed with int option parameter or null if 
         /// mandatory is set to false.
         /// </param>
-        /// <param name="mandatory"> Specifices wether the option requires at least one parameter present on
+        /// <param name="mandatory"> Specifies wether the option requires at least one parameter present on
         /// command line.
         /// </param>
         public IntOption(Action<int?> action, bool mandatory)
@@ -118,10 +120,10 @@ namespace ArgumentParsing
         /// <summary>
         /// Creates an instance of <see cref="MultipleIntOption"/>.
         /// </summary>
-        /// <param name="action">Specifices action, which should be executed with int parameters or null if
+        /// <param name="action">Specifies action, which should be executed with int parameters or null if
         /// there were no parameters present on command line.
         /// </param>
-        /// <param name="mandatory"> Specifices wether the option requires at least one parameter present on
+        /// <param name="mandatory"> Specifies wether the option requires at least one parameter present on
         /// command line.
         /// </param>
         public MultipleIntOption(Action<int[]?> action, bool mandatory)
@@ -147,10 +149,10 @@ namespace ArgumentParsing
         /// <summary>
         /// Creates an instance of <see cref="StringOption"/>.
         /// </summary>
-        /// <param name="action">Specifices action, which should be exectued with string parameter
+        /// <param name="action">Specifies action, which should be exectued with string parameter
         /// or null if there was no parameter present on command line.
         /// </param>
-        /// <param name="mandatory"> Specifices wether the option requires at least one parameter present on
+        /// <param name="mandatory"> Specifies wether the option requires at least one parameter present on
         /// command line.
         /// </param>
         public StringOption(Action<string?> action, bool mandatory)
@@ -167,7 +169,7 @@ namespace ArgumentParsing
 
     }
     /// <summary>
-    /// This class represents option, which takes 0-1(based on is mandatory field) to unlimited string options.
+    /// This class represents option, which takes 0-1(based on mandatory field) to unlimited string options.
     /// </summary>
     public class MultipleStringOption : MultipleParameterOption
     {
@@ -175,10 +177,10 @@ namespace ArgumentParsing
         /// <summary>
         /// Creates an instance of <see cref="MultipleStringOption"/>.
         /// </summary>
-        /// <param name="action">Specifices action, which should be executed with string parameters or null if
+        /// <param name="action">Specifies action, which should be executed with string parameters or null if
         /// there were no parameters present on command line.
         /// </param>
-        /// <param name="mandatory"> Specifices wether the option requires at least one parameter present on
+        /// <param name="mandatory"> Specifies wether the option requires at least one parameter present on
         /// command line.
         /// </param>
         public MultipleStringOption(Action<string[]?> action, bool mandatory)
@@ -201,10 +203,10 @@ namespace ArgumentParsing
         /// <summary>
         /// Creates an instance of <see cref="BoolOption"/>.
         /// </summary>
-        /// <param name="action">Specifices action, which should be exectued with bool parameter
+        /// <param name="action">Specifies action, which should be exectued with bool parameter
         /// or null if there was no parameter present on command line.
         /// </param>
-        /// <param name="mandatory"> Specifices wether the option requires at least one parameter present on
+        /// <param name="mandatory"> Specifies wether the option requires at least one parameter present on
         /// command line.
         /// </param>
         public BoolOption(Action<bool> action, bool mandatory)
@@ -218,7 +220,7 @@ namespace ArgumentParsing
         }
     }
     /// <summary>
-    /// This class represents option, which takes 0-1(based on is mandatory field) to unlimited bool options.
+    /// This class represents option, which takes 0-1(based on mandatory field) to unlimited bool options.
     /// </summary>
     class MultipleBoolOption : ParameterOption
     {
@@ -226,10 +228,10 @@ namespace ArgumentParsing
         /// <summary>
         /// Creates an instance of <see cref="MultipleBoolOption"/>.
         /// </summary>
-        /// <param name="action">Specifices action, which should be executed with bool parameters or null if
+        /// <param name="action">Specifies action, which should be executed with bool parameters or null if
         /// there were no parameters present on command line.
         /// </param>
-        /// <param name="mandatory"> Specifices wether the option requires at least one parameter present on
+        /// <param name="mandatory"> Specifies wether the option requires at least one parameter present on
         /// command line.
         /// </param>
         public MultipleBoolOption(Action<bool[]?> action, bool mandatory)
@@ -290,16 +292,20 @@ namespace ArgumentParsing
         }
     }
 
+
+    /// <summary>
+    /// This class enables users create an instance of class based on their preferences
+    /// i. e. if they want required/optional NoParameterOption/ParameterOption/MultipleParameterOption 
+    /// and with the parametrized options of which types should parameters be (int,string,bool,enum).
+    /// </summary>
     public static class OptionFactory
     {
         /// <summary>
-        /// 
-        /// </summary>
-        /// // TODO: 
-        /// <param name="line"></param>
+        /// Creates desired instance of Option, based on user preferencies defined in OptionSpecifics parameter.
+        /// </summary> 
+        /// <param name="OptionSpecifics"></param>
         /// <returns></returns>
-        /// <exception cref="NotImplementedException"></exception>
-        public static Option CreateOption(string line)
+        public static Option CreateOption(string OptionSpecifics)
         {
             throw new NotImplementedException();
         }
