@@ -20,8 +20,6 @@ namespace ArgumentParsing
         /// Determines whether a given option may, or must have parameters.
         /// </summary>
         public bool IsParametrized { get; init; }
-
-        
     }
 
     /// <summary>
@@ -97,15 +95,15 @@ namespace ArgumentParsing
         /// </param>
         /// <param name="isMandatory"> Specifies whether option is mandatory i. e. must be present on command line.</param>
 
-        public IntOption(Action<int?> action, bool isParameterRequired,bool isMandatory)
+        public IntOption(Action<int?> action, bool isParameterRequired, bool isMandatory)
         {
             this.saveAction = action;
             this.IsParameterRequired = IsParameterRequired;
             this.IsMandatory = isMandatory;
 
         }
-       
-       
+
+        /// <inheritdoc/>
         public override bool TryParse(string param)
         {
             throw new NotImplementedException();
@@ -137,6 +135,8 @@ namespace ArgumentParsing
             this.IsMandatory = isMandatory;
 
         }
+
+        /// <inheritdoc/>
         public override bool TryParse(string param)
         {
             throw new NotImplementedException();
@@ -169,6 +169,7 @@ namespace ArgumentParsing
 
         }
 
+        /// <inheritdoc/>
         public override bool TryParse(string param)
         {
             throw new NotImplementedException();
@@ -198,6 +199,8 @@ namespace ArgumentParsing
             this.IsMandatory = isMandatory;
 
         }
+
+        /// <inheritdoc/>
         public override bool TryParse(string param)
         {
             throw new NotImplementedException();
@@ -225,6 +228,8 @@ namespace ArgumentParsing
             this.IsParameterRequired = IsParameterRequired;
             this.IsMandatory = isMandatory;
         }
+
+        /// <inheritdoc/>
         public override bool TryParse(string param)
         {
             throw new NotImplementedException();
@@ -252,6 +257,8 @@ namespace ArgumentParsing
             this.IsParameterRequired = IsParameterRequired;
             this.IsMandatory = isMandatory;
         }
+
+        /// <inheritdoc/>
         public override bool TryParse(string param)
         {
             throw new NotImplementedException();
@@ -282,6 +289,7 @@ namespace ArgumentParsing
             this.IsMandatory = isMandatory;
         }
 
+        /// <inheritdoc/>
         public override bool TryParse(string param)
         {
             throw new NotImplementedException();
@@ -304,6 +312,7 @@ namespace ArgumentParsing
             this.IsMandatory = isMandatory;
         }
 
+        /// <inheritdoc/>
         public override bool TryParse(string param)
         {
             throw new NotImplementedException();
