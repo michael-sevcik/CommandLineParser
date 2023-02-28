@@ -89,10 +89,10 @@ namespace ArgumentParsing
         /// <summary>
         /// Constructs an instance of <see cref="IntOption"/>.
         /// </summary>
-        /// <param name="action">Specifies action, wihich should be executed with int option parameter or null if 
+        /// <param name="action">Specifies action, which should be executed with int option parameter or null if 
         /// mandatory is set to false.
         /// </param>
-        /// <param name="mandatory"> Specifies wether the option requires at least one parameter present on
+        /// <param name="mandatory"> Specifies whether the option requires at least one parameter present on
         /// command line.
         /// </param>
         public IntOption(Action<int?> action, bool mandatory)
@@ -123,7 +123,7 @@ namespace ArgumentParsing
         /// <param name="action">Specifies action, which should be executed with int parameters or null if
         /// there were no parameters present on command line.
         /// </param>
-        /// <param name="mandatory"> Specifies wether the option requires at least one parameter present on
+        /// <param name="mandatory"> Specifies whether the option requires at least one parameter present on
         /// command line.
         /// </param>
         public MultipleIntOption(Action<int[]?> action, bool mandatory)
@@ -149,10 +149,10 @@ namespace ArgumentParsing
         /// <summary>
         /// Creates an instance of <see cref="StringOption"/>.
         /// </summary>
-        /// <param name="action">Specifies action, which should be exectued with string parameter
+        /// <param name="action">Specifies action, which should be executed with string parameter
         /// or null if there was no parameter present on command line.
         /// </param>
-        /// <param name="mandatory"> Specifies wether the option requires at least one parameter present on
+        /// <param name="mandatory"> Specifies whether the option requires at least one parameter present on
         /// command line.
         /// </param>
         public StringOption(Action<string?> action, bool mandatory)
@@ -180,7 +180,7 @@ namespace ArgumentParsing
         /// <param name="action">Specifies action, which should be executed with string parameters or null if
         /// there were no parameters present on command line.
         /// </param>
-        /// <param name="mandatory"> Specifies wether the option requires at least one parameter present on
+        /// <param name="mandatory"> Specifies whether the option requires at least one parameter present on
         /// command line.
         /// </param>
         public MultipleStringOption(Action<string[]?> action, bool mandatory)
@@ -203,10 +203,10 @@ namespace ArgumentParsing
         /// <summary>
         /// Creates an instance of <see cref="BoolOption"/>.
         /// </summary>
-        /// <param name="action">Specifies action, which should be exectued with bool parameter
+        /// <param name="action">Specifies action, which should be executed with bool parameter
         /// or null if there was no parameter present on command line.
         /// </param>
-        /// <param name="mandatory"> Specifies wether the option requires at least one parameter present on
+        /// <param name="mandatory"> Specifies whether the option requires at least one parameter present on
         /// command line.
         /// </param>
         public BoolOption(Action<bool> action, bool mandatory)
@@ -231,7 +231,7 @@ namespace ArgumentParsing
         /// <param name="action">Specifies action, which should be executed with bool parameters or null if
         /// there were no parameters present on command line.
         /// </param>
-        /// <param name="mandatory"> Specifies wether the option requires at least one parameter present on
+        /// <param name="mandatory"> Specifies whether the option requires at least one parameter present on
         /// command line.
         /// </param>
         public MultipleBoolOption(Action<bool[]?> action, bool mandatory)
@@ -279,7 +279,7 @@ namespace ArgumentParsing
     {
         Action<T[]> saveAction;
 
-        // TODO: Consider using default value instead of nullable type.
+        // TODO: Consider using default value instead of null-able type.
         public MultipleEnumOption(Action<T[]> action, bool mandatory)
         {
             this.saveAction = action;
@@ -301,7 +301,7 @@ namespace ArgumentParsing
     public static class OptionFactory
     {
         /// <summary>
-        /// Creates desired instance of Option, based on user preferencies defined in OptionSpecifics parameter.
+        /// Creates desired instance of Option, based on user preferences defined in OptionSpecifics parameter.
         /// </summary> 
         /// <param name="OptionSpecifics"></param>
         /// <returns></returns>
