@@ -134,7 +134,12 @@ namespace ArgumentParsing
 
         }
 
-        /// <inheritdoc/>
+        /// <summary>
+        /// Parses the parameter.
+        /// </summary>
+        /// Accepts any string param that is parseable by Int32.TryPase method.
+        /// <param name="param">Corresponding parameter</param>
+        /// <returns>True if parseable parameter was passed, otherwise false.</returns>
         public override bool TryParse(string param)
         {
             throw new NotImplementedException();
@@ -145,7 +150,7 @@ namespace ArgumentParsing
         /// is the smallest number to accept.
         /// </summary>
         /// <param name="lowerBound">Smallest number to accept by option in its parameter. If no lower bound
-        /// desired leave as null i. e. dont call this option at all.
+        /// desired leave as null i. e. don't call this option at all.
         /// </param>     
         /// <exception cref="NotImplementedException"></exception>
         public void SetLowerBound(int? lowerBound)
@@ -158,7 +163,7 @@ namespace ArgumentParsing
         /// is the biggest number to accept.
         /// </summary>
         /// <param name="upperBound">Biggest number to accept by option in its parameter. If no biggest bound
-        /// desired leave as null i. e. dont call this option at all.
+        /// desired leave as null i. e. don't call this option at all.
         /// </param>     
         /// <exception cref="NotImplementedException"></exception>
         public void SetUpperBound (int? upperBound)
