@@ -11,6 +11,7 @@ namespace ExampleProgram
     {
         public static void Main(string[] args)
         {
+            // Create options.
             Action<Format?> formatAction = f => Console.WriteLine(f);
             EnumOption<Format> FormatOption = new(formatAction, true, false, new char[] { 'f' }, new string[] { "format" });
             FormatOption.SetHelpString("Specify output format, possibly overriding the format specified in the environment variable TIME.");
@@ -36,7 +37,10 @@ namespace ExampleProgram
             NoParameterOption helpOption = new(markAppend, false, null, new string[] { "help" });
             helpOption.SetHelpString("(Used together with -o.) Do not overwrite but append.");
 
+            // Create optionSet.
             OptionSet optionSet = new();
+
+            // Fill optionSet with already created options.
             optionSet.Add(FormatOption);
             optionSet.Add(PortabilityOption);
             optionSet.Add(outputFileOption);
@@ -44,7 +48,12 @@ namespace ExampleProgram
             optionSet.Add(verboseOutputOption);
             optionSet.Add(helpOption);
 
+            // Create Parser.
             Parser parser = new(optionSet);
+            parser.SetPlainArgumentHelpString("Terminate option list.");
+
+            // Parse command-line input.
+            parser.ParseCommandLine(args);
 
         }
     }
