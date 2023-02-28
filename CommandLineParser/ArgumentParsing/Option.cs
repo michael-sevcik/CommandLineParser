@@ -96,7 +96,8 @@ namespace ArgumentParsing
     public class IntOption : ParameterOption
     {
         Action<int?> saveAction;
-
+        public int? LowerBound { get; set; } 
+        public int? UpperBound { get; set; }
         /// <summary>
         /// Constructs an instance of <see cref="IntOption"/>.
         /// </summary>
@@ -123,6 +124,32 @@ namespace ArgumentParsing
 
         /// <inheritdoc/>
         public override bool TryParse(string param)
+        {
+            throw new NotImplementedException();
+        }
+
+        /// <summary>
+        /// Allows user set lower bound for Option-accepted parameter i. e. what 
+        /// is the smallest number to accept.
+        /// </summary>
+        /// <param name="lowerBound">Smallest number to accept by option in its parameter. If no lower bound
+        /// desired leave as null i. e. dont call this option at all.
+        /// </param>     
+        /// <exception cref="NotImplementedException"></exception>
+        public void SetLowerBound(int? lowerBound)
+        {
+            throw new NotImplementedException();
+        }
+
+        /// <summary>
+        /// Allows user set upper bound for Option-accepted parameter i. e. what 
+        /// is the biggest number to accept.
+        /// </summary>
+        /// <param name="upperBound">Biggest number to accept by option in its parameter. If no biggest bound
+        /// desired leave as null i. e. dont call this option at all.
+        /// </param>     
+        /// <exception cref="NotImplementedException"></exception>
+        public void SetUpperBound (int? upperBound)
         {
             throw new NotImplementedException();
         }
@@ -160,6 +187,32 @@ namespace ArgumentParsing
 
         /// <inheritdoc/>
         public override bool TryParse(string param)
+        {
+            throw new NotImplementedException();
+        }
+
+        /// <summary>
+        /// Allows user set lower bound for Option-accepted parameter i. e. what 
+        /// is the smallest number to accept.
+        /// </summary>
+        /// <param name="lowerBound">Smallest number to accept by option in its parameter. If no lower bound
+        /// desired leave as null i. e. dont call this option at all.
+        /// </param>     
+        /// <exception cref="NotImplementedException"></exception>
+        public void SetLowerBound(int? lowerBound)
+        {
+            throw new NotImplementedException();
+        }
+
+        /// <summary>
+        /// Allows user set upper bound for Option-accepted parameter i. e. what 
+        /// is the biggest number to accept.
+        /// </summary>
+        /// <param name="upperBound">Biggest number to accept by option in its parameter. If no biggest bound
+        /// desired leave as null i. e. dont call this option at all.
+        /// </param>     
+        /// <exception cref="NotImplementedException"></exception>
+        public void SetUpperBound(int? upperBound)
         {
             throw new NotImplementedException();
         }
@@ -270,7 +323,7 @@ namespace ArgumentParsing
         }
     }
     /// <summary>
-    /// This class represents option, which takes 0-1(based on mandatory field) to unlimited bool options.
+    /// This class represents option, which takes 0-1(based on isParameterRequired field) to unlimited bool options.
     /// </summary>
     class MultipleBoolOption : ParameterOption
     {
@@ -304,7 +357,7 @@ namespace ArgumentParsing
     }
 
     /// <summary>
-    /// Represents a option, which takes 0 to 1 string arguments that matches one of the Enum's option names.
+    /// Represents an option, which takes 0 to 1 string arguments that matches one of the Enum's option names.
     /// </summary>
     /// <typeparam name="T">Enum type is used to specify matchable strings.</typeparam>
     public class EnumOption <T> : ParameterOption where T : Enum
@@ -339,7 +392,9 @@ namespace ArgumentParsing
     }
 
     /// <summary>
-    /// 
+    /// Represents an option which takes 0/1 (based on isParameterRequired) string arguments that matches
+    /// one of the user-defined Enum's option names. To use this class you need to create your own Enum type,
+    /// which specifies what kind of string arguments the option accepts.
     /// </summary>
     /// <typeparam name="T"></typeparam>
     public class MultipleEnumOption<T> : ParameterOption where T : Enum
