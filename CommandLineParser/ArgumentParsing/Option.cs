@@ -11,6 +11,8 @@ namespace ArgumentParsing
     /// </summary>
     public abstract class Option
     {
+
+
         /// <summary>
         /// Determines whether a given option must occur in a parsed command. 
         /// </summary>
@@ -20,6 +22,10 @@ namespace ArgumentParsing
         /// Determines whether a given option may, or must have parameters.
         /// </summary>
         public bool IsParametrized { get; init; }
+
+        public char[] shortSynonyms { get; init; }
+        public string[] longSynonyms { get; init; }
+
     }
 
     /// <summary>
@@ -94,12 +100,17 @@ namespace ArgumentParsing
         /// command line.
         /// </param>
         /// <param name="isMandatory"> Specifies whether option is mandatory i. e. must be present on command line.</param>
+        /// <param name="shortSynonyms"> Specifies what kind of short synonyms should option represent (e.g. "-v").</param>
+        /// <param name="longSynonyms"> Specifies what kind of long synonyms should option represent. (e.g. "--version")</param>
 
-        public IntOption(Action<int?> action, bool isParameterRequired, bool isMandatory)
+
+        public IntOption(Action<int?> action, bool isParameterRequired, bool isMandatory, char[] shortSynonyms, string[] longSynonyms)
         {
             this.saveAction = action;
             this.IsParameterRequired = IsParameterRequired;
             this.IsMandatory = isMandatory;
+            this.shortSynonyms = shortSynonyms;
+            this.longSynonyms = longSynonyms;
 
         }
 
@@ -128,11 +139,15 @@ namespace ArgumentParsing
         /// command line.
         /// </param>
         /// <param name="isMandatory"> Specifies whether option is mandatory i. e. must be present on command line.</param>
-        public MultipleIntOption(Action<int[]?> action, bool isParameterRequired, bool isMandatory)
+        /// <param name="shortSynonyms"> Specifies what kind of short synonyms should option represent (e.g. "-v").</param>
+        /// <param name="longSynonyms"> Specifies what kind of long synonyms should option represent. (e.g. "--version")</param>
+        public MultipleIntOption(Action<int[]?> action, bool isParameterRequired, bool isMandatory,char[] shortSynonyms, string[] longSynonyms)
         {
             this.saveAction = action;
             this.IsParameterRequired = IsParameterRequired;
             this.IsMandatory = isMandatory;
+            this.shortSynonyms = shortSynonyms;
+            this.longSynonyms = longSynonyms;
 
         }
 
@@ -161,11 +176,15 @@ namespace ArgumentParsing
         /// command line.
         /// </param>
         /// <param name="isMandatory"> Specifies whether option is mandatory i. e. must be present on command line.</param>
-        public StringOption(Action<string?> action, bool isParameterRequired, bool isMandatory)
+        /// <param name="shortSynonyms"> Specifies what kind of short synonyms should option represent (e.g. "-v").</param>
+        /// <param name="longSynonyms"> Specifies what kind of long synonyms should option represent. (e.g. "--version")</param>
+        public StringOption(Action<string?> action, bool isParameterRequired, bool isMandatory, char[] shortSynonyms, string[] longSynonyms)
         {
             this.saveAction = action;
             this.IsParameterRequired = IsParameterRequired;
             this.IsMandatory = isMandatory;
+            this.shortSynonyms = shortSynonyms;
+            this.longSynonyms = longSynonyms;
 
         }
 
@@ -192,11 +211,15 @@ namespace ArgumentParsing
         /// command line.
         /// </param>
         /// <param name="isMandatory"> Specifies whether option is mandatory i. e. must be present on command line.</param>
-        public MultipleStringOption(Action<string[]?> action, bool isParameterRequired, bool isMandatory)
+        /// <param name="shortSynonyms"> Specifies what kind of short synonyms should option represent (e.g. "-v").</param>
+        /// <param name="longSynonyms"> Specifies what kind of long synonyms should option represent. (e.g. "--version")</param>
+        public MultipleStringOption(Action<string[]?> action, bool isParameterRequired, bool isMandatory, char[] shortSynonyms, string[] longSynonyms)
         {
             this.saveAction = action;
             this.IsParameterRequired = IsParameterRequired;
             this.IsMandatory = isMandatory;
+            this.shortSynonyms = shortSynonyms;
+            this.longSynonyms = longSynonyms;
 
         }
 
@@ -222,11 +245,15 @@ namespace ArgumentParsing
         /// command line.
         /// </param>
         /// <param name="isMandatory"> Specifies whether option is mandatory i. e. must be present on command line.</param>
-        public BoolOption(Action<bool> action, bool isParameterRequired, bool isMandatory)
+        /// <param name="shortSynonyms"> Specifies what kind of short synonyms should option represent (e.g. "-v").</param>
+        /// <param name="longSynonyms"> Specifies what kind of long synonyms should option represent. (e.g. "--version")</param>
+        public BoolOption(Action<bool> action, bool isParameterRequired, bool isMandatory, char[] shortSynonyms, string[] longSynonyms)
         {
             this.saveAction = action;
             this.IsParameterRequired = IsParameterRequired;
             this.IsMandatory = isMandatory;
+            this.shortSynonyms = shortSynonyms;
+            this.longSynonyms = longSynonyms;
         }
 
         /// <inheritdoc/>
@@ -251,11 +278,15 @@ namespace ArgumentParsing
         /// command line.
         /// </param>
         /// <param name="isMandatory"> Specifies whether option is mandatory i. e. must be present on command line.</param>
-        public MultipleBoolOption(Action<bool[]?> action, bool isParameterRequired, bool isMandatory)
+        /// <param name="shortSynonyms"> Specifies what kind of short synonyms should option represent (e.g. "-v").</param>
+        /// <param name="longSynonyms"> Specifies what kind of long synonyms should option represent. (e.g. "--version")</param>
+        public MultipleBoolOption(Action<bool[]?> action, bool isParameterRequired, bool isMandatory, char[] shortSynonyms, string[] longSynonyms)
         {
             this.saveAction = action;
             this.IsParameterRequired = IsParameterRequired;
             this.IsMandatory = isMandatory;
+            this.shortSynonyms = shortSynonyms;
+            this.longSynonyms = longSynonyms;
         }
 
         /// <inheritdoc/>
@@ -282,11 +313,15 @@ namespace ArgumentParsing
         /// command line.
         /// </param>
         /// <param name="isMandatory"> Specifies whether option is mandatory i. e. must be present on command line.</param>
-        public EnumOption(Action<T?> action, bool isParameterRequired, bool isMandatory)
+        /// <param name="shortSynonyms"> Specifies what kind of short synonyms should option represent (e.g. "-v").</param>
+        /// <param name="longSynonyms"> Specifies what kind of long synonyms should option represent. (e.g. "--version")</param>
+        public EnumOption(Action<T?> action, bool isParameterRequired, bool isMandatory, char[] shortSynonyms, string[] longSynonyms)
         {
             this.saveAction = action;
             this.IsParameterRequired = IsParameterRequired;
             this.IsMandatory = isMandatory;
+            this.shortSynonyms = shortSynonyms;
+            this.longSynonyms = longSynonyms;
         }
 
         /// <inheritdoc/>
@@ -305,11 +340,13 @@ namespace ArgumentParsing
         Action<T[]> saveAction;
 
         // TODO: Consider using default value instead of null-able type.
-        public MultipleEnumOption(Action<T[]> action, bool isParameterRequired, bool isMandatory)
+        public MultipleEnumOption(Action<T[]> action, bool isParameterRequired, bool isMandatory, char[] shortSynonyms, string[] longSynonyms)
         {
             this.saveAction = action;
             this.IsParameterRequired = IsParameterRequired;
             this.IsMandatory = isMandatory;
+            this.shortSynonyms = shortSynonyms;
+            this.longSynonyms = longSynonyms;
         }
 
         /// <inheritdoc/>
