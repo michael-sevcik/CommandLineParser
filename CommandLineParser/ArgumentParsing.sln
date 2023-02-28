@@ -5,7 +5,12 @@ VisualStudioVersion = 17.4.33403.182
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ArgumentParsing", "ArgumentParsing\ArgumentParsing.csproj", "{DE865397-7BF4-4943-A609-D27E2ACEC2E0}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CommandParserExampleProgram", "CommandParserExampleProgram\CommandParserExampleProgram.csproj", "{974F4C53-F26B-4936-A533-3E75AB5B6F32}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CommandParserExampleProgram", "CommandParserExampleProgram\CommandParserExampleProgram.csproj", "{974F4C53-F26B-4936-A533-3E75AB5B6F32}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{30DFDBE3-A98A-43A3-BA27-648679DE1737}"
+	ProjectSection(SolutionItems) = preProject
+		README.md = README.md
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
