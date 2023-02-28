@@ -38,7 +38,7 @@ namespace ArgumentParsing
     /// <summary>
     /// The OptionSet class is used to define the set of options that can be parsed by the Parser class.
     /// 
-    /// <Remarks>If two or more options with the same identifier are added to the OptionSet, Find method coud behave undeterminisically.</Remarks>
+    /// <Remarks>If two or more options with the same identifier are added to the OptionSet, Find method could behave nondeterministically.</Remarks>
     /// </summary>
     public class OptionSet
     {
