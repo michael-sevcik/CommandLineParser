@@ -39,6 +39,16 @@ namespace ArgumentParsing
         /// <returns>List of plain parameters.</returns>
         public List<string> GetPlainParameters() 
             => _plainParamethers;
+
+        /// <summary>
+        /// Method allows user to get the help text to be shown when client uses -h/--help on command line.
+        /// To work correctly, user must specify at each option, which hints or explanations to be showed.
+        /// </summary>
+        /// <returns>Returns string to be shown when client uses -h/--help on command line</returns>
+        public string GetHelpString()
+        {
+            throw new NotImplementedException();
+        }
     }
 
     
