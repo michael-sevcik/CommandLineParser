@@ -68,12 +68,13 @@ enum format {
 }
 ```
 
-Compared to the `CreateNoParameterOption` method `CreateParameterOption`
+Compared to the `CreateNoParameterOption` method you need to specify whether the parameter is mandatory via the `isParameterRequired` parameter, i.e. option 
+can be used without its parameter.
 
 
 
 **IMultipleParameterOption : IParametrizedOption**
-- `public char Delimeter { get; }` sets the delimeter, which user is expected to use on the command line to separate multiple parameters.
+- `public char Delimiter { get; }` sets the delimiter, which user is expected to use on the command line to separate multiple parameters.
 ```C#
 public static IMultipleParameterOption CreateMulitipleParameterOption<T>(
            Action<T[]?> action,
@@ -86,7 +87,14 @@ public static IMultipleParameterOption CreateMulitipleParameterOption<T>(
 ```
 This method creates an instance of an object implementing IMultipleParameterOption interface, with desired properties. This option can take
 0 to unlimited number of parameters based on user's preferences.
-- ``
+
+- `Action<T[]?> action` works same as for the IParametrizedOption, but takes array as an argument, because number of the parameters might exceed 1.
+- `bool isParameterRequired` works the same as in the previous Interfaces.
+- `bool isMandatory` works the same as in the previous Interfaces.
+- `char[]? shortSynonyms = null` works the same as in the previous Interfaces.
+- `string[]? longSynonyms = null` string[]? longSynonyms = null.
+- `char delimiter = ','` sets the delimiter, which user is expected to use on the command line to separate multiple parameters.
+
 ### Parser
 Second building component is `Parser` which is used for the actual parsing of the command line arguments.
 
@@ -106,4 +114,86 @@ To get "HelpString" (man page info) user calls method *GetHelpString* which will
 
 ## Examples
 
+### Easy one
+
+
+```C#
+
+enum Greeting {
+    Hello,
+    hi,
+    ciao
+}
+
+void Main(string[] args) {
+    // Create option
+    Action<Greeting?> greetingAction = greeting => Console.WriteLine(greeting); // This local function is called with the parsed argument.
+    var greetingOption = IParametrizedOption.CreateParameterOption<Format?>(formatAction, false, true, new char[] { 'g' }, new string[] { "greeting" });
+
+    // Create parser
+    Parser parser = new();
+
+    // Fill parser with the created option.
+    parser.Add(FormatOption);
+
+
+    // Parse command-line input.
+    parser.ParseCommandLine(args);
+}
+```
+
+When the application is opened with arguments "-g Hello --greeting=ciao", the output is:
+```
+Hello
+ciao
+```
+
+### More complex one
+
+Lets say we want to parse the following options on command line.
+
+```bash
+   -A, --show-all
+        equivalent to -vET
+
+   -b, --number-nonblank
+        number nonempty output lines, overrides -n
+
+   -e   equivalent to -vE
+
+   -E, --show-ends
+        display $ at end of each line
+
+   -n, --number
+        number all output lines
+
+   -s, --squeeze-blank
+        suppress repeated empty output lines
+
+   -t   equivalent to -vT
+
+```
+Following program will do that for us.
+```C#
+using ArgumentParsing;
+namespace ExampleProgramHard
+{
+
+    public class Program
+    {
+        public static void Main(string[] args)
+        {
+
+            Action markAll = () => Console.WriteLine("Show all");
+            var portabilityOption = IOption.CreateNoParameterOption(markAll, false, new char[] { 'A' }, new string[] { "show-all" });
+            portabilityOption.SetHelpString("equivalent to -vET");
+
+            Action markNonBlank = () => Console.WriteLine("was portable");
+            var portabilityOption = IOption.CreateNoParameterOption(markPortable, false, new char[] { 'p' }, new string[] { "portability" });
+            portabilityOption.SetHelpString("Use the portable output format.");
+
+        }
+    }
+}
+```
 ## Build instructions
