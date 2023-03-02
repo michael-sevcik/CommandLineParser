@@ -11,49 +11,48 @@ namespace ExampleProgram
     {
         public static void Main(string[] args)
         {
+
             // Create options.
             Action<Format?> formatAction = f => Console.WriteLine(f);
-            EnumOption<Format> FormatOption = new(formatAction, true, false, new char[] { 'f' }, new string[] { "format" });
+            var FormatOption = IParametrizedOption.CreateParameterOption<Format?>(formatAction, false ,false, new char[] { 'f' }, new string[] { "format" });
             FormatOption.SetHelpString("Specify output format, possibly overriding the format specified in the environment variable TIME.");
 
             Action markPortable = () => Console.WriteLine("was portable");
-            NoParameterOption PortabilityOption = new(markPortable,false,new char[] {'p'},new string[] {"portability"});
-            PortabilityOption.SetHelpString("Use the portable output format.");
+            var portabilityOption = IOption.CreateNoParameterOption(markPortable, false, new char[] { 'p' }, new string[] { "portability" });
+            portabilityOption.SetHelpString("Use the portable output format.");
 
-            Action<String?> processOutputFile = (string? OutputFileName) => Console.WriteLine();
-            StringOption outputFileOption = new(processOutputFile, true, false, new char[] { 'o' }, new string[] { "output" });
+            Action<string?> processOutputFile = (string? OutputFileName) => Console.WriteLine();
+            var outputFileOption = IParametrizedOption.CreateParameterOption(processOutputFile, false, true, new char[] { 'o' }, new string[] { "output" });
             outputFileOption.SetHelpString("Do not send the results to stderr, but overwrite the specified file.");
 
             Action markAppend = () => Console.WriteLine("was append");
-            NoParameterOption appendOption = new(markAppend, false, new char[] { 'a' }, new string[] { "append" });
+            var appendOption = IOption.CreateNoParameterOption(markAppend, false, new char[] { 'a' }, new string[] { "append" });
             appendOption.SetHelpString("(Used together with -o.) Do not overwrite but append.");
 
 
             Action verboseAction = () => Console.WriteLine("Verbose output");
-            NoParameterOption verboseOutputOption = new(verboseAction, false, new char[] { 'V' }, new string[] { "verbose" });
+            var verboseOutputOption = IOption.CreateNoParameterOption(verboseAction, false, new char[] { 'V' }, new string[] { "verbose" });
             verboseOutputOption.SetHelpString("Give very verbose output about all the program knows about.");
 
             Action markHelp = () => Console.WriteLine("was Help");
-            NoParameterOption helpOption = new(markAppend, false, null, new string[] { "help" });
+            var helpOption = IOption.CreateNoParameterOption(markAppend, false, null, new string[] { "help" });
             helpOption.SetHelpString("(Used together with -o.) Do not overwrite but append.");
 
-            // Create optionSet.
-            OptionSet optionSet = new();
-
-            // Fill optionSet with already created options.
-            optionSet.Add(FormatOption);
-            optionSet.Add(PortabilityOption);
-            optionSet.Add(outputFileOption);
-            optionSet.Add(appendOption);
-            optionSet.Add(verboseOutputOption);
-            optionSet.Add(helpOption);
-
+            
             // Create Parser.
-            Parser parser = new(optionSet);
+            Parser parser = new();
             parser.SetPlainArgumentHelpString("Terminate option list.");
 
+            // Fill parser with already created options.
+            parser.Add(FormatOption);
+            parser.Add(portabilityOption);
+            parser.Add(outputFileOption);
+            parser.Add(appendOption);
+            parser.Add(verboseOutputOption);
+            parser.Add(helpOption);
+
             // Parse command-line input.
-            parser.ParseCommandLine(args);
+            // parser.ParseCommandLine(args); // Not implemented yet.
 
         }
     }
