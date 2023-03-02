@@ -96,7 +96,6 @@ namespace ArgumentParsing
 
     }
 
-
     public interface IMultipleParameterOption : IParametrizedOption
     {
         /// <summary>
