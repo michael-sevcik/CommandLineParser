@@ -4,10 +4,10 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace ArgumentParsing
+namespace ArgumentParsing.Option
 {
 
-    
+
 
 
     /// <summary>
@@ -64,13 +64,13 @@ namespace ArgumentParsing
         /// <param name="isMandatory">Determines whether a given option must occur in a parsed command.</param>        /// 
         /// <param name="shortSynonyms"> Specifies what kind of short synonyms should option represent (e.g. "-v").</param>
         /// <param name="longSynonyms"> Specifies what kind of long synonyms should option represent. (e.g. "--version")</param>
-        public NoParameterOption(Action action, bool isMandatory, char[]? shortSynonyms = null , string[]? longSynonyms = null)
+        public NoParameterOption(Action action, bool isMandatory, char[]? shortSynonyms = null, string[]? longSynonyms = null)
         {
-            this.IsMandatory = isMandatory;
+            IsMandatory = isMandatory;
             this.action = action;
             this.shortSynonyms = shortSynonyms;
             this.longSynonyms = longSynonyms;
-            
+
         }
 
         /// <inheritdoc/>
@@ -123,7 +123,7 @@ namespace ArgumentParsing
     internal class IntOption : ParameterOption
     {
         Action<int?> saveAction;
-        public int? LowerBound { get; set; } 
+        public int? LowerBound { get; set; }
         public int? UpperBound { get; set; }
         /// <summary>
         /// Constructs an instance of <see cref="IntOption"/>.
@@ -141,9 +141,9 @@ namespace ArgumentParsing
 
         public IntOption(Action<int?> action, bool isParameterRequired, bool isMandatory, char[]? shortSynonyms = null, string[]? longSynonyms = null)
         {
-            this.saveAction = action;
-            this.IsParameterRequired = IsParameterRequired;
-            this.IsMandatory = isMandatory;
+            saveAction = action;
+            IsParameterRequired = IsParameterRequired;
+            IsMandatory = isMandatory;
             this.shortSynonyms = shortSynonyms;
             this.longSynonyms = longSynonyms;
 
@@ -179,7 +179,7 @@ namespace ArgumentParsing
         /// <param name="upperBound">Biggest number to accept by option in its parameter. If no biggest bound
         /// desired leave as null i. e. don't call this option at all.
         /// </param>     
-        public void SetUpperBound (int? upperBound)
+        public void SetUpperBound(int? upperBound)
         {
             throw new NotImplementedException();
         }
@@ -206,9 +206,9 @@ namespace ArgumentParsing
         /// <param name="longSynonyms"> Specifies what kind of long synonyms should option represent. (e.g. "--version")</param>
         public MultipleIntOption(Action<int[]?> action, bool isParameterRequired, bool isMandatory, char[]? shortSynonyms = null, string[]? longSynonyms = null)
         {
-            this.saveAction = action;
-            this.IsParameterRequired = IsParameterRequired;
-            this.IsMandatory = isMandatory;
+            saveAction = action;
+            IsParameterRequired = IsParameterRequired;
+            IsMandatory = isMandatory;
             this.shortSynonyms = shortSynonyms;
             this.longSynonyms = longSynonyms;
 
@@ -272,9 +272,9 @@ namespace ArgumentParsing
         /// <param name="longSynonyms"> Specifies what kind of long synonyms should option represent. (e.g. "--version")</param>
         public StringOption(Action<string?> action, bool isParameterRequired, bool isMandatory, char[]? shortSynonyms = null, string[]? longSynonyms = null)
         {
-            this.saveAction = action;
-            this.IsParameterRequired = IsParameterRequired;
-            this.IsMandatory = isMandatory;
+            saveAction = action;
+            IsParameterRequired = IsParameterRequired;
+            IsMandatory = isMandatory;
             this.shortSynonyms = shortSynonyms;
             this.longSynonyms = longSynonyms;
 
@@ -309,9 +309,9 @@ namespace ArgumentParsing
         /// <param name="longSynonyms"> Specifies what kind of long synonyms should option represent. (e.g. "--version")</param>
         public MultipleStringOption(Action<string[]?> action, bool isParameterRequired, bool isMandatory, char[]? shortSynonyms = null, string[]? longSynonyms = null)
         {
-            this.saveAction = action;
-            this.IsParameterRequired = IsParameterRequired;
-            this.IsMandatory = isMandatory;
+            saveAction = action;
+            IsParameterRequired = IsParameterRequired;
+            IsMandatory = isMandatory;
             this.shortSynonyms = shortSynonyms;
             this.longSynonyms = longSynonyms;
 
@@ -344,9 +344,9 @@ namespace ArgumentParsing
         /// <param name="longSynonyms"> Specifies what kind of long synonyms should option represent. (e.g. "--version")</param>
         public BoolOption(Action<bool> action, bool isParameterRequired, bool isMandatory, char[]? shortSynonyms = null, string[]? longSynonyms = null)
         {
-            this.saveAction = action;
-            this.IsParameterRequired = IsParameterRequired;
-            this.IsMandatory = isMandatory;
+            saveAction = action;
+            IsParameterRequired = IsParameterRequired;
+            IsMandatory = isMandatory;
             this.shortSynonyms = shortSynonyms;
             this.longSynonyms = longSynonyms;
         }
@@ -384,9 +384,9 @@ namespace ArgumentParsing
         /// <param name="longSynonyms"> Specifies what kind of long synonyms should option represent. (e.g. "--version")</param>
         public MultipleBoolOption(Action<bool[]?> action, bool isParameterRequired, bool isMandatory, char[]? shortSynonyms = null, string[]? longSynonyms = null)
         {
-            this.saveAction = action;
-            this.IsParameterRequired = IsParameterRequired;
-            this.IsMandatory = isMandatory;
+            saveAction = action;
+            IsParameterRequired = IsParameterRequired;
+            IsMandatory = isMandatory;
             this.shortSynonyms = shortSynonyms;
             this.longSynonyms = longSynonyms;
         }
@@ -407,9 +407,9 @@ namespace ArgumentParsing
     /// Represents an option, which takes 0 to 1 string arguments that matches one of the Enum's option names.
     /// </summary>
     /// <typeparam name="TEnum">Enum type is used to specify matchable strings.</typeparam>
-    internal class EnumOption <TEnum> : ParameterOption where TEnum : struct, Enum
+    internal class EnumOption<TEnum> : ParameterOption where TEnum : struct, Enum
     {
-        Action<Nullable<TEnum>> saveAction;
+        Action<TEnum?> saveAction;
 
         /// <summary>
         /// Creates an instance of <see cref="EnumOption{T}"/>.
@@ -422,11 +422,11 @@ namespace ArgumentParsing
         /// <param name="isMandatory"> Specifies whether option is mandatory i. e. must be present on command line.</param>
         /// <param name="shortSynonyms"> Specifies what kind of short synonyms should option represent (e.g. "-v").</param>
         /// <param name="longSynonyms"> Specifies what kind of long synonyms should option represent. (e.g. "--version")</param>
-        public EnumOption(Action<Nullable<TEnum>> action, bool isParameterRequired, bool isMandatory, char[]? shortSynonyms = null, string[]? longSynonyms = null)
+        public EnumOption(Action<TEnum?> action, bool isParameterRequired, bool isMandatory, char[]? shortSynonyms = null, string[]? longSynonyms = null)
         {
-            this.saveAction = action;
-            this.IsParameterRequired = IsParameterRequired;
-            this.IsMandatory = isMandatory;
+            saveAction = action;
+            IsParameterRequired = IsParameterRequired;
+            IsMandatory = isMandatory;
             this.shortSynonyms = shortSynonyms;
             this.longSynonyms = longSynonyms;
         }
@@ -467,9 +467,9 @@ namespace ArgumentParsing
         /// <param name="longSynonyms"> Specifies what kind of long synonyms should option represent. (e.g. "--version")</param>
         public MultipleEnumOption(Action<TEnum[]?> action, bool isParameterRequired, bool isMandatory, char[]? shortSynonyms = null, string[]? longSynonyms = null)
         {
-            this.saveAction = action;
-            this.IsParameterRequired = IsParameterRequired;
-            this.IsMandatory = isMandatory;
+            saveAction = action;
+            IsParameterRequired = IsParameterRequired;
+            IsMandatory = isMandatory;
             this.shortSynonyms = shortSynonyms;
             this.longSynonyms = longSynonyms;
         }
@@ -487,5 +487,5 @@ namespace ArgumentParsing
         }
     }
 
-  
+
 }
