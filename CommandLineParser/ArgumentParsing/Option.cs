@@ -6,10 +6,14 @@ using System.Threading.Tasks;
 
 namespace ArgumentParsing
 {
+
+    
+
+
     /// <summary>
     /// Abstract base class implementation.
     /// </summary>
-    public abstract class Option
+    internal abstract class Option
     {
 
 
@@ -21,7 +25,7 @@ namespace ArgumentParsing
         /// <summary>
         /// Determines whether a given option may, or must have parameters.
         /// </summary>
-        public bool IsParametrized { get; init; }
+        public abstract bool IsParametrized { get; }
 
         /// <summary>
         /// Array of char identifiers that represent the Option; e.g. 'f' - short identifier is used as "-f" on command-line.
@@ -39,7 +43,6 @@ namespace ArgumentParsing
         /// </summary>
         /// <param name="helpString">Text to be shown next to the option in explanation string</param>
         /// <returns></returns>
-        /// <exception cref="NotImplementedException"></exception>
         public bool SetHelpString(string helpString)
         {
             throw new NotImplementedException();
@@ -50,7 +53,7 @@ namespace ArgumentParsing
     /// <summary>
     /// Instance class of options with no parameters.
     /// </summary>
-    public class NoParameterOption : Option
+    internal class NoParameterOption : Option
     {
         Action action;
 
@@ -67,7 +70,11 @@ namespace ArgumentParsing
             this.action = action;
             this.shortSynonyms = shortSynonyms;
             this.longSynonyms = longSynonyms;
+            
         }
+
+        /// <inheritdoc/>
+        public override bool IsParametrized => false;
 
         /// <summary>
         /// Method to call when option occurs in the parsed command-line.
@@ -81,12 +88,15 @@ namespace ArgumentParsing
     /// <summary>
     /// Abstract class for parametrized options.
     /// </summary>
-    public abstract class ParameterOption : Option
+    internal abstract class ParameterOption : Option
     {
         /// <summary>
         /// Determines whether an option requires parameter.
         /// </summary>
         public bool IsParameterRequired { get; init; }
+
+        /// <inheritdoc/>
+        public override bool IsParametrized => true;
 
         /// <summary>
         /// Parses the parameter.
@@ -99,7 +109,7 @@ namespace ArgumentParsing
     /// <summary>
     /// Abstract base class for options more than one possible parameters.
     /// </summary>
-    public abstract class MultipleParameterOption : ParameterOption
+    internal abstract class MultipleParameterOption : ParameterOption
     {
         /// <summary>
         /// Delimits multiple parameters entries. 
@@ -110,7 +120,7 @@ namespace ArgumentParsing
     /// <summary>
     /// This class represents option, which takes 0 to 1 int parameters based on isParameterRequired property.
     /// </summary>
-    public class IntOption : ParameterOption
+    internal class IntOption : ParameterOption
     {
         Action<int?> saveAction;
         public int? LowerBound { get; set; } 
@@ -179,7 +189,7 @@ namespace ArgumentParsing
     /// <summary>
     /// This class represents option, which takes 0-1(based on isParameterRequired property.) to unlimited int parameters.
     /// </summary>
-    public class MultipleIntOption : MultipleParameterOption
+    internal class MultipleIntOption : MultipleParameterOption
     {
         Action<int[]?> saveAction;
         /// <summary>
@@ -244,7 +254,7 @@ namespace ArgumentParsing
     /// <summary>
     /// This class represents option, which takes 0 to 1 string arguments based on isParameterRequired property..
     /// </summary>
-    public class StringOption : ParameterOption
+    internal class StringOption : ParameterOption
     {
         Action<string?> saveAction;
 
@@ -282,7 +292,7 @@ namespace ArgumentParsing
     /// This class represents option, which takes 0-1(based on isParameterRequired property.) to unlimited string options.
     /// </summary>
 
-    public class MultipleStringOption : MultipleParameterOption
+    internal class MultipleStringOption : MultipleParameterOption
     {
         Action<string[]?> saveAction;
         /// <summary>
@@ -313,11 +323,11 @@ namespace ArgumentParsing
             throw new NotImplementedException();
         }
     }
-    
+
     /// <summary>
     /// This class represents option, which takes 0 to 1 bool arguments based on isParameterRequired property.
     /// </summary>
-    class BoolOption : ParameterOption
+    internal class BoolOption : ParameterOption
     {
         private Action<bool> saveAction;
         /// <summary>
@@ -357,7 +367,7 @@ namespace ArgumentParsing
     /// <summary>
     /// This class represents option, which takes 0-1(based on isParameterRequired field) to unlimited bool options.
     /// </summary>
-    class MultipleBoolOption : ParameterOption
+    internal class MultipleBoolOption : ParameterOption
     {
         private Action<bool[]?> saveAction;
         /// <summary>
@@ -397,7 +407,7 @@ namespace ArgumentParsing
     /// Represents an option, which takes 0 to 1 string arguments that matches one of the Enum's option names.
     /// </summary>
     /// <typeparam name="TEnum">Enum type is used to specify matchable strings.</typeparam>
-    public class EnumOption <TEnum> : ParameterOption where TEnum : struct, Enum
+    internal class EnumOption <TEnum> : ParameterOption where TEnum : struct, Enum
     {
         Action<Nullable<TEnum>> saveAction;
 
@@ -440,7 +450,7 @@ namespace ArgumentParsing
     /// which specifies what kind of string arguments the option accepts.
     /// </summary>
     /// <typeparam name="TEnum"></typeparam>
-    public class MultipleEnumOption<TEnum> : ParameterOption where TEnum : Enum
+    internal class MultipleEnumOption<TEnum> : ParameterOption where TEnum : Enum
     {
         Action<TEnum[]?> saveAction;
 
@@ -477,32 +487,5 @@ namespace ArgumentParsing
         }
     }
 
-    /// <summary>
-    /// This class enables users create an instance of class based on their preferences
-    /// i. e. if they want required/optional NoParameterOption/ParameterOption/MultipleParameterOption 
-    /// and with the parametrized options of which types should parameters be (int,string,bool). Enum option must be created
-    /// the casual way.
-    /// </summary>
-    public static class OptionFactory
-    {
-        /// <summary>
-        /// Creates desired instance of Option, based on user preferences defined in OptionSpecifics parameter.
-        /// </summary> 
-        /// <param name="OptionSpecifics">
-        /// Specifies what kind of option user desires. Enter string in following format:
-        /// add ":m" if you want the option to be mandatory, otherwise it will be not. 
-        /// add ":p" if you want the option to be parametrized, otherwise it will be not.
-        /// if :p is present user must add one of the following: ":int" ":string" ":bool" which specifies what kind of 
-        /// parameters should option take.
-        /// if :p is present user can add ":r" to specify that the option must take at least one parameter,
-        /// otherwise 0 parameter is valid for an option.
-        /// </param>
-        /// <returns>Returns adequate class for users desire based on the string that he provided.</returns>
-        public static Option CreateOption(string OptionSpecifics)
-        {
-            throw new NotImplementedException();
-        }
-
-        
-    }
+  
 }
