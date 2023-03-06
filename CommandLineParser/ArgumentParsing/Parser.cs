@@ -1,8 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using ArgumentParsing.OptionSet;
 
 namespace ArgumentParsing
 {
@@ -11,8 +13,25 @@ namespace ArgumentParsing
     /// </summary>
     public class Parser
     {
-        private List<string> _plainParamethers = new();
-        private OptionSet options = new();
+        private IParametrizedOption[]? _plainParamethers;
+        private OptionSet.OptionSet _options = new();
+
+        /// <summary>
+        /// Creates instance of <see cref="Parser"/> without specified types of plain parameters.
+        /// </summary>
+        public Parser ()
+        {
+            _plainParamethers = null;
+        }
+
+        /// <summary>
+        /// Creates instance of <see cref="Parser"/> with specified types of plain parameters.
+        /// </summary>
+        /// <param name="plainParamethers"></param> // TODO: finish description.
+        public Parser(IParametrizedOption[] plainParamethers)
+        {
+            _plainParamethers = plainParamethers;
+        }
 
         /// <summary>
         /// Adds the option to the OptionSet.
@@ -38,13 +57,6 @@ namespace ArgumentParsing
         }
 
         /// <summary>
-        /// Gets parameters that are not options and are not belonging to a option.
-        /// </summary>
-        /// <returns>List of plain parameters.</returns>
-        public List<string> GetPlainParameters() 
-            => _plainParamethers;
-
-        /// <summary>
         /// Method allows user to get the help text to be shown when client uses -h/--help on command line.
         /// To work correctly, user must specify at each option, which hints or explanations to be showed.
         /// </summary>
@@ -55,7 +67,7 @@ namespace ArgumentParsing
         }
 
         /// <summary>
-        /// Allows user set help string for --, which is shown when -h/--help is present on command line.
+        /// Allows user set help string for "--", which is shown when -h/--help is present on command line.
         /// </summary>
         /// <param name="PAHelpString">Help string to be shown next to -- in help page.</param>
 
