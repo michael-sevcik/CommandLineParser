@@ -200,3 +200,5 @@ namespace ExampleProgramHard
 ```
 ## Build instructions
 
+For building the library use `dotnet build ArgumentParsing.csproj` command.
+Then reference the library in your project properties.
