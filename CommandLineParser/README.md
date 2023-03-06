@@ -95,6 +95,8 @@ This method creates an instance of an object implementing IMultipleParameterOpti
 - `string[]? longSynonyms = null` string[]? longSynonyms = null.
 - `char delimiter = ','` sets the delimiter, which user is expected to use on the command line to separate multiple parameters.
 
+### Plain Arguments
+
 ### Parser
 Second building component is `Parser` which is used for the actual parsing of the command line arguments.
 
@@ -197,3 +199,4 @@ namespace ExampleProgramHard
 }
 ```
 ## Build instructions
+
