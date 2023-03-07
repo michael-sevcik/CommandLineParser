@@ -97,6 +97,14 @@ This method creates an instance of an object implementing IMultipleParameterOpti
 
 ### Plain Arguments
 
+#### How to use plain arguments
+
+First of all we have 2 types of plain arguments:
+- mandatory, which must be present on the command line
+- non-mandatory, which can be ommited on command line
+
+Non-mandatory plain arguments can come only after all the mandatory plain arguments.
+
 ### Parser
 Second building component is `Parser` which is used for the actual parsing of the command line arguments.
 
@@ -117,7 +125,6 @@ To get "HelpString" (man page info) user calls method *GetHelpString* which will
 ## Examples
 
 ### Easy one
-
 
 ```C#
 
@@ -193,61 +200,73 @@ namespace ExampleProgramHard
             portabilityOption.SetHelpString("equivalent to -vET");
 
             Action markNonBlank = () => Console.WriteLine("Use non blank");
-            var NonBlankOption = IOption.CreateNoParameterOption(markNonBlank, false, new char[] { 'b' }, new string[] { "number-nonblank" });
-            NonBlankOption.SetHelpString("number nonempty output lines, overrides -n");
+            var nonBlankOption = IOption.CreateNoParameterOption(markNonBlank, false, new char[] { 'b' }, new string[] { "number-nonblank" });
+            nonBlankOption.SetHelpString("number nonempty output lines, overrides -n");
 
             //look at the type of option we choose, after -e must follow one string parameter, we choose ParametrizedOption with string parameter type
             Action<string?> actionForEquals = (string? fileName) => Console.WriteLine($"Is equal to{fileName}");
-            var EqualFileOption = IParametrizedOption.CreateParameterOption(actionForEquals, false, true, new char[] { 'e' });
-            EqualFileOption.SetHelpString("adds equivalent file name");
+            var equalFileOption = IParametrizedOption.CreateParameterOption(actionForEquals, false, true, new char[] { 'e' });
+            equalFileOption.SetHelpString("adds equivalent file name");
 
             Action markEndsOfLine = () => Console.WriteLine("Show ends of lines");
-            var EndsOfLineOption = IOption.CreateNoParameterOption(markEndsOfLine, false, new char[] { 'E' }, new string[] { "show-ends" });
-            EndsOfLineOption.SetHelpString("display $ at end of each line");
+            var endsOfLineOption = IOption.CreateNoParameterOption(markEndsOfLine, false, new char[] { 'E' }, new string[] { "show-ends" });
+            endsOfLineOption.SetHelpString("display $ at end of each line");
 
             Action markNumberLines = () => Console.WriteLine("Number the lines");
-            var NumberLinesOption = IOption.CreateNoParameterOption(markNumberLines, false, new char[] { 'n' }, new string[] { "number" });
-            NumberLinesOption.SetHelpString("number all output lines");
+            var numberLinesOption = IOption.CreateNoParameterOption(markNumberLines, false, new char[] { 'n' }, new string[] { "number" });
+            numberLinesOption.SetHelpString("number all output lines");
 
             //again as with the EqualFileOption, but we need int parameter to folllow
             Action<int?> ActionForSqueezingSpaces = (int? intensity) => Console.WriteLine($"Squeezing spaces to the intensity of {intensity}");
-            var SqueezingSpacesOption = IParametrizedOption.CreateParameterOption(ActionForSqueezingSpaces, false, true, new char[] { 's' }, new string[] { "squeeze-blank"});
-            SqueezingSpacesOption.SetHelpString("suppress repeated empty output lines, int number must follow");
+            var squeezingSpacesOption = IParametrizedOption.CreateParameterOption(ActionForSqueezingSpaces, false, true, new char[] { 's' }, new string[] { "squeeze-blank" });
+            squeezingSpacesOption.SetHelpString("suppress repeated empty output lines, int number must follow");
 
             Action markTOption = () => Console.WriteLine("TOption was present");
-            var TOption = IOption.CreateNoParameterOption(markTOption, false, new char[] { 't' });
-            TOption.SetHelpString("equivalent to -vT");
+            var tOption = IOption.CreateNoParameterOption(markTOption, false, new char[] { 't' });
+            tOption.SetHelpString("equivalent to -vT");
+
+            // we define what kind of plain arguments we want and what action to be called upon them
+
+            //first plain arguement is mandatory, i. e. must be present and is of type string
+            Action<string?> firstPlainArgumentAction = (string? name) => Console.WriteLine($"Hi{name}");
+            var firstPlainArgument = IParametrizedOption.CreateParameterOption<string>(firstPlainArgumentAction, true);
+
+            //second plain argument is not mandatory and can be ommited, is of type int
+            //remember that all plain arguments that are not mandatory must come after all mandatory plain arguments
+            Action<int?> secondPlainArgumentAction = (int? intensity) => Console.WriteLine($"Your age: {intensity}");
+            var secondPlainArgument = IParametrizedOption.CreateParameterOption(secondPlainArgumentAction, false);
+
+            var plainArguments = new IParametrizedOption[] { firstPlainArgument, secondPlainArgument };
 
             //create a new Parser
-            Parser parser = new Parser();
+            Parser parser = new Parser(plainArguments);
 
             //fill the parser with the correctly created options
             parser.Add(portabilityOption);
-            parser.Add(NonBlankOption);
-            parser.Add(EqualFileOption);
-            parser.Add(EndsOfLineOption);
-            parser.Add(NumberLinesOption);
-            parser.Add(SqueezingSpacesOption);
-            parser.Add(TOption);
+            parser.Add(nonBlankOption);
+            parser.Add(equalFileOption);
+            parser.Add(endsOfLineOption);
+            parser.Add(numberLinesOption);
+            parser.Add(squeezingSpacesOption);
+            parser.Add(tOption);
 
             //we can add helpString that will be shown next to the -- when -h is invoked
             parser.SetPlainArgumentHelpString("This will be shown next to --");
 
             //now we finally parse the command line arguments
-            parser.ParseCommandLine(args);
-
-            // we can use this command to get the Plain arguments -> strings that are neither option nor parameters,
-            // or come after the -- separator
-            List<string> plainArguments = parser.GetPlainParameters();
+            parser.ParseCommandLine(args);           
 
             /*
              * Some possible outputs:
-             * args[] = { "-e" , "MyFile.txt" }
+             * args[] = { "-e" , "MyFile.txt","Joe" }
              * output: Is Equal to MyFile.txt
+             *         Hi Joe.
              * 
-             * args[] = { --squeeze-blank=2 -number }
+             * args[] = { "--squeeze-blank=2", "-number", "Joe" , "60" }
              * output: Squeezing spaces to the intensity of 2
              *         Number the lines
+             *         Hi Joe
+             *         You arge: 60
             */
         }
     }
@@ -256,4 +275,12 @@ namespace ExampleProgramHard
 ## Build instructions
 
 For building the library use `dotnet build ArgumentParsing.csproj` command.
+
 Then reference the library in your project properties.
+
+## Generating Documentation
+
+In order to generate documentation use `doxygen -g <config_file>` command. Config file for Doxygen is 
+`Doxyfile` in the `t12-api-design` directory, with this configureation HTML documntation witll .
+
+
