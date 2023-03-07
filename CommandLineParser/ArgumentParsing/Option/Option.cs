@@ -7,15 +7,11 @@ using System.Threading.Tasks;
 namespace ArgumentParsing.Option
 {
 
-
-
-
     /// <summary>
     /// Abstract base class implementation.
     /// </summary>
     internal abstract class Option
     {
-
 
         /// <summary>
         /// Determines whether a given option must occur in a parsed command. 
@@ -137,7 +133,6 @@ namespace ArgumentParsing.Option
         /// <param name="isMandatory"> Specifies whether option is mandatory i. e. must be present on command line.</param>
         /// <param name="shortSynonyms"> Specifies what kind of short synonyms should option represent (e.g. "-v").</param>
         /// <param name="longSynonyms"> Specifies what kind of long synonyms should option represent. (e.g. "--version")</param>
-
 
         public IntOption(Action<int?> action, bool isParameterRequired, bool isMandatory, char[]? shortSynonyms = null, string[]? longSynonyms = null)
         {
@@ -291,7 +286,6 @@ namespace ArgumentParsing.Option
     /// <summary>
     /// This class represents option, which takes 0-1(based on isParameterRequired property.) to unlimited string options.
     /// </summary>
-
     internal class MultipleStringOption : MultipleParameterOption
     {
         Action<string[]?> saveAction;
@@ -454,7 +448,6 @@ namespace ArgumentParsing.Option
     {
         Action<TEnum[]?> saveAction;
 
-        // TODO: Consider creating a synonyms struct.
         /// <summary>
         /// Creates an instance of <see cref="MultipleEnumOption{T}"/>.
         /// </summary>

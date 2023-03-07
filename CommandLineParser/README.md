@@ -10,7 +10,7 @@ The library uses a hierarchy of building components for setting up command-line 
 
 Application uses instances of objects, that implement one of the three following interfaces:
 
-**`IOption`** — 
+#### IOption 
 Represents an option, which takes no parameters and class implementing this interface must implement following methods and properties:
 - `public bool IsMandatory { get; }` defines, whether an option must be present on command line.
 - `public char[]? shortSynonyms { get; }` contains short synonyms for option.
@@ -40,7 +40,7 @@ Watch out that if you don't provide any synonyms, your action will never be call
 otherwise you will not be able to add the latter colliding option to the Parser (Add method will return false).
 
 
-**`IParametrizedOption : IOption`** —
+#### IParametrizedOption : IOption
 represents an option which can take a parameter. Class implementing this interface must implement except inherited methods and properties following:
 - `public bool IsParameterRequired { get; }` Indicates whether an option requires a parameter, if it doesn't and no parameter was passed, method `ProcessParameter()` 
 won't be called.
@@ -50,7 +50,7 @@ won't be called.
 public static IParametrizedOption CreateParameterOption<T>(
     Action<T?> action,
     bool isMandatory,
-    bool isParameterRequired,
+    bool isParameterRequired = false,
     char[]? shortSynonyms = null,
     string[]? longSynonyms = null
     )
@@ -86,12 +86,12 @@ property replaces it.
 - `Action<T?> action` specifies what action should be taking with the parsed plain argument.
 - `bool isMandatory` specifies whether this plain argument must be present on the command line (user must provide it).
 
-**IMultipleParameterOption : IParametrizedOption**
+#### IMultipleParameterOption : IParametrizedOption
 ```C#
 public static IMultipleParameterOption CreateMulitipleParameterOption<T>(
            Action<T[]?> action,
-           bool isParameterRequired,
            bool isMandatory,
+           bool isParameterRequired = false,
            char[]? shortSynonyms = null,
            string[]? longSynonyms = null,
            char delimiter = ','
