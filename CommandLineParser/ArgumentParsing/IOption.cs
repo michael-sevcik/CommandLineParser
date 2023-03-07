@@ -90,7 +90,7 @@ namespace ArgumentParsing
         public static IParametrizedOption CreateParameterOption<T>(
             Action<T?> action,
             bool isMandatory,
-            bool isParameterRequired,
+            bool isParameterRequired = false,
             char[]? shortSynonyms = null,
             string[]? longSynonyms = null
             )
@@ -103,9 +103,9 @@ namespace ArgumentParsing
     public interface IMultipleParameterOption : IParametrizedOption
     {
         /// <summary>
-        /// Delimits multiple parameters entries. 
+        /// Separates multiple parameters entries. 
         /// </summary>
-        public char Delimeter { get; }
+        public char Separator { get; }
 
         /// <summary>
         /// Creates an instance of <see cref="IMultipleParameterOption"/>.
@@ -120,15 +120,15 @@ namespace ArgumentParsing
         /// <param name="isMandatory"> Specifies whether option is mandatory i. e. must be present on command line.</param>
         /// <param name="shortSynonyms"> Specifies what kind of short synonyms should option represent (e.g. "-v").</param>
         /// <param name="longSynonyms"> Specifies what kind of long synonyms should option represent. (e.g. "--version")</param>
-        /// <param name="delimiter"> Specifies what char is used to delimit multiple parameter entries. (e.g. "--version")</param>
+        /// <param name="separator"> Specifies what char is used to separate multiple parameter entries. (e.g. "--version")</param>
 
         public static IMultipleParameterOption CreateMulitipleParameterOption<T>(
            Action<T[]?> action,
-           bool isParameterRequired,
            bool isMandatory,
+           bool isParameterRequired = false,
            char[]? shortSynonyms = null,
            string[]? longSynonyms = null,
-           char delimiter = ','
+           char separator = ','
            )
         {
             throw new NotImplementedException();
