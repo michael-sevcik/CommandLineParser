@@ -17,7 +17,7 @@ Represents an option, which takes no parameters and class implementing this inte
 - `public string[]? longSynonyms { get; }` contains long synonyms for option.
 - `public bool SetHelpString(string helpString);` contains message to be shown, when help is invoked on command line.
 - `public void TakeAction();` method to be called, when option is present on command line. I. e. what should be done, when the option is present.
-Our implementation calls the Action provided by the user in the CreateNoParameterOption method. 
+
 ```C#
 public static IOption CreateNoParameterOption(
     Action action,
@@ -27,13 +27,13 @@ public static IOption CreateNoParameterOption(
     )
 ```
 
-This is factory method. Presents the user ability to create an instance of an object implementing this interface, suitable his purposes.
+This is factory method. It enables the user to create an instance of an object implementing this interface, suitable for his purposes.
 - `Action action` is method, to be called, when the option is present on the command line. User defines this method to suit his needs and parser
 calls it when the option is present. Can be called multiple times if the option is present multiple times on the command line.
 - `bool isMandatory` user sets this property to true, if the option must be present on the command line, false otherwise
 - `char[]? shortSynonyms = null` defines short synonyms(one letter) for the option, that means what kind of short names should this option respond to.
 For example `['p','k']` - option consumes -p and -k on command line.
-- `string[]? longSynonyms = null` defines long synonyms(2+ letters) for the option, that means what kind of long names should this option respond to.
+- `string[]? longSynonyms = null` defines long synonyms for the option, that means what kind of long names should this option respond to.
 For example `['portable','king']` - option consumes --portable and --king on command line.
  
 Watch out that if you don't provide any synonyms, your action will never be called. Also Synonyms for different options must not collide,
@@ -71,10 +71,22 @@ enum format {
 Compared to the `CreateNoParameterOption` method you need to specify whether the parameter is mandatory via the `isParameterRequired` parameter, i.e. option 
 can be used without its parameter.
 
+```C#
+public static IParametrizedOption CreatePlainArgument<T>(
+    Action<T?> action,
+    bool isMandatory       
+    )
+```
 
+Creates an object that represents plain argument, that should stand alone on the command line. It is similar to 
+IParametrizedOption and it's derived classes objects, but long and short synonyms are omitted, as in the plain arguments
+we only consider the parameters. (There are none options in the plain arguments). Also isParameterRequired is not necessary as isMandatory
+property replaces it.
+
+- `Action<T?> action` specifies what action should be taking with the parsed plain argument.
+- `bool isMandatory` specifies whether this plain argument must be present on the command line (user must provide it).
 
 **IMultipleParameterOption : IParametrizedOption**
-- `public char Delimiter { get; }` sets the delimiter, which user is expected to use on the command line to separate multiple parameters.
 ```C#
 public static IMultipleParameterOption CreateMulitipleParameterOption<T>(
            Action<T[]?> action,
@@ -95,6 +107,24 @@ This method creates an instance of an object implementing IMultipleParameterOpti
 - `string[]? longSynonyms = null` string[]? longSynonyms = null.
 - `char delimiter = ','` sets the delimiter, which user is expected to use on the command line to separate multiple parameters.
 
+```C#
+public static IMultipleParameterOption CreateMultipleParametersPlainArgument<T>(
+    Action<T[]?> action,
+    bool isMandatory,
+    char separator = ','
+    )
+```
+
+Creates an object that represents multiple plain arguments separated by non-white-space separator. This object is similar to <see cref="IOption"/> and its derived
+classes objects, but some non-necessary details (mention in IParametrizedOption) are omitted.
+I. e. if you want to take multiple plain arguments of same type you choose this object.
+Note that you do not define synonyms or names for this object, you just define what kind of parameters should this "option" take.
+
+- `Action<T[]?> action` specifies what action should be taking with the parsed plain arguments.
+- `bool isMandatory` specifies whether these plain arguments must be present on the command line (user must provide them).
+- `char separator` specifies by what char should be arguments separated.
+
+
 ### Plain Arguments
 
 #### How to use plain arguments
@@ -104,6 +134,20 @@ First of all we have 2 types of plain arguments:
 - non-mandatory, which can be ommited on command line
 
 Non-mandatory plain arguments can come only after all the mandatory plain arguments.
+
+Then we have another 2 types of plain arguments you can have on the command line:
+- plain argument -> Argument that stands by itself on the command line. For example `2` can be argument that can be interpreted
+as int plain argument.
+- multiple parameter plain argument -> Argument that represents multiple plain arguments separated by `separator`.
+For example Joe,Josh,John can be argument representing 3 string plain arguments separated by `,`.
+
+For representing plain arguments objects we use 2 interfaces which we have already used:
+- `IParametrizedOption` -> User creates an instance of this object when he wants to use the plain argument. We can ommit
+`longSynonyms`,`shortSynonyms` and `isParameterRequired` as they are not needed in plain arguments.
+- `IMultipleParameterOption` -> User creates an instance of this object when he wants to use the plain multiple parameter plain argument. We can ommit
+`longSynonyms`,`shortSynonyms` and `isParameterRequired` as they are not needed in plain arguments.
+
+Next user proceeds to creating an array of these options and he inserts it into the constructor of `Parser` object.
 
 ### Parser
 Second building component is `Parser` which is used for the actual parsing of the command line arguments.
@@ -121,6 +165,15 @@ Then he can proceed to the actual Parsing by calling the method *ParseCommandLin
 To retrieve plain arguments user calls (after the parsing) method *GetPlainParameters*, which will return him list of all plain arguments.
 
 To get "HelpString" (man page info) user calls method *GetHelpString* which will provide HelpString to him (based on HelpString settings at each submitted option).
+
+Parser has two types of constructor:
+- `Parser ()` -> when this constructor is invoked, we do not expect any plain arguments on the command line. If there
+are any plain arguments present, they are ignored.
+- `Parser(IParametrizedOption[] plainArguments)` -> parameter 'plainArguments' represents expected plain arguments present
+on the command line. Parser then passes first plain argument to the first object in the `plainArguments` and continues
+until there are any plain arguments left. If there is more plain arguments present on command line than objects in 
+`plainArguments` the redundant ones are ignored. If there is not enough plain arguments to satisfy number of mandatory
+plain arguments, it results in `ParseCommandLine` method returning false. 
 
 ## Examples
 
@@ -273,10 +326,15 @@ namespace ExampleProgramHard
 }
 ```
 ## Build instructions
+For building you need to have installed .NET SDK version at least 7.0.
 
-For building the library use `dotnet build ArgumentParsing.csproj` command.
-
+To build the library use `dotnet build ArgumentParsing.csproj` command.
 Then reference the library in your project properties.
+
+## Running a .NET application.
+For running .NET applications that uses this library you need to have .NET runtime version at least 7.0 installed.
+
+In order to run the application use `dotnet <built dll path>`.
 
 ## Generating Documentation
 
