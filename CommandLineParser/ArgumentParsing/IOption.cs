@@ -8,7 +8,7 @@ namespace ArgumentParsing
 {
 
     /// <summary>
-    /// Defines a generalized object representing an option with identifiers. 
+    /// Defines a generalized object representing an option with identifiers (synonyms). 
     /// </summary>
     public interface IOption
     {
@@ -71,7 +71,7 @@ namespace ArgumentParsing
         public bool IsParameterRequired { get; }
 
         /// <summary>
-        /// Method to call with string parameter corresponding to the option.
+        /// Method to call with string corresponding to the option. 
         /// </summary>
         /// <param name="parameter">Parameter corresponding to the option.</param>
         /// <returns>True if no error occurred during processing, otherwise false.</returns>
