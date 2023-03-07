@@ -6,6 +6,10 @@ using System.Threading.Tasks;
 
 namespace ArgumentParsing
 {
+    // TODO: Add descriptions of interfaces.
+    /// <summary>
+    /// 
+    /// </summary>
     public interface IOption
     {
 
