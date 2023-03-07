@@ -28,9 +28,9 @@ namespace ArgumentParsing
         /// Creates instance of <see cref="Parser"/> with specified types of plain parameters.
         /// </summary>
         /// <param name="plainParamethers"></param> // TODO: finish description.
-        public Parser(IParametrizedOption[] plainParamethers)
+        public Parser(IParametrizedOption[] plainParameters)
         {
-            _plainParamethers = plainParamethers;
+            _plainParamethers = plainParameters;
         }
 
         /// <summary>

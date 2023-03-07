@@ -94,6 +94,21 @@ namespace ArgumentParsing
             throw new NotImplementedException();
         }
 
+        /// <summary>
+        /// Creates an object that represents plain argument, that should stand alone on the command line.
+        /// </summary>
+        /// <typeparam name="T">Specifies of what type this plain argument should be</typeparam>
+        /// <param name="action"> Specifies what action should be taking with the parsed plain argument.</param>
+        /// <param name="isMandatory"> Specfies whether this plain argument must be present on the command line (user must provide it)</param>
+        /// <returns>Object satisfying conditions above</returns>
+        public static IParametrizedOption CreateMultipleParametersPlainArgument<T>(
+           Action<T?> action,
+           bool isMandatory       
+           )
+        {
+            throw new NotImplementedException();
+        }
+
     }
 
     public interface IMultipleParameterOption : IParametrizedOption
@@ -124,6 +139,24 @@ namespace ArgumentParsing
            bool isParameterRequired = false,
            char[]? shortSynonyms = null,
            string[]? longSynonyms = null,
+           char separator = ','
+           )
+        {
+            throw new NotImplementedException();
+        }
+
+        /// <summary>
+        /// Creates an object that represents plain argument, that should represent multiple plain arguments separated by
+        /// non-white-space separator. I. e. if you want to take multiple plain arguments of same type you choose this object.
+        /// </summary>
+        /// <typeparam name="T">Specifies of what type this plain argument should be</typeparam>
+        /// <param name="action"> Specifies what action should be taking with the parsed plain arguments.</param>
+        /// <param name="isMandatory"> Specfies whether these plain arguments must be present on the command line (user must provide them)</param>
+        /// <param name="separator"> Specifies by what char should be arguments separated.</param>
+        /// <returns>Object satisfying conditions above</returns>
+        public static IMultipleParameterOption CreateMultipleParametersPlainArgument<T>(
+           Action<T[]?> action,
+           bool isMandatory,
            char separator = ','
            )
         {
