@@ -11,7 +11,7 @@ namespace ArgumentParsing
     /// <summary>
     /// The Parser class enables parsing of command-line inputs.
     /// </summary>
-    public class Parser
+    public sealed class Parser
     {
         private IParametrizedOption[]? _plainParamethers;
         private OptionSet.OptionSet _options = new();
@@ -27,7 +27,10 @@ namespace ArgumentParsing
         /// <summary>
         /// Creates instance of <see cref="Parser"/> with specified types of plain parameters.
         /// </summary>
-        /// <param name="plainParamethers"></param> // TODO: finish description.
+        /// <param name="plainParamethers"> Array of IParametrizedOption, where mandatory plain arguments should come before the non-mandatory 
+        /// plain arguments. To create instances of these plain arguments user can use static method CreatePlainArgument of Interface IParametrized,
+        /// when he wants to define just one plain argument that should stand alone
+        /// </param>
         public Parser(IParametrizedOption[] plainParameters)
         {
             _plainParamethers = plainParameters;
