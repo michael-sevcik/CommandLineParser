@@ -13,7 +13,7 @@ namespace ArgumentParsing
     /// </summary>
     public sealed class Parser
     {
-        private IParametrizedOption[]? _plainParamethers;
+        private IParametrizedOption[]? _plainArguments;
         private OptionSet.OptionSet _options = new();
 
         /// <summary>
@@ -21,19 +21,20 @@ namespace ArgumentParsing
         /// </summary>
         public Parser ()
         {
-            _plainParamethers = null;
+            _plainArguments = null;
         }
 
         /// <summary>
         /// Creates instance of <see cref="Parser"/> with specified types of plain parameters.
         /// </summary>
-        /// <param name="plainParamethers"> Array of IParametrizedOption, where mandatory plain arguments should come before the non-mandatory 
+        /// <param name="_plainArguments"> Array of IParametrizedOption, where mandatory plain arguments should come before the non-mandatory 
         /// plain arguments. To create instances of these plain arguments user can use static method CreatePlainArgument of Interface IParametrized,
-        /// when he wants to define just one plain argument that should stand alone
+        /// when he wants to define just one plain argument that should stand alone, or static method CreateMultipleParametersPlainArgument of Interface
+        /// IMultipleParameterOption when he wants to process plain arguments separated by the separator.
         /// </param>
-        public Parser(IParametrizedOption[] plainParameters)
+        public Parser(IParametrizedOption[] plainArguments)
         {
-            _plainParamethers = plainParameters;
+            _plainArguments = plainArguments;
         }
 
         /// <summary>
