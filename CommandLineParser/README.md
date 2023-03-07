@@ -116,8 +116,7 @@ public static IMultipleParameterOption CreateMultipleParametersPlainArgument<T>(
 ```
 
 Creates an object that represents multiple plain arguments separated by non-white-space separator. This object is similar to <see cref="IOption"/> and its derived
-classes objects, but some non-necessary details (mention in IParametrizedOption) are omitted.
-I. e. if you want to take multiple plain arguments of same type you choose this object.
+classes objects, but some non-necessary details (mention in IParametrizedOption) are omitted. I. e. if you want to take multiple plain arguments of same type you choose this object.
 Note that you do not define synonyms or names for this object, you just define what kind of parameters should this "option" take.
 
 - `Action<T[]?> action` specifies what action should be taking with the parsed plain arguments.
@@ -131,7 +130,7 @@ Note that you do not define synonyms or names for this object, you just define w
 
 First of all we have 2 types of plain arguments:
 - mandatory, which must be present on the command line
-- non-mandatory, which can be ommited on command line
+- non-mandatory, which can be omitted on command line
 
 Non-mandatory plain arguments can come only after all the mandatory plain arguments.
 
