@@ -27,10 +27,11 @@ namespace ArgumentParsing
         /// <summary>
         /// Creates instance of <see cref="Parser"/> with specified types of plain parameters.
         /// </summary>
-        /// <param name="_plainArguments"> Array of IParametrizedOption, where mandatory plain arguments should come before the non-mandatory 
+        /// <param name="plainArguments"> Array of <see cref="IParametrizedOption"/>, where mandatory plain arguments should come before the non-mandatory 
         /// plain arguments. To create instances of these plain arguments user can use static method CreatePlainArgument of Interface IParametrized,
         /// when he wants to define just one plain argument that should stand alone, or static method CreateMultipleParametersPlainArgument of Interface
-        /// IMultipleParameterOption when he wants to process plain arguments separated by the separator.
+        /// IMultipleParameterOption when he wants to process plain arguments separated by the separator. Or he can create them manually and non-necessary
+        /// fields and properties are mentioned next to the mentioned methods.
         /// </param>
         public Parser(IParametrizedOption[] plainArguments)
         {
