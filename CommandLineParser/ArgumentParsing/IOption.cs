@@ -122,7 +122,7 @@ namespace ArgumentParsing
     }
 
     /// <summary>
-    /// Defines a generalized object representing an option that satisfies the <see cref="IParametrizedOption"/> interface and also takes a . 
+    /// Defines a generalized object representing an option that satisfies the <see cref="IParametrizedOption"/> interface and adds factory methods for options whose parameter can be separated to multiple parameters. 
     /// </summary>
     public interface IMultipleParameterOption : IParametrizedOption
     {
