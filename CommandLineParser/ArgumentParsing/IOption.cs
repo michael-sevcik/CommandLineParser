@@ -6,9 +6,9 @@ using System.Threading.Tasks;
 
 namespace ArgumentParsing
 {
-    // TODO: Add descriptions of interfaces.
+
     /// <summary>
-    /// 
+    /// Defines a generalized object representing an option with identifiers. 
     /// </summary>
     public interface IOption
     {
@@ -60,6 +60,9 @@ namespace ArgumentParsing
 
     }
 
+    /// <summary>
+    /// Defines a generalized object representing an option that satisfies the <see cref="IOption"/> interface and also takes a parameter. 
+    /// </summary>
     public interface IParametrizedOption : IOption
     {
         /// <summary>
@@ -99,13 +102,16 @@ namespace ArgumentParsing
         }
 
         /// <summary>
-        /// Creates an object that represents plain argument, that should stand alone on the command line.
+        /// Creates an object that represents plain argument, that should stand alone on the command line. It is similar to 
+        /// <see cref="IParametrizedOption"/> and it's derived classes objects, but long and short synonyms are omitted, as in the plain arguments
+        /// we only consider the parameters. (There are none options in the plain arguments). Also isParameterRequired is not necessary as isMandatory
+        /// property replaces it.
         /// </summary>
         /// <typeparam name="T">Specifies of what type this plain argument should be</typeparam>
         /// <param name="action"> Specifies what action should be taking with the parsed plain argument.</param>
-        /// <param name="isMandatory"> Specfies whether this plain argument must be present on the command line (user must provide it)</param>
+        /// <param name="isMandatory"> Specifies whether this plain argument must be present on the command line (user must provide it)</param>
         /// <returns>Object satisfying conditions above</returns>
-        public static IParametrizedOption CreateMultipleParametersPlainArgument<T>(
+        public static IParametrizedOption CreatePlainArgument<T>(
            Action<T?> action,
            bool isMandatory       
            )
@@ -115,13 +121,11 @@ namespace ArgumentParsing
 
     }
 
+    /// <summary>
+    /// Defines a generalized object representing an option that satisfies the <see cref="IParametrizedOption"/> interface and also takes a . 
+    /// </summary>
     public interface IMultipleParameterOption : IParametrizedOption
     {
-        /// <summary>
-        /// Separates multiple parameters entries. 
-        /// </summary>
-        public char Separator { get; }
-
         /// <summary>
         /// Creates an instance of <see cref="IMultipleParameterOption"/>.
         /// </summary>
@@ -136,7 +140,6 @@ namespace ArgumentParsing
         /// <param name="shortSynonyms"> Specifies what kind of short synonyms should option represent (e.g. "-v").</param>
         /// <param name="longSynonyms"> Specifies what kind of long synonyms should option represent. (e.g. "--version")</param>
         /// <param name="separator"> Specifies what char is used to separate multiple parameter entries. (e.g. "--version")</param>
-
         public static IMultipleParameterOption CreateMulitipleParameterOption<T>(
            Action<T[]?> action,
            bool isMandatory,
@@ -150,12 +153,14 @@ namespace ArgumentParsing
         }
 
         /// <summary>
-        /// Creates an object that represents plain argument, that should represent multiple plain arguments separated by
-        /// non-white-space separator. I. e. if you want to take multiple plain arguments of same type you choose this object.
+        /// Creates an object that represents multiple plain arguments separated by non-white-space separator. This object is similar to <see cref="IOption"/> and its derived
+        /// classes objects, but some non-necessary details (mention in IParametrizedOption) are omitted.
+        /// I. e. if you want to take multiple plain arguments of same type you choose this object.
+        /// Note that you do not define synonyms or names for this object, you just define what kind of parameters should this "option" take.
         /// </summary>
         /// <typeparam name="T">Specifies of what type this plain argument should be</typeparam>
         /// <param name="action"> Specifies what action should be taking with the parsed plain arguments.</param>
-        /// <param name="isMandatory"> Specfies whether these plain arguments must be present on the command line (user must provide them)</param>
+        /// <param name="isMandatory"> Specifies whether these plain arguments must be present on the command line (user must provide them)</param>
         /// <param name="separator"> Specifies by what char should be arguments separated.</param>
         /// <returns>Object satisfying conditions above</returns>
         public static IMultipleParameterOption CreateMultipleParametersPlainArgument<T>(
