@@ -14,7 +14,7 @@ Application uses instances of objects, that implement one of the three following
 Represents an option, which takes no parameters and class implementing this interface must implement following methods and properties:
 - `public bool IsMandatory { get; }` defines, whether an option must be present on command line.
 - `public char[]? shortSynonyms { get; }` contains short synonyms for option.
-- `public string[]? longSynonyms { get; }` contains long synonyms for option.
+- `public string[]? longSynonyms { get; }` contains long synonyms for option. 
 - `public bool SetHelpString(string helpString);` contains message to be shown, when help is invoked on command line.
 - `public void TakeAction();` method to be called, when option is present on command line. I. e. what should be done, when the option is present.
 
@@ -41,7 +41,9 @@ otherwise you will not be able to add the latter colliding option to the Parser 
 
 
 #### IParametrizedOption : IOption
-represents an option which can take a parameter. Class implementing this interface must implement except inherited methods and properties following:
+NOTE: that Long synonym on command line has form of: --{longSynonym}=param -> after the long option synonym
+follows and equal sign and then the parameter(if present).
+Represents an option which can take a parameter. Class implementing this interface must implement except inherited methods and properties following:
 - `public bool IsParameterRequired { get; }` Indicates whether an option requires a parameter, if it doesn't and no parameter was passed, method `ProcessParameter()` 
 won't be called.
 - `public bool ProcessParameter(string parameter)` method to be called, when a parameter corresponding to the option occurs on the command line.
@@ -52,7 +54,7 @@ public static IParametrizedOption CreateParameterOption<T>(
     bool isMandatory,
     bool isParameterRequired = false,
     char[]? shortSynonyms = null,
-    string[]? longSynonyms = null
+    string[]? longSynonyms = null 
     )
 ```
 This is also a factory method, it enables creation of IParametrizedOptions, which can take a parameter of a type T. Following types are supported:
@@ -94,7 +96,7 @@ public static IMultipleParameterOption CreateMulitipleParameterOption<T>(
            bool isParameterRequired = false,
            char[]? shortSynonyms = null,
            string[]? longSynonyms = null,
-           char delimiter = ','
+           char separator = ','
            )
 ```
 This method creates an instance of an object implementing IMultipleParameterOption interface, with desired properties. This option can take
@@ -105,7 +107,8 @@ This method creates an instance of an object implementing IMultipleParameterOpti
 - `bool isMandatory` works the same as in the previous Interfaces.
 - `char[]? shortSynonyms = null` works the same as in the previous Interfaces.
 - `string[]? longSynonyms = null` string[]? longSynonyms = null.
-- `char delimiter = ','` sets the delimiter, which user is expected to use on the command line to separate multiple parameters.
+- `char separator = ','` sets the separator, which user is expected to use on the command line to separate multiple parameters.
+Cannot be white-space character.
 
 ```C#
 public static IMultipleParameterOption CreateMultipleParametersPlainArgument<T>(
