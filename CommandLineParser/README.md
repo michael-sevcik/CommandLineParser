@@ -72,22 +72,6 @@ enum format {
 
 Compared to the `CreateNoParameterOption` method you need to specify whether the parameter is mandatory via the `isParameterRequired` parameter, i.e. option 
 can be used without its parameter.
-
-```C#
-public static IParametrizedOption CreatePlainArgument<T>(
-    Action<T?> action,
-    bool isMandatory       
-    )
-```
-
-Creates an object that represents plain argument, that should stand alone on the command line. It is similar to 
-IParametrizedOption and it's derived classes objects, but long and short synonyms are omitted, as in the plain arguments
-we only consider the parameters. (There are none options in the plain arguments). Also isParameterRequired is not necessary as isMandatory
-property replaces it.
-
-- `Action<T?> action` specifies what action should be taking with the parsed plain argument.
-- `bool isMandatory` specifies whether this plain argument must be present on the command line (user must provide it).
-
 #### IMultipleParameterOption : IParametrizedOption
 ```C#
 public static IMultipleParameterOption CreateMulitipleParameterOption<T>(
@@ -109,23 +93,6 @@ This method creates an instance of an object implementing IMultipleParameterOpti
 - `string[]? longSynonyms = null` string[]? longSynonyms = null.
 - `char separator = ','` sets the separator, which user is expected to use on the command line to separate multiple parameters.
 Cannot be white-space character.
-
-```C#
-public static IMultipleParameterOption CreateMultipleParametersPlainArgument<T>(
-    Action<T[]?> action,
-    bool isMandatory,
-    char separator = ','
-    )
-```
-
-Creates an object that represents multiple plain arguments separated by non-white-space separator. This object is similar to <see cref="IOption"/> and its derived
-classes objects, but some non-necessary details (mention in IParametrizedOption) are omitted. I. e. if you want to take multiple plain arguments of same type you choose this object.
-Note that you do not define synonyms or names for this object, you just define what kind of parameters should this "option" take.
-
-- `Action<T[]?> action` specifies what action should be taking with the parsed plain arguments.
-- `bool isMandatory` specifies whether these plain arguments must be present on the command line (user must provide them).
-- `char separator` specifies by what char should be arguments separated.
-
 
 ### Plain Arguments
 
