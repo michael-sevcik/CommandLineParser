@@ -13,8 +13,8 @@ Application uses instances of objects, that implement one of the three following
 #### IOption 
 Represents an option, which takes no parameters and class implementing this interface must implement following methods and properties:
 - `public bool IsMandatory { get; }` defines, whether an option must be present on command line.
-- `public char[]? shortSynonyms { get; }` contains short synonyms for option.
-- `public string[]? longSynonyms { get; }` contains long synonyms for option. 
+- `public char[]? shortSynonyms { get; }` contains short synonyms for option. (one char names without the '-')
+- `public string[]? longSynonyms { get; }` contains long synonyms for option. (multiple char names without the '--')
 - `public bool SetHelpString(string helpString);` contains message to be shown, when help is invoked on command line.
 - `public void TakeAction();` method to be called, when option is present on command line. I. e. what should be done, when the option is present.
 
@@ -129,27 +129,57 @@ Note that you do not define synonyms or names for this object, you just define w
 
 ### Plain Arguments
 
+On the command line can occur 2 types of plain arguments:
+- Simple plain argument -> one word representing one plain argument, for example: "1" or "hello"
+- Multiple parameters plain argument -> one string representing multiple plain arguments (similarly to multiple parameter option). 
+For example: "1,2,3" . This can be interpreted as 3 int numbers separated by ',' separator. NOTE: the separator must be non-white-space.
+
 #### How to use plain arguments
 
-First of all we have 2 types of plain arguments:
-- mandatory, which must be present on the command line
-- non-mandatory, which can be omitted on command line
+First we have interface IPlainArgument, which object representing a plain argument must implement.
+It must implement the following:
+- `public bool IsMandatory { get; }` -> if true, the plain argument must occur on the command line, otherwise can be omitted (specified below)
+- `public void TakeAction();` -> this is the action, which should be called after the plain argument is parsed and processed. In objects
+returned by our factory methods, this method simply calls an action provided by the user in Factory methods's parameters, with particular
+plain arguments(arguments).
+- `public bool ProcessParameter(string parameter);` -> method used to parse the string form of the plain argument. In the multiple parameter
+plain option, we first need to split string according to particular separator, then parse the output. Returns false when an error occurs,
+like being unable to parse the input.
 
-Non-mandatory plain arguments can come only after all the mandatory plain arguments.
+Then we present two factory methods to create intances, that allow the user create objects representing the plain arguments with desired
+properties.
 
-Then we have another 2 types of plain arguments you can have on the command line:
-- plain argument -> Argument that stands by itself on the command line. For example `2` can be argument that can be interpreted
-as int plain argument.
-- multiple parameter plain argument -> Argument that represents multiple plain arguments separated by `separator`.
-For example Joe,Josh,John can be argument representing 3 string plain arguments separated by `,`.
+```C#
+public static IPlainArgument CreatePlainArgument<T>(
+           Action<T?> action,
+           bool isMandatory
+           );
+```
 
-For representing plain arguments objects we use 2 interfaces which we have already used:
-- `IParametrizedOption` -> User creates an instance of this object when he wants to use the plain argument. We can ommit
-`longSynonyms`,`shortSynonyms` and `isParameterRequired` as they are not needed in plain arguments.
-- `IMultipleParameterOption` -> User creates an instance of this object when he wants to use the plain multiple parameter plain argument. We can ommit
-`longSynonyms`,`shortSynonyms` and `isParameterRequired` as they are not needed in plain arguments.
+This method allows user to create object representing simple plain argument.
+- type `T` represents of what type the plain argument should be
+- `Action<T?> action` is action which is called in the TakeAction method, with the parsed plain argument, i. e. what should be done
+with the parsed plain argument.
+- `bool isMandatory` meaning is the same as in the interface.
 
-Next user proceeds to creating an array of these options and he inserts it into the constructor of `Parser` object.
+```C#
+public static IPlainArgument CreateMultipleParametersPlainArgument<T>(
+           Action<T[]?> action,
+           bool isMandatory,
+           char separator = ','
+           );
+```
+
+This method allows user to create object representing multiple parameters plain argument.
+Meaning of the parameters is identical to the previous factory method, but user can provide separator, by which the values should be
+separated, and action takes array of T objects, because there can be multiple values.
+
+When user created all of his desired plain argument objects, user should create array, in which the mandatory arguments come
+before the non mandatory ones.
+During the parsing of command line, parses passes the first plain argument to the first object in the array, second plain argument
+to the second object and so on. You must be explicitly careful with the non-mandatory ones, because if you want for example
+int, string, int non mandatory plain arguments and on command line are int int plain arguments (user intended to ommit the middle one),
+then the int plain argument will be parsed by the string object, which is not correct.
 
 ### Parser
 Second building component is `Parser` which is used for the actual parsing of the command line arguments.
@@ -271,7 +301,7 @@ namespace ExampleProgramHard
             var numberLinesOption = IOption.CreateNoParameterOption(markNumberLines, false, new char[] { 'n' }, new string[] { "number" });
             numberLinesOption.SetHelpString("number all output lines");
 
-            //again as with the EqualFileOption, but we need int parameter to folllow
+            //again as with the equalFileOption, but we need int parameter to folllow
             Action<int?> ActionForSqueezingSpaces = (int? intensity) => Console.WriteLine($"Squeezing spaces to the intensity of {intensity}");
             var squeezingSpacesOption = IParametrizedOption.CreateParameterOption(ActionForSqueezingSpaces, false, true, new char[] { 's' }, new string[] { "squeeze-blank" });
             squeezingSpacesOption.SetHelpString("suppress repeated empty output lines, int number must follow");
@@ -284,12 +314,12 @@ namespace ExampleProgramHard
 
             //first plain arguement is mandatory, i. e. must be present and is of type string
             Action<string?> firstPlainArgumentAction = (string? name) => Console.WriteLine($"Hi{name}");
-            var firstPlainArgument = IParametrizedOption.CreateParameterOption<string>(firstPlainArgumentAction, true);
+            var firstPlainArgument = IPlainArgument.CreateParameterOption<string>(firstPlainArgumentAction, true);
 
             //second plain argument is not mandatory and can be ommited, is of type int
             //remember that all plain arguments that are not mandatory must come after all mandatory plain arguments
             Action<int?> secondPlainArgumentAction = (int? intensity) => Console.WriteLine($"Your age: {intensity}");
-            var secondPlainArgument = IParametrizedOption.CreateParameterOption(secondPlainArgumentAction, false);
+            var secondPlainArgument = IPlainArgument.CreateParameterOption(secondPlainArgumentAction, false);
 
             var plainArguments = new IParametrizedOption[] { firstPlainArgument, secondPlainArgument };
 
