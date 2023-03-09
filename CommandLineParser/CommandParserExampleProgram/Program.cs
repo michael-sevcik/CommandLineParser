@@ -52,8 +52,7 @@ namespace ExampleProgram
             parser.Add(helpOption);
 
             // Parse command-line input.
-            // parser.ParseCommandLine(args); // Not implemented yet.
-
+            parser.ParseCommandLine(args);
         }
     }
 }
