@@ -1,12 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace ArgumentParsing
+﻿namespace ArgumentParsing
 {
-
     /// <summary>
     /// Defines a generalized object representing an option with identifiers (synonyms). 
     /// </summary>
@@ -210,7 +203,7 @@ namespace ArgumentParsing
         /// <param name="isMandatory"> Specifies whether this plain argument must be present on the command line (user must provide it)</param>
         /// <returns>Object satisfying conditions above</returns>
 
-        public static IParametrizedOption CreatePlainArgument<T>(
+        public static IPlainArgument CreatePlainArgument<T>(
            Action<T?> action,
            bool isMandatory
            )
@@ -218,12 +211,6 @@ namespace ArgumentParsing
             throw new NotImplementedException();
         }
 
-    }
-    /// <summary>
-    /// Instance implementing this interface represents plain arguments separated by non-white space separator on command line.
-    /// </summary>
-    public interface IMultipleValuesPlainArgument : IPlainArgument
-    {
         /// <summary>
         /// Creates an object that represents multiple plain arguments separated by non-white-space separator. This object is similar to <see cref="IOption"/> and its derived
         /// classes objects, but some non-necessary details (mention in IParametrizedOption) are omitted.
@@ -236,7 +223,7 @@ namespace ArgumentParsing
         /// <param name="isMandatory"> Specifies whether these plain arguments must be present on the command line (user must provide them)</param>
         /// <param name="separator"> Specifies by what char should be arguments separated.</param>
         /// <returns>Object satisfying conditions above</returns>
-        public static IMultipleParameterOption CreateMultipleParametersPlainArgument<T>(
+        public static IPlainArgument CreateMultipleParametersPlainArgument<T>(
            Action<T[]?> action,
            bool isMandatory,
            char separator = ','
@@ -244,5 +231,6 @@ namespace ArgumentParsing
         {
             throw new NotImplementedException();
         }
+
     }
 }
