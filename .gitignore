@@ -1,0 +1,7 @@
+﻿################################################################################
+# This .gitignore file was automatically created by Microsoft(R) Visual Studio.
+################################################################################
+
+/.vs/t12-api-design/v17/.wsuo
+/.vs
+/CommandLineParser/html
