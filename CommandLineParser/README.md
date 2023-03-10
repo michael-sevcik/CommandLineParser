@@ -41,7 +41,7 @@ otherwise you will not be able to add the latter colliding option to the Parser 
 
 
 #### IParametrizedOption : IOption
-NOTE: that Long synonym on command line has form of: --{longSynonym}=param -> after the long option synonym
+NOTE: that Long synonym on command line has form of: --{longSynonym}=parameter -> after the long option synonym
 follows and equal sign and then the parameter(if present).
 Represents an option which can take a parameter. Class implementing this interface must implement except inherited methods and properties following:
 - `public bool IsParameterRequired { get; }` Indicates whether an option requires a parameter, if it doesn't and no parameter was passed, method `ProcessParameter()` 
@@ -113,7 +113,7 @@ plain arguments(arguments).
 plain option, we first need to split string according to particular separator, then parse the output. Returns false when an error occurs,
 like being unable to parse the input.
 
-Then we present two factory methods to create intances, that allow the user create objects representing the plain arguments with desired
+Then we present two factory methods to create instances, that allow the user create objects representing the plain arguments with desired
 properties.
 
 ```C#
@@ -145,7 +145,7 @@ When user created all of his desired plain argument objects, user should create 
 before the non mandatory ones.
 During the parsing of command line, parses passes the first plain argument to the first object in the array, second plain argument
 to the second object and so on. You must be explicitly careful with the non-mandatory ones, because if you want for example
-int, string, int non mandatory plain arguments and on command line are int int plain arguments (user intended to ommit the middle one),
+int, string, int non mandatory plain arguments and on command line are int int plain arguments (user intended to omit the middle one),
 then the int plain argument will be parsed by the string object, which is not correct.
 
 ### Parser
@@ -268,7 +268,7 @@ namespace ExampleProgramHard
             var numberLinesOption = IOption.CreateNoParameterOption(markNumberLines, false, new char[] { 'n' }, new string[] { "number" });
             numberLinesOption.SetHelpString("number all output lines");
 
-            //again as with the equalFileOption, but we need int parameter to folllow
+            //again as with the equalFileOption, but we need int parameter to follow
             Action<int?> ActionForSqueezingSpaces = (int? intensity) => Console.WriteLine($"Squeezing spaces to the intensity of {intensity}");
             var squeezingSpacesOption = IParametrizedOption.CreateParameterOption(ActionForSqueezingSpaces, false, true, new char[] { 's' }, new string[] { "squeeze-blank" });
             squeezingSpacesOption.SetHelpString("suppress repeated empty output lines, int number must follow");
@@ -279,11 +279,11 @@ namespace ExampleProgramHard
 
             // we define what kind of plain arguments we want and what action to be called upon them
 
-            //first plain arguement is mandatory, i. e. must be present and is of type string
+            //first plain argument is mandatory, i. e. must be present and is of type string
             Action<string?> firstPlainArgumentAction = (string? name) => Console.WriteLine($"Hi{name}");
             var firstPlainArgument = IPlainArgument.CreateParameterOption<string>(firstPlainArgumentAction, true);
 
-            //second plain argument is not mandatory and can be ommited, is of type int
+            //second plain argument is not mandatory and can be omitted, is of type int
             //remember that all plain arguments that are not mandatory must come after all mandatory plain arguments
             Action<int?> secondPlainArgumentAction = (int? intensity) => Console.WriteLine($"Your age: {intensity}");
             var secondPlainArgument = IPlainArgument.CreateParameterOption(secondPlainArgumentAction, false);
