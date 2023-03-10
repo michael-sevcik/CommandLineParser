@@ -285,7 +285,7 @@ namespace ExampleProgramHard
 
             //second plain argument is not mandatory and can be omitted, is of type int
             //remember that all plain arguments that are not mandatory must come after all mandatory plain arguments
-            Action<int?> secondPlainArgumentAction = (int? intensity) => Console.WriteLine($"Your age: {intensity}");
+            Action<int?> secondPlainArgumentAction = (int? age) => Console.WriteLine($"Your age: {age}");
             var secondPlainArgument = IPlainArgument.CreateParameterOption(secondPlainArgumentAction, false);
 
             var plainArguments = new IParametrizedOption[] { firstPlainArgument, secondPlainArgument };
@@ -314,11 +314,11 @@ namespace ExampleProgramHard
              * output: Is Equal to MyFile.txt
              *         Hi Joe.
              * 
-             * args[] = { "--squeeze-blank=2", "-number", "Joe" , "60" }
+             * args[] = { "--squeeze-blank=2", "-n", "Joe" , "60" }
              * output: Squeezing spaces to the intensity of 2
              *         Number the lines
              *         Hi Joe
-             *         You arge: 60
+             *         Your age: 60
             */
         }
     }
