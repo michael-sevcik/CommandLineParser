@@ -159,11 +159,12 @@ User creates an instance of Parser and before actual parsing he can configure vi
 -h / --help is present on command line. 
 
 Then he can proceed to the actual Parsing by calling the method *ParseCommandLine* which takes as parameter  string arguments passed to the program.
-(Returns true if no error occurred during the parsing, false otherwise).
+It returns true if no error occurred during the parsing, false otherwise — in that case Parser's property `Error` contains information about the Error.
 
 To retrieve plain arguments user calls (after the parsing) method *GetPlainParameters*, which will return him list of all plain arguments.
 
-To get "HelpString" (man page info) user calls method *GetHelpString* which will provide HelpString to him (based on HelpString settings at each submitted option).
+To get "HelpString" (man page info) user calls method *GetHelpString* which will provide HelpString to him 
+(based on HelpString settings at each submitted option).
 
 Parser has two types of constructor:
 - `Parser ()` -> when this constructor is invoked, we do not expect any plain arguments on the command line. If there
@@ -173,6 +174,24 @@ on the command line. Parser then passes first plain argument to the first object
 until there are any plain arguments left. If there is more plain arguments present on command line than objects in 
 `plainArguments` the redundant ones are ignored. If there is not enough plain arguments to satisfy number of mandatory
 plain arguments, it results in `ParseCommandLine` method returning false. 
+
+### Parsing Errors
+Parsing Errors are returned via `ParserError` object, which encapsulates the information about the error which has occurred.
+```C#
+public readonly struct ParserError
+{
+    public readonly ParserErrorType type;       
+    public readonly string message;        
+}
+```
+
+Its type field specifies what type of error has occurred. There are following possible error types:
+
+- InvalidOptionIdentifier -> Occurs when there is on the command line -{InvalidIdentifier} or --{InvalidIdentifier} before the plain arguments separator --.
+- CouldNotParseTheParameter -> Occurs when the option could not parse the parameter belonging to her.
+- MissingMandatoryOption -> Occurs when there is Mandatory option missing on the command line.
+- MissingMandatoryPlainArgument -> Occurs when there is not enough plain arguments to satisfy number of the mandatory plain arguments.
+- Other -> When other errors occur.
 
 ## Examples
 

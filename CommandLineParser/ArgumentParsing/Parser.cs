@@ -9,12 +9,65 @@ using ArgumentParsing.OptionSet;
 namespace ArgumentParsing
 {
     /// <summary>
+    /// Specifies what kind of error occurred during the parsing of command line.
+    /// </summary>
+    public enum ParserErrorType : byte 
+    {
+        /// <summary>
+        /// Occurs when there is on the command line -{InvalidIdentifier} or --{InvalidIdentifier} before the plain arguments separator --.
+        /// </summary>
+        InvalidOptionIdentifier,
+
+        /// <summary>
+        /// Occurs when the option could not parse the parameter belonging to her.
+        /// </summary>
+        CouldNotParseTheParameter,
+
+        /// <summary>
+        /// Occurs when there is Mandatory option missing on the command line.
+        /// </summary>
+        MissingMandatoryOption,
+
+        /// <summary>
+        /// Occurs when there is not enough plain arguments to satisfy number of the mandatory plain arguments.
+        /// </summary>
+        MissingMandatoryPlainArgument,
+
+        /// <summary>
+        /// When other errors occur.
+        /// </summary>
+        Other
+
+    }
+
+    /// <summary>
+    /// Object encapsulating information about an error in <see cref="Parser"/> class instance.
+    /// </summary>
+    public readonly struct ParserError
+    {
+        /// <summary>
+        /// Type of an error that has occurred.
+        /// </summary>
+        public readonly ParserErrorType type;
+        
+        /// <summary>
+        /// Description of the error that has occurred.
+        /// </summary>
+        public readonly string message;        
+    }
+
+    /// <summary>
     /// The Parser class enables parsing of command-line inputs.
     /// </summary>
     public sealed class Parser
     {
         private IParametrizedOption[]? _plainArguments;
         private OptionSet.OptionSet _options = new();
+
+        /// <summary>
+        /// Gets parser error if one occurred, otherwise null.
+        /// </summary>
+        public ParserError? Error { get; private set; }
 
         /// <summary>
         /// Creates instance of <see cref="Parser"/> without specified types of plain parameters.
