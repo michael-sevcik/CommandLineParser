@@ -1,0 +1,6 @@
+ .nprg043/REVIEW.md     |   73 ++++++++++++++++++++++++++
+ Numactl/IdList.cs      |   61 ++++++++++++++++++++++
+ Numactl/Numa.cs        |   80 +++++++++++++++++++++++++++++
+ Numactl/Numactl.csproj |   13 ++++
+ Numactl/Program.cs     |  133 +++++++++++++++++++++++++++++++++++++++++++++++++
+ 5 files changed, 360 insertions(+)
