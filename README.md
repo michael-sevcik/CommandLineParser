@@ -2,13 +2,53 @@
 The Command Line Parser Library offers an easy to use API for parsing command line arguments and storing option's parameters. 
 It also allows you to display a help screen and a simple syntax error feedback.
 
+## Easy Example to Get Started
+
+Following program, when started with -g option or its long synonym --greeting, prints greeting from predefined set of greetings,
+which is represented with `Greeting` enum.
+```C#
+
+enum Greeting {
+    Hello,
+    hi,
+    ciao
+}
+
+void Main(string[] args) {
+    // Create option
+    Action<Greeting?> greetingAction = greeting => Console.WriteLine(greeting); // This local function is called with the parsed argument.
+    var greetingOption = IParametrizedOption.CreateParameterOption<Format?>(formatAction, false, true, new char[] { 'g' }, new string[] { "greeting" });
+
+    // Create parser object
+    Parser parser = new();
+
+    // Fill parser with the created option.
+    parser.Add(FormatOption);
+
+
+    // Parse command-line input.
+    if (!parser.ParseCommandLine(args)) 
+    {
+        Console.WriteLine(parser?.Error.message);
+    }
+}
+```
+
+When the application is opened with arguments "-g Hello --greeting=ciao", the output is:
+```
+Hello
+ciao
+```
+
+This was just a simple example, now we'll proceed to some key concepts.
 ## Key Concepts
 
 The library uses a hierarchy of building components for setting up command-line parsing.
 
 ### Option Interfaces
 
-Application uses instances of objects, that implement one of the three following interfaces:
+Application uses instances of objects, that implement one of the three following interfaces, which you can also use for implementing you own option types.
+If you wish to implement your own option class, it has to implement one of these interface, based on what type of option you want.
 
 #### IOption 
 Represents an option, which takes no parameters and class implementing this interface must implement following methods and properties:
@@ -148,6 +188,9 @@ to the second object and so on. You must be explicitly careful with the non-mand
 int, string, int non mandatory plain arguments and on command line are int int plain arguments (user intended to omit the middle one),
 then the int plain argument will be parsed by the string object, which is not correct.
 
+When there are more plain arguments than the user defined, the remaining plain arguments can user access via Parser property `RemainingPlainArguments`,
+where unused plain arguments are stored.
+
 ### Parser
 Second building component is `Parser` which is used for the actual parsing of the command line arguments.
 
@@ -161,10 +204,10 @@ User creates an instance of Parser and before actual parsing he can configure vi
 Then he can proceed to the actual Parsing by calling the method *ParseCommandLine* which takes as parameter  string arguments passed to the program.
 It returns true if no error occurred during the parsing, false otherwise — in that case Parser's property `Error` contains information about the Error.
 
-To retrieve plain arguments user calls (after the parsing) method *GetPlainParameters*, which will return him list of all plain arguments.
-
 To get "HelpString" (man page info) user calls method *GetHelpString* which will provide HelpString to him 
 (based on HelpString settings at each submitted option).
+
+Redundant (unused) plain arguments the user can access via the `RemainingPlainArguments` property.
 
 Parser has two types of constructor:
 - `Parser ()` -> when this constructor is invoked, we do not expect any plain arguments on the command line. If there
@@ -172,7 +215,7 @@ are any plain arguments present, they are ignored.
 - `Parser(IParametrizedOption[] plainArguments)` -> parameter 'plainArguments' represents expected plain arguments present
 on the command line. Parser then passes first plain argument to the first object in the `plainArguments` and continues
 until there are any plain arguments left. If there is more plain arguments present on command line than objects in 
-`plainArguments` the redundant ones are ignored. If there is not enough plain arguments to satisfy number of mandatory
+`plainArguments` the redundant ones are added to the `RemainingPlainArguments` property. If there is not enough plain arguments to satisfy number of mandatory
 plain arguments, it results in `ParseCommandLine` method returning false. 
 
 ### Parsing Errors
@@ -193,42 +236,7 @@ Its type field specifies what type of error has occurred. There are following po
 - MissingMandatoryPlainArgument -> Occurs when there is not enough plain arguments to satisfy number of the mandatory plain arguments.
 - Other -> When other errors occur.
 
-## Examples
-
-### Easy one
-
-```C#
-
-enum Greeting {
-    Hello,
-    hi,
-    ciao
-}
-
-void Main(string[] args) {
-    // Create option
-    Action<Greeting?> greetingAction = greeting => Console.WriteLine(greeting); // This local function is called with the parsed argument.
-    var greetingOption = IParametrizedOption.CreateParameterOption<Format?>(formatAction, false, true, new char[] { 'g' }, new string[] { "greeting" });
-
-    // Create parser
-    Parser parser = new();
-
-    // Fill parser with the created option.
-    parser.Add(FormatOption);
-
-
-    // Parse command-line input.
-    parser.ParseCommandLine(args);
-}
-```
-
-When the application is opened with arguments "-g Hello --greeting=ciao", the output is:
-```
-Hello
-ciao
-```
-
-### More complex one
+## More complex example
 
 Lets say we want to parse the following options on command line.
 
