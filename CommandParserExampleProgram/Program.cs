@@ -13,7 +13,7 @@ namespace ExampleProgram
         {
 
             // Create options.
-            Action<Format?> formatAction = f => Console.WriteLine(f);
+            Action<Format?> formatAction = format => Console.WriteLine(format);
             var FormatOption = IParametrizedOption.CreateParameterOption<Format?>(formatAction, false, true, new char[] { 'f' }, new string[] { "format" });
             FormatOption.SetHelpString("Specify output format, possibly overriding the format specified in the environment variable TIME.");
 
