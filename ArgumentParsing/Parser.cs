@@ -65,6 +65,11 @@ namespace ArgumentParsing
         private OptionSet.OptionSet _options = new();
 
         /// <summary>
+        /// Gets remaining plain arguments, which were excessive in relation to the number of IPlainArguments passed in constructor.
+        /// </summary>
+        public string[]? RemainingPlainArguments { get; private set; }
+
+        /// <summary>
         /// Gets parser error if one occurred, otherwise null.
         /// </summary>
         public ParserError? Error { get; private set; }
@@ -86,7 +91,7 @@ namespace ArgumentParsing
         /// IMultipleParameterOption when he wants to process plain arguments separated by the separator. Or he can create them manually and non-necessary
         /// fields and properties are mentioned next to the mentioned methods.
         /// </param>
-        public Parser(IParametrizedOption[] plainArguments)
+        public Parser(IPlainArgument[] plainArguments)
         {
             _plainArguments = plainArguments;
         }
