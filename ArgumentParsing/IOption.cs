@@ -17,20 +17,20 @@ namespace ArgumentParsing
         /// <summary>
         /// Array of char identifiers that represent the Option; e.g. 'f' - short identifier is used as "-f" on command-line.
         /// </summary>     
-        public char[]? shortSynonyms { get; }
+        public char[]? ShortSynonyms { get; }
 
         /// <summary>
         /// Array of string identifiers that represent the Option; e.g. "size" - long identifier is used as "--size on command-line".
-        /// </summary> 
-        public string[]? longSynonyms { get; }
+        /// </summary>
+        public string[]? LongSynonyms { get; }
 
+        // TODO: Look up if GetHelpString and SetHelpString method is automatically generated.
         /// <summary>
-        /// This method allow user to set the explanation string - string which is shown when someone uses -h/--help on command line.
+        /// Gets or sets explanation string - string which is shown when someone uses -h/--help on command line.
         /// Empty explanation will be showed if user does not provide any helpString (does not call this method).
         /// </summary>
         /// <param name="helpString">Text to be shown next to the option in explanation string</param>
-        /// <returns></returns>
-        public bool SetHelpString(string helpString);
+        public string HelpString { get; set; }
 
         /// <summary>
         /// Method to call when option occurs in the parsed command-line.
@@ -154,7 +154,7 @@ namespace ArgumentParsing
         /// Method to call when plain argument occurs in the parsed command-line. If it is the instance of derived Interface.
         /// Our default implementation will basically call the Action provided in the factory method with parsed plain argument.
         /// In case of the Multiple parameters plain argument the action will take array of parsed arguments.
-        /// <see cref="IMultipleParameterOption"/> , then this method is called after the parsing method ProcessParameter.
+        /// <see cref="IMultipleParameterOption"/>, then this method is called after the parsing method ProcessParameter.
         /// </summary>
         public void TakeAction();
 
