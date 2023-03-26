@@ -52,13 +52,14 @@
         /// Calling this method will determine that the option will be Parametrized and take 0 to 1 parameters, as specified
         /// in the IParametrizedOption interface.
         /// </summary>
-        /// <typeparam name="T">Determines the type of which the parameters accepted by this option should be. Accepted types are bool,string,int,enum</typeparam>
+        /// <typeparam name="TArgument">Determines the type of which the parameters accepted by this option should be. Accepted types are bool, string, int, enum</typeparam>
         /// <param name="action">Specifies action, which is called, when option is present on command line. If isMandatory is set to true,
         /// action is called with one parameter of type T, else it is called with 0(null) to 1 parameters of type T according to the number of parameters
         /// provided on command line.
         /// </param>
         /// <returns>Object that builds the desired option</returns>
-        public OptionBuilder WithParametrizedAction<T> (Action<T?> action)
+        /// <exception cref="InvalidOperationException">Thrown when wrong <typeparamref name="TArgument"/> is chosen. Accepted types are bool, string, int, enum.</exception>
+        public OptionBuilder WithParametrizedAction<TArgument> (Action<TArgument?> action)
         {
             throw new NotImplementedException();
         }
@@ -67,13 +68,14 @@
         /// Calling this method will determine that the option will be MultipleParameter and take 0 to unlimited parameters, as specified
         /// in the IMultipleParameterOption interface.
         /// </summary>
-        /// <typeparam name="T">Determines the type of which the parameters accepted by this option should be. Accepted types are bool,string,int,enum</typeparam>
+        /// <typeparam name="TArgument">Determines the type of which the parameters accepted by this option should be. Accepted types are bool, string, int, enum.</typeparam>
         /// <param name="action">Specifies action, which is called, when option is present on command line. It is called
         /// with 0(null) to unlimited number of parameters of type T according to the number of parameters provided on command line.
         /// If isMandatory is true, there must be at least one parameter present on command line.
         /// </param>
         /// <returns>Object that builds the desired option</returns>
-        public OptionBuilder WithMultipleParametersAction<T>(Action<T[]?> action)
+        /// <exception cref="InvalidOperationException">Thrown when wrong <typeparamref name="TArgument"/> is chosen. Accepted types are bool, string, int, enum.</exception>
+        public OptionBuilder WithMultipleParametersAction<TArgument>(Action<TArgument[]?> action)
         {
             throw new NotImplementedException();
         }

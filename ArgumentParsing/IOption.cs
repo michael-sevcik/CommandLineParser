@@ -82,11 +82,13 @@ namespace ArgumentParsing
         /// <param name="isParameterRequired"> Specifies whether the option requires at least one parameter present on
         /// command line.
         /// </param>
+        /// <typeparam name="TArgument">Specifies of what type this option's parameter should be. Accepted types are bool, string, int, enum.</typeparam>
         /// <param name="isMandatory"> Specifies whether option is mandatory i. e. must be present on command line.</param>
         /// <param name="shortSynonyms"> Specifies what kind of short synonyms should option represent (e.g. "-v").</param>
         /// <param name="longSynonyms"> Specifies what kind of long synonyms should option represent. (e.g. "--version")</param>
-        public static IParametrizedOption CreateParameterOption<T>(
-            Action<T?> action,
+        /// <exception cref="InvalidOperationException">Thrown when wrong <typeparamref name="TArgument"/> is chosen. Accepted types are bool, string, int, enum.</exception>
+        public static IParametrizedOption CreateParameterOption<TArgument>(
+            Action<TArgument?> action,
             bool isMandatory,
             bool isParameterRequired = false,
             char[]? shortSynonyms = null,
@@ -114,12 +116,15 @@ namespace ArgumentParsing
         /// <param name="isParameterRequired"> Specifies whether the option requires at least one parameter present on
         /// command line.
         /// </param>
+        /// <typeparam name="TArgument">Specifies of what type this option's parameters should be. Accepted types are bool, string, int, enum.</typeparam>
         /// <param name="isMandatory"> Specifies whether option is mandatory i. e. must be present on command line.</param>
         /// <param name="shortSynonyms"> Specifies what kind of short synonyms should option represent (e.g. "-v").</param>
         /// <param name="longSynonyms"> Specifies what kind of long synonyms should option represent. (e.g. "--version")</param>
         /// <param name="separator"> Specifies what char is used to separate multiple parameter entries. (e.g. "--version")</param>
-        public static IMultipleParameterOption CreateMulitipleParameterOption<T>(
-           Action<T[]?> action,
+        /// <exception cref="InvalidOperationException">Thrown when wrong <typeparamref name="TArgument"/> is chosen. Accepted types are bool, string, int, enum.</exception>
+
+        public static IMultipleParameterOption CreateMulitipleParameterOption<TArgument>(
+           Action<TArgument[]?> action,
            bool isMandatory,
            bool isParameterRequired = false,
            char[]? shortSynonyms = null,
@@ -173,12 +178,14 @@ namespace ArgumentParsing
         /// we only consider the parameters. (There are none options in the plain arguments). Also isParameterRequired is not necessary as isMandatory
         /// property replaces it.
         /// </summary>
-        /// <typeparam name="T">Specifies of what type this plain argument should be</typeparam>
+        /// <typeparam name="TArgument">Specifies of what type this plain argument should be. Accepted types are bool, string, int, enum.</typeparam>
         /// <param name="action"> Specifies what action should be taking with the parsed plain argument.</param>
         /// <param name="isMandatory"> Specifies whether this plain argument must be present on the command line (user must provide it)</param>
         /// <returns>Object satisfying conditions above</returns>
-        public static IPlainArgument CreatePlainArgument<T>(
-           Action<T?> action,
+        /// <exception cref="InvalidOperationException">Thrown when wrong <typeparamref name="TArgument"/> is chosen. Accepted types are bool, string, int, enum.</exception>
+
+        public static IPlainArgument CreatePlainArgument<TArgument>(
+           Action<TArgument?> action,
            bool isMandatory
            )
         {
@@ -192,13 +199,14 @@ namespace ArgumentParsing
         /// Note that you do not define synonyms or names for this object, you just define what kind of parameters should this "option" take.
         /// Note that if you want to implement this interface by yourself you need to consider what kind of separator will be expected.
         /// </summary>
-        /// <typeparam name="T">Specifies of what type this plain argument should be</typeparam>
+        /// <typeparam name="TArgument">Specifies of what type this plain argument should be</typeparam>
         /// <param name="action"> Specifies what action should be taking with the parsed plain arguments.</param>
         /// <param name="isMandatory"> Specifies whether these plain arguments must be present on the command line (user must provide them)</param>
         /// <param name="separator"> Specifies by what char should be arguments separated.</param>
         /// <returns>Object satisfying conditions above</returns>
-        public static IPlainArgument CreateMultipleParametersPlainArgument<T>(
-           Action<T[]?> action,
+        /// <exception cref="InvalidOperationException">Thrown when wrong <typeparamref name="TArgument"/> is chosen. Accepted types are bool, string, int, enum.</exception>
+        public static IPlainArgument CreateMultipleParametersPlainArgument<TArgument>(
+           Action<TArgument[]?> action,
            bool isMandatory,
            char separator = ','
            )
