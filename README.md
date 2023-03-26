@@ -15,21 +15,25 @@ enum Greeting {
 }
 
 void Main(string[] args) {
-    // Create option
-    Action<Greeting?> greetingAction = greeting => Console.WriteLine(greeting); // This local function is called with the parsed argument.
-    var greetingOption = IParametrizedOption.CreateParameterOption<Format?>(formatAction, false, true, new char[] { 'g' }, new string[] { "greeting" });
 
     // Create parser object
     Parser parser = new();
 
-    // Fill parser with the created option.
-    parser.Add(FormatOption);
+    //Create option builder object
+    var optionBuilder = new OptionBuilder();
+
+    //Create and register option
+    optionBuilder.WithShortSynonyms('g')
+                .WithLongSynonyms("greeting")
+                .WithParametrizedAction<Greeting?>(greeting => Console.WriteLine(greeting))
+                .RequiresParameter()
+                .RegisterOption(parser);  
 
 
     // Parse command-line input.
     if (!parser.ParseCommandLine(args)) 
     {
-        Console.WriteLine(parser?.Error.message);
+        Console.WriteLine(parser.Error?.message);
     }
 }
 ```
@@ -43,7 +47,30 @@ ciao
 This was just a simple example, now we'll proceed to some key concepts.
 ## Key Concepts
 
-The library uses a hierarchy of building components for setting up command-line parsing.
+The library uses a hierarchy of building components for setting up command-line parsing. The main component is `Parser` class, to which `IOption`s
+can be added. Basic types of options (non parametrized, bool, string, int and enum) can be created either with `OptionBuilder` using fluent syntax
+or via factory methods that are defined on option interfaces. See the text bellow for details.
+
+### OptionBuilder
+Object that enables creating of options using fluent syntax. To specify a option's configuration use the following listed methods:
+
+- `public OptionBuilder WithShortSynonyms(params char[]? shortSynonyms)` -> Sets the short synonyms of the option, e.g. "-f"
+- `public OptionBuilder WithLongSynonyms(params string[]? longSynonyms)` -> Lets you define short synonyms for the option being built.
+- `public OptionBuilder WithAction(Action action)` -> Lets you define encapsulated method to call, when the option occurs in the parsed command.
+This determines that the option will be parameterless.
+- `public OptionBuilder WithParametrizedAction<TArgument> (Action<TArgument?> action)` -> Calling this method will determine that the option will be Parametrized and take 0 to 1 parameters, as specified
+in the IParametrizedOption interface. Also allows you to specify action to be called with the parsed parameter.
+- `public OptionBuilder WithMultipleParametersAction<TArgument>(Action<TArgument[]?> action)` -> Calling this method will determine that the option will be MultipleParameter and take 0 to unlimited parameters, as specified
+in the IMultipleParameterOption interface. Also allows you to specify action to be called with the parsed parameter(s).
+- `public OptionBuilder SetAsMandatory()` -> Sets the option as mandatory, i.e. it must be present on the command-line.
+- `public OptionBuilder RequiresParameter()` -> If the option has parametrized action, it must be invoked only with an argument, i.e. not null (must have argument e.g. "--format=argument" or "-f argument").
+- `public OptionBuilder WithSeparator(char separator = ',')` -> Specifies by what char should be possible arguments separated in multiple parameter options.
+- `public OptionBuilder WithHelpString(string helpString)` -> Sets explanation string - string which is shown when someone uses -h/--help on command line.
+Empty explanation will be showed if user does not provide any helpString (does not call this method).
+- `public bool RegisterOption(Parser parser)` -> Adds the configured option to the particular parser.
+- `public OptionBuilder Reset()` -> resets the object to the same state as when it was created.
+Is used after registering one option, then the reset is called and you can start creating another one.
+
 
 ### Option Interfaces
 
@@ -89,15 +116,15 @@ won't be called.
 - `public bool ProcessParameter(string parameter)` method to be called, when a parameter corresponding to the option occurs on the command line.
 
 ```C#
-public static IParametrizedOption CreateParameterOption<T>(
-    Action<T?> action,
+public static IParametrizedOption CreateParameterOption<TArgument>(
+    Action<TArgument?> action,
     bool isMandatory,
     bool isParameterRequired = false,
     char[]? shortSynonyms = null,
     string[]? longSynonyms = null 
     )
 ```
-This is also a factory method, it enables creation of IParametrizedOptions, which can take a parameter of a type T. Following types are supported:
+This is also a factory method, it enables creation of IParametrizedOptions, which can take a parameter of a type TArgument. Following types are supported:
 - `int`
 - `bool`
 - `string`
@@ -114,8 +141,8 @@ Compared to the `CreateNoParameterOption` method you need to specify whether the
 can be used without its parameter.
 #### IMultipleParameterOption : IParametrizedOption
 ```C#
-public static IMultipleParameterOption CreateMulitipleParameterOption<T>(
-           Action<T[]?> action,
+public static IMultipleParameterOption CreateMulitipleParameterOption<TArgument>(
+           Action<TArgument[]?> action,
            bool isMandatory,
            bool isParameterRequired = false,
            char[]? shortSynonyms = null,
@@ -126,7 +153,7 @@ public static IMultipleParameterOption CreateMulitipleParameterOption<T>(
 This method creates an instance of an object implementing IMultipleParameterOption interface, with desired properties. This option can take
 0 to unlimited number of parameters based on user's preferences.
 
-- `Action<T[]?> action` works same as for the IParametrizedOption, but takes array as an argument, because number of the parameters might exceed 1.
+- `Action<TArgument[]?> action` works same as for the IParametrizedOption, but takes array as an argument, because number of the parameters might exceed 1.
 - `bool isParameterRequired` works the same as in the previous Interfaces.
 - `bool isMandatory` works the same as in the previous Interfaces.
 - `char[]? shortSynonyms = null` works the same as in the previous Interfaces.
@@ -157,21 +184,21 @@ Then we present two factory methods to create instances, that allow the user cre
 properties.
 
 ```C#
-public static IPlainArgument CreatePlainArgument<T>(
-           Action<T?> action,
+public static IPlainArgument CreatePlainArgument<TArgument>(
+           Action<TArgument?> action,
            bool isMandatory
            );
 ```
 
 This method allows user to create object representing simple plain argument.
-- type `T` represents of what type the plain argument should be
+- type `TArgument` represents of what type the plain argument should be
 - `Action<T?> action` is action which is called in the TakeAction method, with the parsed plain argument, i. e. what should be done
 with the parsed plain argument.
 - `bool isMandatory` meaning is the same as in the interface.
 
 ```C#
-public static IPlainArgument CreateMultipleParametersPlainArgument<T>(
-           Action<T[]?> action,
+public static IPlainArgument CreateMultipleParametersPlainArgument<TArgument>(
+           Action<TArgument[]?> action,
            bool isMandatory,
            char separator = ','
            );
@@ -179,7 +206,7 @@ public static IPlainArgument CreateMultipleParametersPlainArgument<T>(
 
 This method allows user to create object representing multiple parameters plain argument.
 Meaning of the parameters is identical to the previous factory method, but user can provide separator, by which the values should be
-separated, and action takes array of T objects, because there can be multiple values.
+separated, and action takes array of TArgument objects, because there can be multiple values.
 
 When user created all of his desired plain argument objects, user should create array, in which the mandatory arguments come
 before the non mandatory ones.
@@ -271,69 +298,87 @@ namespace ExampleProgramHard
     {
         public static void Main(string[] args)
         {
-            //first we need to create desired options
-
-            //these type of options are most common, no parameter needed and are not mandatory either
-            Action markAll = () => Console.WriteLine("Show all");
-            var portabilityOption = IOption.CreateNoParameterOption(markAll, false, new char[] { 'A' }, new string[] { "show-all" });
-            portabilityOption.SetHelpString("equivalent to -vET");
-
-            Action markNonBlank = () => Console.WriteLine("Use non blank");
-            var nonBlankOption = IOption.CreateNoParameterOption(markNonBlank, false, new char[] { 'b' }, new string[] { "number-nonblank" });
-            nonBlankOption.SetHelpString("number nonempty output lines, overrides -n");
-
-            //look at the type of option we choose, after -e must follow one string parameter, we choose ParametrizedOption with string parameter type
-            Action<string?> actionForEquals = (string? fileName) => Console.WriteLine($"Is equal to{fileName}");
-            var equalFileOption = IParametrizedOption.CreateParameterOption(actionForEquals, false, true, new char[] { 'e' });
-            equalFileOption.SetHelpString("adds equivalent file name");
-
-            Action markEndsOfLine = () => Console.WriteLine("Show ends of lines");
-            var endsOfLineOption = IOption.CreateNoParameterOption(markEndsOfLine, false, new char[] { 'E' }, new string[] { "show-ends" });
-            endsOfLineOption.SetHelpString("display $ at end of each line");
-
-            Action markNumberLines = () => Console.WriteLine("Number the lines");
-            var numberLinesOption = IOption.CreateNoParameterOption(markNumberLines, false, new char[] { 'n' }, new string[] { "number" });
-            numberLinesOption.SetHelpString("number all output lines");
-
-            //again as with the equalFileOption, but we need int parameter to follow
-            Action<int?> ActionForSqueezingSpaces = (int? intensity) => Console.WriteLine($"Squeezing spaces to the intensity of {intensity}");
-            var squeezingSpacesOption = IParametrizedOption.CreateParameterOption(ActionForSqueezingSpaces, false, true, new char[] { 's' }, new string[] { "squeeze-blank" });
-            squeezingSpacesOption.SetHelpString("suppress repeated empty output lines, int number must follow");
-
-            Action markTOption = () => Console.WriteLine("TOption was present");
-            var tOption = IOption.CreateNoParameterOption(markTOption, false, new char[] { 't' });
-            tOption.SetHelpString("equivalent to -vT");
-
             // we define what kind of plain arguments we want and what action to be called upon them
 
             //first plain argument is mandatory, i. e. must be present and is of type string
             Action<string?> firstPlainArgumentAction = (string? name) => Console.WriteLine($"Hi{name}");
-            var firstPlainArgument = IPlainArgument.CreateParameterOption<string>(firstPlainArgumentAction, true);
+            var firstPlainArgument = IPlainArgument.CreatePlainArgument(firstPlainArgumentAction, true);
 
             //second plain argument is not mandatory and can be omitted, is of type int
             //remember that all plain arguments that are not mandatory must come after all mandatory plain arguments
             Action<int?> secondPlainArgumentAction = (int? age) => Console.WriteLine($"Your age: {age}");
-            var secondPlainArgument = IPlainArgument.CreateParameterOption(secondPlainArgumentAction, false);
+            var secondPlainArgument = IPlainArgument.CreatePlainArgument(secondPlainArgumentAction, false);
 
-            var plainArguments = new IParametrizedOption[] { firstPlainArgument, secondPlainArgument };
+            var plainArguments = new IPlainArgument[] { firstPlainArgument, secondPlainArgument };
 
             //create a new Parser
             Parser parser = new Parser(plainArguments);
 
-            //fill the parser with the correctly created options
-            parser.Add(portabilityOption);
-            parser.Add(nonBlankOption);
-            parser.Add(equalFileOption);
-            parser.Add(endsOfLineOption);
-            parser.Add(numberLinesOption);
-            parser.Add(squeezingSpacesOption);
-            parser.Add(tOption);
-
             //we can add helpString that will be shown next to the -- when -h is invoked
             parser.SetPlainArgumentHelpString("This will be shown next to --");
 
+            //Create option builder object
+            var optionBuilder = new OptionBuilder();
+
+
+            //then we need to create desired options
+
+            //these type of options are most common, no parameter needed and are not mandatory either
+
+            optionBuilder.Reset()
+                .WithShortSynonyms('A')
+                .WithLongSynonyms("show-all")
+                .WithAction(() => Console.WriteLine("Show all"))
+                .WithHelpString("equivalent to -vET")
+                .RegisterOption(parser);
+
+            optionBuilder.Reset()
+                .WithShortSynonyms('b')
+                .WithLongSynonyms("number-nonblank")
+                .WithAction(() => Console.WriteLine("Use non blank"))
+                .WithHelpString("number nonempty output lines, overrides -n")
+                .RegisterOption(parser);
+
+            //look at the type of option we choose, after -e must follow one string parameter, we choose ParametrizedOption with string parameter type
+
+            optionBuilder.Reset()
+                .WithShortSynonyms('e')
+                .WithParametrizedAction<string?>((string? fileName) => Console.WriteLine($"Is equal to{fileName}"))
+                .RequiresParameter()
+                .WithHelpString("adds equivalent file name")
+                .RegisterOption(parser);
+
+            optionBuilder.Reset()
+                .WithShortSynonyms('E')
+                .WithLongSynonyms("show-ends")
+                .WithAction(() => Console.WriteLine("Show ends of lines"))
+                .WithHelpString("display $ at end of each line")
+                .RegisterOption(parser);
+
+            optionBuilder.Reset()
+                .WithShortSynonyms('n')
+                .WithLongSynonyms("number")
+                .WithAction(() => Console.WriteLine("Number the lines"))
+                .WithHelpString("number all output lines")
+                .RegisterOption(parser);
+
+            //again as with the equalFileOption, but we need int parameter to follow
+            optionBuilder.Reset()
+                .WithShortSynonyms('s')
+                .WithLongSynonyms ("squeeze-blank")
+                .WithParametrizedAction<int?>((int? intensity) => Console.WriteLine($"Squeezing spaces to the intensity of {intensity}"))
+                .RequiresParameter()
+                .WithHelpString("suppress repeated empty output lines, int number must follow")
+                .RegisterOption(parser);
+
+            optionBuilder.Reset()
+                .WithShortSynonyms('t')
+                .WithAction(() => Console.WriteLine("TOption was present"))
+                .WithHelpString("equivalent to -vT")
+                .RegisterOption(parser);
+
             //now we finally parse the command line arguments
-            parser.ParseCommandLine(args);           
+            parser.ParseCommandLine(args);
 
             /*
              * Some possible outputs:
