@@ -3,9 +3,15 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.4.33403.182
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ArgumentParsing", "ArgumentParsing\ArgumentParsing.csproj", "{75C6A7D3-8902-4565-A3A5-61FAA2E13B30}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ArgumentParsing", "ArgumentParsing\ArgumentParsing.csproj", "{75C6A7D3-8902-4565-A3A5-61FAA2E13B30}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CommandParserExampleProgram", "CommandParserExampleProgram\CommandParserExampleProgram.csproj", "{866EA5D9-BE68-413D-8EBA-22FD805EE133}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CommandParserExampleProgram", "CommandParserExampleProgram\CommandParserExampleProgram.csproj", "{866EA5D9-BE68-413D-8EBA-22FD805EE133}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{BEEB4605-C7F6-42F3-8758-8BE85A8AE86D}"
+	ProjectSection(SolutionItems) = preProject
+		.nprg043\README.md = .nprg043\README.md
+		README.md = README.md
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

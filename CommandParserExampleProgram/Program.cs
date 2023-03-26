@@ -14,12 +14,13 @@ namespace ExampleProgram
             // Create Parser.
             Parser parser = new();
             parser.SetPlainArgumentHelpString("Terminate option list.");
-
+            
+            //Create option builder object
             var optionBuilder = new OptionBuilder();
 
             // Create options via cool builder.
 
-            optionBuilder.Reset()
+            optionBuilder
                 .WithShortSynonyms('f')
                 .WithLongSynonyms("format")
                 .WithParametrizedAction<Format?>(format => Console.WriteLine(format))
