@@ -24,7 +24,6 @@ namespace ArgumentParsing
         /// </summary>
         public string[]? LongSynonyms { get; }
 
-        // TODO: Look up if GetHelpString and SetHelpString method is automatically generated.
         /// <summary>
         /// Gets or sets explanation string - string which is shown when someone uses -h/--help on command line.
         /// Empty explanation will be showed if user does not provide any helpString (does not call this method).
@@ -178,7 +177,6 @@ namespace ArgumentParsing
         /// <param name="action"> Specifies what action should be taking with the parsed plain argument.</param>
         /// <param name="isMandatory"> Specifies whether this plain argument must be present on the command line (user must provide it)</param>
         /// <returns>Object satisfying conditions above</returns>
-
         public static IPlainArgument CreatePlainArgument<T>(
            Action<T?> action,
            bool isMandatory
