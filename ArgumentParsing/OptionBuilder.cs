@@ -6,15 +6,6 @@
     public class OptionBuilder
     {
         /// <summary>
-        /// Allows you to start creating new option.
-        /// </summary>
-        /// <returns>Object that builds the desired option</returns>
-        public static OptionBuilder CreateOption()
-        {
-            throw new NotImplementedException();
-        }
-
-        /// <summary>
         /// Lets you define short synonyms for the option being built.
         /// </summary>
         /// <param name="shortSynonyms">Array of short synonyms accepted for option.</param>
@@ -25,7 +16,7 @@
         }
 
         /// <summary>
-        /// Lets you define long synonyms for the option being built.
+        /// Lets you define short synonyms for the option being built.
         /// </summary>
         /// <param name="longSynonyms">Array of long synonyms accepted for option.</param>
         /// <returns>Object that builds the desired option</returns>
@@ -50,7 +41,7 @@
 
         /// <summary>
         /// Calling this method will determine that the option will be Parametrized and take 0 to 1 parameters, as specified
-        /// in the IParametrizedOption interface.
+        /// in the IParametrizedOption interface. Also allows you to specify action to be called with the parsed parameter.
         /// </summary>
         /// <typeparam name="TArgument">Determines the type of which the parameters accepted by this option should be. Accepted types are bool, string, int, enum</typeparam>
         /// <param name="action">Specifies action, which is called, when option is present on command line. If isMandatory is set to true,
@@ -66,7 +57,7 @@
 
         /// <summary>
         /// Calling this method will determine that the option will be MultipleParameter and take 0 to unlimited parameters, as specified
-        /// in the IMultipleParameterOption interface.
+        /// in the IMultipleParameterOption interface. Also allows you to specify action to be called with the parsed parameter(s).
         /// </summary>
         /// <typeparam name="TArgument">Determines the type of which the parameters accepted by this option should be. Accepted types are bool, string, int, enum.</typeparam>
         /// <param name="action">Specifies action, which is called, when option is present on command line. It is called
@@ -101,7 +92,7 @@
         }
 
         /// <summary>
-        /// Specifies by what char should be possible arguments separated.
+        /// Specifies by what char should be possible arguments separated in multiple parameters optionss.
         /// </summary>
         /// <param name="separator">Separator character.</param>
         /// <returns>Object that builds the desired option.</returns>
