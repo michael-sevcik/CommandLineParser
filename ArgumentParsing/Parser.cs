@@ -61,7 +61,7 @@ namespace ArgumentParsing
     /// </summary>
     public sealed class Parser
     {
-        private IParametrizedOption[]? _plainArguments;
+        private IPlainArgument[]? _plainArguments;
         private OptionSet.OptionSet _options = new();
 
         /// <summary>
