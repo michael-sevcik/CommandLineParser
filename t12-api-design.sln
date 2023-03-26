@@ -1,0 +1,31 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.4.33403.182
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ArgumentParsing", "ArgumentParsing\ArgumentParsing.csproj", "{75C6A7D3-8902-4565-A3A5-61FAA2E13B30}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CommandParserExampleProgram", "CommandParserExampleProgram\CommandParserExampleProgram.csproj", "{866EA5D9-BE68-413D-8EBA-22FD805EE133}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{75C6A7D3-8902-4565-A3A5-61FAA2E13B30}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{75C6A7D3-8902-4565-A3A5-61FAA2E13B30}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{75C6A7D3-8902-4565-A3A5-61FAA2E13B30}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{75C6A7D3-8902-4565-A3A5-61FAA2E13B30}.Release|Any CPU.Build.0 = Release|Any CPU
+		{866EA5D9-BE68-413D-8EBA-22FD805EE133}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{866EA5D9-BE68-413D-8EBA-22FD805EE133}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{866EA5D9-BE68-413D-8EBA-22FD805EE133}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{866EA5D9-BE68-413D-8EBA-22FD805EE133}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {F2627B92-90E9-4E1C-A055-B91B5B630300}
+	EndGlobalSection
+EndGlobal
