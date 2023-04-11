@@ -13,6 +13,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		README.md = README.md
 	EndProjectSection
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ApiTests", "ApiTests\ApiTests.csproj", "{3EB85E36-7901-4E13-AB97-A14680CE98AB}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -27,6 +29,10 @@ Global
 		{866EA5D9-BE68-413D-8EBA-22FD805EE133}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{866EA5D9-BE68-413D-8EBA-22FD805EE133}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{866EA5D9-BE68-413D-8EBA-22FD805EE133}.Release|Any CPU.Build.0 = Release|Any CPU
+		{3EB85E36-7901-4E13-AB97-A14680CE98AB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3EB85E36-7901-4E13-AB97-A14680CE98AB}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3EB85E36-7901-4E13-AB97-A14680CE98AB}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3EB85E36-7901-4E13-AB97-A14680CE98AB}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

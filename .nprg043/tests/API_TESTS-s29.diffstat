@@ -1,0 +1,13 @@
+ .gitlab-ci.yml                   |    8 
+ ApiTests/ApiTests.csproj         |   22 +
+ ApiTests/BoolParsingTests.cs     |   93 ++++++++
+ ApiTests/MoreActionsTests.cs     |   85 +++++++
+ ApiTests/MultiArgsTests.cs       |   52 ++++
+ ApiTests/ParameterTypesTests.cs  |  116 ++++++++++
+ ApiTests/ParserSetupTests.cs     |  134 +++++++++++
+ ApiTests/PlainargumentsTests.cs  |  398 ++++++++++++++++++++++++++++++++++
+ ApiTests/RequiredOptionsTests.cs |  180 +++++++++++++++
+ ApiTests/SimpleOptionsTest.cs    |  450 +++++++++++++++++++++++++++++++++++++++
+ ApiTests/Usings.cs               |    3 
+ t12-api-design.sln               |    6 
+ 12 files changed, 1547 insertions(+)
