@@ -125,7 +125,7 @@
         /// <summary>
         /// Lets you set the upper bound for the int option. Otherwise it has no effect on the option creation.
         /// </summary>
-        /// <param name="lowerBound">Upper bound of int parameter</param>
+        /// <param name="upperBound">Upper bound of int parameter</param>
         /// <returns>Object that builds the desired option.</returns>
         /// <exception cref="NotImplementedException"></exception>
         public OptionBuilder WithUpperBound(int upperBound)
