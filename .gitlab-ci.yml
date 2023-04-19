@@ -68,7 +68,7 @@ cache:
   # For example, if you run a pipeline with changes in your code,
   # but with no changes within third-party packages which your project is using,
   # then project restore will happen quickly as all required dependencies
-  # will already be there — unzipped from cache.
+  # will already be there â€” unzipped from cache.
 
   # 'pull-push' policy is the default cache policy, you do not have to specify it explicitly.
   policy: pull-push
@@ -84,7 +84,7 @@ cache:
 #
 # Learn more about GitLab cache: https://docs.gitlab.com/ee/ci/caching/index.html
 before_script:
-  - 'dotnet restore ./CommandLineParser.sln --packages $NUGET_PACKAGES_DIRECTORY'
+  - 'dotnet restore ./t12-api-design.sln --packages $NUGET_PACKAGES_DIRECTORY'
 
 build:
   stage: build
@@ -97,7 +97,7 @@ build:
   # where it is located (e.g. 'dotnet build ./src/ConsoleApp').
   # Only one project path can be passed as a parameter to 'dotnet build' command.
   script:
-    - 'dotnet build ./CommandLineParser.sln --no-restore'
+    - 'dotnet build ./t12-api-design.sln --no-restore'
 
 tests:
   stage: test
@@ -110,5 +110,5 @@ tests:
   # You may want to define separate testing jobs for different types of testing
   # (e.g. integration tests, unit tests etc).
   script:
-    - 'dotnet test ./CommandLineParser.sln --no-restore'
+    - 'dotnet test ./t12-api-design.sln --no-restore'
 
