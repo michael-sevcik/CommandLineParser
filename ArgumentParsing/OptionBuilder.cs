@@ -3,7 +3,7 @@
     /// <summary>
     /// The <see cref="OptionBuilder"/> Enables creating of options using fluent syntax.
     /// </summary>
-    public class OptionBuilder
+    public class OptionBuilder      //TODO Michal 
     {
         /// <summary>
         /// Lets you define short synonyms for the option being built.

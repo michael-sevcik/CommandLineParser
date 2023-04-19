@@ -59,7 +59,7 @@ namespace ArgumentParsing
     /// <summary>
     /// The Parser class enables parsing of command-line inputs.
     /// </summary>
-    public sealed class Parser
+    public sealed class Parser      //TODO: Michael
     {
         private IPlainArgument[]? _plainArguments;
         private OptionSet.OptionSet _options = new();

@@ -179,7 +179,7 @@ namespace ArgumentParsing.Option
             throw new NotImplementedException();
         }
 
-    }
+    }       //TODO Michal
 
     /// <summary>
     /// This class represents option, which takes 0-1(based on isParameterRequired property.) to unlimited int parameters.
@@ -244,7 +244,7 @@ namespace ArgumentParsing.Option
         {
             throw new NotImplementedException();
         }
-    }
+    }       //TODO Michal
 
     /// <summary>
     /// This class represents option, which takes 0 to 1 string arguments based on isParameterRequired property..
@@ -281,7 +281,7 @@ namespace ArgumentParsing.Option
             throw new NotImplementedException();
         }
 
-    }
+    }       //TODO Michael
 
     /// <summary>
     /// This class represents option, which takes 0-1(based on isParameterRequired property.) to unlimited string options.
@@ -316,7 +316,7 @@ namespace ArgumentParsing.Option
         {
             throw new NotImplementedException();
         }
-    }
+    }       //TODO Michael
 
     /// <summary>
     /// This class represents option, which takes 0 to 1 bool arguments based on isParameterRequired property.
@@ -401,7 +401,7 @@ namespace ArgumentParsing.Option
     /// Represents an option, which takes 0 to 1 string arguments that matches one of the Enum's option names.
     /// </summary>
     /// <typeparam name="TEnum">Enum type is used to specify matchable strings.</typeparam>
-    internal class EnumOption<TEnum> : ParameterOption where TEnum : struct, Enum
+    internal class EnumOption<TEnum> : ParameterOption where TEnum : struct, Enum             //TODO Michael
     {
         Action<TEnum?> saveAction;
 
@@ -478,7 +478,7 @@ namespace ArgumentParsing.Option
         {
             throw new NotImplementedException();
         }
-    }
+    }           //TODO Michael
 
 
 }
