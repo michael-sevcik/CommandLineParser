@@ -84,7 +84,7 @@ cache:
 #
 # Learn more about GitLab cache: https://docs.gitlab.com/ee/ci/caching/index.html
 before_script:
-  - 'dotnet restore CommandLineParser.sln --packages $NUGET_PACKAGES_DIRECTORY'
+  - 'dotnet restore ./CommandLineParser.sln --packages $NUGET_PACKAGES_DIRECTORY'
 
 build:
   stage: build
@@ -97,7 +97,7 @@ build:
   # where it is located (e.g. 'dotnet build ./src/ConsoleApp').
   # Only one project path can be passed as a parameter to 'dotnet build' command.
   script:
-    - 'dotnet build CommandLineParser.sln --no-restore'
+    - 'dotnet build ./CommandLineParser.sln --no-restore'
 
 tests:
   stage: test
@@ -110,5 +110,5 @@ tests:
   # You may want to define separate testing jobs for different types of testing
   # (e.g. integration tests, unit tests etc).
   script:
-    - 'dotnet test CommandLineParser.sln --no-restore'
+    - 'dotnet test ./CommandLineParser.sln --no-restore'
 
