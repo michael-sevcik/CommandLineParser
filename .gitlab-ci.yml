@@ -1,5 +1,10 @@
-test-job:
-    stage: test
-    script:
+stages:
+  - test
+
+test:
+  stage: test
+  image: mcr.microsoft.com/dotnet/sdk:7.0
+  script:
         - dotnet restore src
         - dotnet test --no-build -c Release -v n src\$env:CommandLineParserTests\$env:CommandLineParserTests.csproj
+        - dotnet test ApiTests/ApiTests.csproj
