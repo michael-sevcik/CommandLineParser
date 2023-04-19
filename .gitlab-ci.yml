@@ -1,0 +1,5 @@
+test-job:
+    stage: test
+    script:
+        - dotnet restore src
+        - dotnet test --no-build -c Release -v n src\$env:CommandLineParserTests\$env:CommandLineParserTests.csproj

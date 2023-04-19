@@ -1,0 +1,6 @@
+ .gitlab-ci.yml                                       |    5 
+ CommandLineParserTests/CommandLineParserTests.csproj |   23 +
+ CommandLineParserTests/ConfigurationTests.cs         |  113 +++++++
+ CommandLineParserTests/ParseTests.cs                 |  276 +++++++++++++++++++
+ CommandLineParserTests/Usings.cs                     |    1 
+ 5 files changed, 418 insertions(+)
