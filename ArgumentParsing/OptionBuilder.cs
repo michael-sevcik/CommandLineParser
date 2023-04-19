@@ -113,6 +113,38 @@
         }
 
         /// <summary>
+        /// Lets you set the lower bound for the int option. Otherwise it has no effect on the option creation.
+        /// </summary>
+        /// <param name="lowerBound">Lower bound of int parameter</param>
+        /// <returns>Object that builds the desired option.</returns>
+        /// <exception cref="NotImplementedException"></exception>
+        public OptionBuilder WithLowerBound(int lowerBound)
+        {
+            throw new NotImplementedException();
+        }
+        /// <summary>
+        /// Lets you set the upper bound for the int option. Otherwise it has no effect on the option creation.
+        /// </summary>
+        /// <param name="lowerBound">Upper bound of int parameter</param>
+        /// <returns>Object that builds the desired option.</returns>
+        /// <exception cref="NotImplementedException"></exception>
+        public OptionBuilder WithUpperBound(int upperBound)
+        {
+            throw new NotImplementedException();
+        }
+        /// <summary>
+        /// Lets you set the lower upper bound for the int option. Otherwise it has no effect on the option creation.
+        /// </summary>
+        /// <param name="lowerBound">Lower bound of int parameter.</param>
+        /// <param name="upperBound">Upper bound of int parameter.</param>
+        /// <returns>Object that builds the desired option.</returns>
+        /// <exception cref="NotImplementedException"></exception>
+        public OptionBuilder WithBounds(int lowerBound,int upperBound)
+        {
+            throw new NotImplementedException();
+        }
+
+        /// <summary>
         /// Adds the configured option to the specified Parser.
         /// </summary>
         /// <param name="parser">Parser object to which the configured option should be added. </param>
