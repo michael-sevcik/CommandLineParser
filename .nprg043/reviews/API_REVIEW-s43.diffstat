@@ -1,0 +1,5 @@
+ .nprg043/REVIEW.md           |   25 +++++++++
+ NewExample/NewExample.csproj |   16 ++++++
+ NewExample/NewExample.sln    |   25 +++++++++
+ NewExample/Program.cs        |  112 +++++++++++++++++++++++++++++++++++++++++++
+ 4 files changed, 178 insertions(+)
