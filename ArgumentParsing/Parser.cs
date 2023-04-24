@@ -104,7 +104,7 @@ namespace ArgumentParsing
         /// returns false if an error occurred, such as synonyms colliding with already added options, no short options and
         /// no long options at the same time and other undefined behavior.
         /// </returns>
-        public bool Add(IOption option) => _options.Add(option);
+        public bool Add(IOption option) => _options.Add(option); // TODO: consider unifying the way plain arguments and options are added.
         
 
         /// <summary>
