@@ -34,6 +34,11 @@ namespace ArgumentParsing
         MissingMandatoryPlainArgument,
 
         /// <summary>
+        /// TODO:
+        /// </summary>
+        MissingOptionParameter,
+
+        /// <summary>
         /// When other errors occur.
         /// </summary>
         Other
