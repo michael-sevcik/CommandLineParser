@@ -92,7 +92,7 @@
         }
 
         /// <summary>
-        /// Specifies by what char should be possible arguments separated in multiple parameters optionss.
+        /// Specifies by what char should be possible arguments separated in multiple parameters options.
         /// </summary>
         /// <param name="separator">Separator character.</param>
         /// <returns>Object that builds the desired option.</returns>
