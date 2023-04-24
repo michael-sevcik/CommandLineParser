@@ -1,10 +1,17 @@
-﻿namespace ArgumentParsing
+﻿using ArgumentParsing.Option;
+using System.Threading.Channels;
+
+namespace ArgumentParsing
 {
     /// <summary>
     /// The <see cref="OptionBuilder"/> Enables creating of options using fluent syntax.
     /// </summary>
     public class OptionBuilder      //TODO Michal 
     {
+        Type actionType;
+        object action;
+        (Type actionType, object action) actionTuple;
+
         /// <summary>
         /// Lets you define short synonyms for the option being built.
         /// </summary>
@@ -36,7 +43,8 @@
         /// <returns>Object that builds the desired option</returns>
         public OptionBuilder WithAction(Action action)
         {
-            throw new NotImplementedException();
+            actionTuple = (typeof(Action), action);
+            return this;
         }
 
         /// <summary>
@@ -50,9 +58,15 @@
         /// </param>
         /// <returns>Object that builds the desired option</returns>
         /// <exception cref="InvalidOperationException">Thrown when wrong <typeparamref name="TArgument"/> is chosen. Accepted types are bool, string, int, enum.</exception>
-        public OptionBuilder WithParametrizedAction<TArgument> (Action<TArgument?> action)
+        public OptionBuilder WithParametrizedAction<TArgument> (Action<TArgument?> action) // TODO: TArgument is from the supported types, throw exception.
         {
-            throw new NotImplementedException();
+            actionTuple = (typeof(TArgument), action);
+            //if (typeof(TArgument).IsSubclassOf(typeof(Enum)))
+            if (typeof(TArgument).IsSubclassOf(typeof(Enum)))
+            {
+
+            }
+            return this;
         }
 
         /// <summary>
@@ -154,7 +168,25 @@
         /// </returns>
         public bool RegisterOption(Parser parser)
         {
-            throw new NotImplementedException();
+            (Type actionType, object action) = actionTuple;
+            if (actionTuple.actionType == typeof(Action))
+            {
+               // parser.Add( new NoParameterOption((Action)action, ...));
+            }
+
+            else if (actionType == typeof(Action<int[]?>)) 
+            {
+                var x = new GenericClassParameterOption<int[]>((x) => { }, TryParseIntArray);
+            }
+
+            //else if (actionType == typeof(Action<Enum>))
+            return false;
+        }
+
+        bool TryParseIntArray(string input, out int[] ints)
+        {
+            ints = new int[0];
+            return true;
         }
 
         /// <summary>
