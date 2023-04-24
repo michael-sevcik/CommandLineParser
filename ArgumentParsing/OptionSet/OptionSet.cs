@@ -22,7 +22,7 @@
         /// returns false if an error occurred, such as synonyms colliding with already added options, no short options and
         /// no long options at the same time and other undefined behavior.
         /// </returns>
-        public bool Add(Option option)
+        public bool Add(IOption option)
         {
             throw new NotImplementedException();
         }
@@ -32,7 +32,7 @@
         /// </summary>
         /// <param name="shortIdentifier">Short identifier of an option.</param>
         /// <returns>Returns an option if corresponding one was found, otherwise null.</returns>
-        public Option? Find(char shortIdentifier)
+        public IOption? Find(char shortIdentifier)
         {
             throw new NotImplementedException();
         }
@@ -42,7 +42,7 @@
         /// </summary>
         /// <param name="longIdentifier">Long identifier of an option.</param>
         /// <returns>Returns an option if corresponding one was found, otherwise null.</returns>
-        public Option? Find(string longIdentifier)
+        public IOption? Find(string longIdentifier)
         {
             throw new NotImplementedException();
         }
