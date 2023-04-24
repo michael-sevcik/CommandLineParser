@@ -10,7 +10,7 @@ namespace ArgumentParsing.Option
     /// <summary>
     /// Abstract base class implementation.
     /// </summary>
-    internal abstract class Option
+    internal abstract class Option : IOption
     {
 
         /// <summary>
@@ -26,12 +26,12 @@ namespace ArgumentParsing.Option
         /// <summary>
         /// Array of char identifiers that represent the Option; e.g. 'f' - short identifier is used as "-f" on command-line.
         /// </summary>
-        public char[]? shortSynonyms { get; init; }
+        public char[]? ShortSynonyms { get; init; }
 
         /// <summary>
         /// Array of string identifiers that represent the Option; e.g. "size" - long identifier is used as "--size on command-line".
         /// </summary>
-        public string[]? longSynonyms { get; init; }
+        public string[]? LongSynonyms { get; init; }
 
         /// <summary>
         /// This method allow user to set the explanation string - string which is shown when someone uses -h/--help on command line.
@@ -43,6 +43,14 @@ namespace ArgumentParsing.Option
         {
             throw new NotImplementedException();
         }
+
+        /// <summary>
+        /// Method to call when option occurs in the parsed command-line.
+        /// </summary>
+        public abstract void TakeAction();
+
+        /// <inheritdoc/>
+        public string HelpString { get; set; }
 
     }
 
@@ -64,8 +72,8 @@ namespace ArgumentParsing.Option
         {
             IsMandatory = isMandatory;
             this.action = action;
-            this.shortSynonyms = shortSynonyms;
-            this.longSynonyms = longSynonyms;
+            this.ShortSynonyms = shortSynonyms;
+            this.LongSynonyms = longSynonyms;
 
         }
 
@@ -75,16 +83,13 @@ namespace ArgumentParsing.Option
         /// <summary>
         /// Method to call when option occurs in the parsed command-line.
         /// </summary>
-        public void TakeAction()
-        {
-            action();
-        }
+        public override void TakeAction() => action();
     }
 
     /// <summary>
     /// Abstract class for parametrized options.
     /// </summary>
-    internal abstract class ParameterOption : Option
+    internal abstract class ParameterOption : Option, IParametrizedOption
     {
         /// <summary>
         /// Determines whether an option requires parameter.
@@ -93,13 +98,13 @@ namespace ArgumentParsing.Option
 
         /// <inheritdoc/>
         public override bool IsParametrized => true;
-
+        
         /// <summary>
         /// Parses the parameter.
         /// </summary>
         /// <param name="param">Parameter which followed the option.</param>
-        /// <returns>True if parsing was successful, otherwise false.</returns>
-        public abstract bool TryParse(string param);
+        /// <returns>True if parsing was successful, otherwise false.</returns> // TODO: maybe redo comments.
+        public abstract bool ProcessParameter(string param);
     }
 
     /// <summary>
@@ -108,9 +113,9 @@ namespace ArgumentParsing.Option
     internal abstract class MultipleParameterOption : ParameterOption
     {
         /// <summary>
-        /// Delimits multiple parameters entries. 
+        /// Separator of multiple parameter entries. 
         /// </summary>
-        public char Delimiter { get; init; }
+        public char Separator { get; init; }
     }
 
     /// <summary>
@@ -139,8 +144,8 @@ namespace ArgumentParsing.Option
             saveAction = action;
             IsParameterRequired = IsParameterRequired;
             IsMandatory = isMandatory;
-            this.shortSynonyms = shortSynonyms;
-            this.longSynonyms = longSynonyms;
+            this.ShortSynonyms = shortSynonyms;
+            this.LongSynonyms = longSynonyms;
 
         }
 
@@ -150,7 +155,7 @@ namespace ArgumentParsing.Option
         /// Accepts any string parameter that is parseable by Int32.TryPase method.
         /// <param name="param">Corresponding parameter</param>
         /// <returns>True if parseable parameter was passed, otherwise false.</returns>
-        public override bool TryParse(string param)
+        public override bool ProcessParameter(string param)
         {
             throw new NotImplementedException();
         }
@@ -179,6 +184,11 @@ namespace ArgumentParsing.Option
             throw new NotImplementedException();
         }
 
+        // TODO:
+        public override void TakeAction()
+        {
+            throw new NotImplementedException();
+        }
     }       //TODO Michal
 
     /// <summary>
@@ -204,8 +214,8 @@ namespace ArgumentParsing.Option
             saveAction = action;
             IsParameterRequired = IsParameterRequired;
             IsMandatory = isMandatory;
-            this.shortSynonyms = shortSynonyms;
-            this.longSynonyms = longSynonyms;
+            this.ShortSynonyms = shortSynonyms;
+            this.LongSynonyms = longSynonyms;
 
         }
 
@@ -215,7 +225,7 @@ namespace ArgumentParsing.Option
         /// Accepts any string parameter that is  after splitting by the delimiter parseable by Int32.TryPase method.
         /// <param name="param">Corresponding parameter</param>
         /// <returns>True if parseable parameter was passed, otherwise false.</returns>
-        public override bool TryParse(string param)
+        public override bool ProcessParameter(string param)
         {
             throw new NotImplementedException();
         }
@@ -244,6 +254,11 @@ namespace ArgumentParsing.Option
         {
             throw new NotImplementedException();
         }
+
+        public override void TakeAction()
+        {
+            throw new NotImplementedException();
+        }
     }       //TODO Michal
 
     /// <summary>
@@ -252,6 +267,7 @@ namespace ArgumentParsing.Option
     internal class StringOption : ParameterOption
     {
         Action<string?> saveAction;
+        string? parameter;
 
         /// <summary>
         /// Creates an instance of <see cref="StringOption"/>.
@@ -270,17 +286,23 @@ namespace ArgumentParsing.Option
             saveAction = action;
             IsParameterRequired = IsParameterRequired;
             IsMandatory = isMandatory;
-            this.shortSynonyms = shortSynonyms;
-            this.longSynonyms = longSynonyms;
+            this.ShortSynonyms = shortSynonyms;
+            this.LongSynonyms = longSynonyms;
 
         }
 
         /// <inheritdoc/>
-        public override bool TryParse(string param)
+        public override bool ProcessParameter(string param)
         {
-            throw new NotImplementedException();
+            parameter = param;
+            return true;
         }
 
+        public override void TakeAction()
+        {
+            saveAction(parameter);
+            parameter = null;
+        }
     }       //TODO Michael
 
     /// <summary>
@@ -289,6 +311,8 @@ namespace ArgumentParsing.Option
     internal class MultipleStringOption : MultipleParameterOption
     {
         Action<string[]?> saveAction;
+        string[]? parameters;
+
         /// <summary>
         /// Creates an instance of <see cref="MultipleStringOption"/>.
         /// </summary>
@@ -306,15 +330,22 @@ namespace ArgumentParsing.Option
             saveAction = action;
             IsParameterRequired = IsParameterRequired;
             IsMandatory = isMandatory;
-            this.shortSynonyms = shortSynonyms;
-            this.longSynonyms = longSynonyms;
+            this.ShortSynonyms = shortSynonyms;
+            this.LongSynonyms = longSynonyms;
 
         }
 
         /// <inheritdoc/>
-        public override bool TryParse(string param)
+        public override bool ProcessParameter(string parameter)
         {
-            throw new NotImplementedException();
+            parameters = parameter.Split(',');
+            return true;
+        }
+
+        public override void TakeAction()
+        {
+            saveAction(parameters);
+            parameters = null;
         }
     }       //TODO Michael
 
@@ -341,8 +372,8 @@ namespace ArgumentParsing.Option
             saveAction = action;
             IsParameterRequired = IsParameterRequired;
             IsMandatory = isMandatory;
-            this.shortSynonyms = shortSynonyms;
-            this.longSynonyms = longSynonyms;
+            this.ShortSynonyms = shortSynonyms;
+            this.LongSynonyms = longSynonyms;
         }
 
         /// <summary>
@@ -352,7 +383,12 @@ namespace ArgumentParsing.Option
         /// <returns>Returns true if the param was one of the following: "1", "0", "true","false" ; ignorecase.
         /// Otherwise returns false.
         /// </returns>
-        public override bool TryParse(string param)
+        public override bool ProcessParameter(string param)
+        {
+            throw new NotImplementedException();
+        }
+
+        public override void TakeAction()
         {
             throw new NotImplementedException();
         }
@@ -381,8 +417,8 @@ namespace ArgumentParsing.Option
             saveAction = action;
             IsParameterRequired = IsParameterRequired;
             IsMandatory = isMandatory;
-            this.shortSynonyms = shortSynonyms;
-            this.longSynonyms = longSynonyms;
+            this.ShortSynonyms = shortSynonyms;
+            this.LongSynonyms = longSynonyms;
         }
         /// <summary>
         /// This method is used for parsing command line parameters following the option.
@@ -391,7 +427,12 @@ namespace ArgumentParsing.Option
         /// <returns>Returns true if parsing was successful, that means the parameter was one of the following:  "1", "0", "true","false" ; ignorecase.
         /// Otherwise returns false.
         /// </returns>
-        public override bool TryParse(string param)
+        public override bool ProcessParameter(string param)
+        {
+            throw new NotImplementedException();
+        }
+
+        public override void TakeAction()
         {
             throw new NotImplementedException();
         }
@@ -401,9 +442,12 @@ namespace ArgumentParsing.Option
     /// Represents an option, which takes 0 to 1 string arguments that matches one of the Enum's option names.
     /// </summary>
     /// <typeparam name="TEnum">Enum type is used to specify matchable strings.</typeparam>
-    internal class EnumOption<TEnum> : ParameterOption where TEnum : struct, Enum             //TODO Michael
+    internal class EnumOption<TEnum> : ParameterOption where TEnum : struct, Enum             //TODO Michael // TODO: After TryParse, take action must proceed,
+                                                                                              //otherwise, some nullable mechanism needs to be implemented.
     {
         Action<TEnum?> saveAction;
+        TEnum? parsedValue;
+        
 
         /// <summary>
         /// Creates an instance of <see cref="EnumOption{T}"/>.
@@ -421,8 +465,8 @@ namespace ArgumentParsing.Option
             saveAction = action;
             IsParameterRequired = IsParameterRequired;
             IsMandatory = isMandatory;
-            this.shortSynonyms = shortSynonyms;
-            this.longSynonyms = longSynonyms;
+            this.ShortSynonyms = shortSynonyms;
+            this.LongSynonyms = longSynonyms;
         }
 
         /// <summary>
@@ -432,9 +476,22 @@ namespace ArgumentParsing.Option
         /// <returns>Returns true if parsing was successful, that means the parameter matches one of the Enum´s option names.
         /// Otherwise returns false.
         /// </returns>
-        public override bool TryParse(string param)
+        public override bool ProcessParameter(string param) 
         {
-            throw new NotImplementedException();
+            var wasSuccessful = Enum.TryParse<TEnum>(param, out var result); // TODO: should we ignore upper case, lower case?
+            
+            if (wasSuccessful)
+            {
+                parsedValue = result;
+            }
+
+            return wasSuccessful;
+        } 
+
+        public override void TakeAction()
+        {
+            saveAction(parsedValue);
+            parsedValue = null;
         }
     }
 
@@ -444,9 +501,11 @@ namespace ArgumentParsing.Option
     /// which specifies what kind of string arguments the option accepts.
     /// </summary>
     /// <typeparam name="TEnum"></typeparam>
-    internal class MultipleEnumOption<TEnum> : ParameterOption where TEnum : Enum
+    internal class MultipleEnumOption<TEnum> : MultipleParameterOption where TEnum : struct, Enum
     {
         Action<TEnum[]?> saveAction;
+
+        TEnum[]? parsedEnums;
 
         /// <summary>
         /// Creates an instance of <see cref="MultipleEnumOption{T}"/>.
@@ -463,8 +522,8 @@ namespace ArgumentParsing.Option
             saveAction = action;
             IsParameterRequired = IsParameterRequired;
             IsMandatory = isMandatory;
-            this.shortSynonyms = shortSynonyms;
-            this.longSynonyms = longSynonyms;
+            this.ShortSynonyms = shortSynonyms;
+            this.LongSynonyms = longSynonyms;
         }
 
         /// <summary>
@@ -474,10 +533,27 @@ namespace ArgumentParsing.Option
         /// <returns>Returns true if parsing was successful, that means the parameter matches one of the Enum´s option names.
         /// Otherwise returns false.
         /// </returns>
-        public override bool TryParse(string param)
+        public override bool ProcessParameter(string param)
         {
-            throw new NotImplementedException();
+            var splittedParams = param.Split(Separator);
+            parsedEnums = new TEnum[splittedParams.Length];
+            for (int i = 0; i < splittedParams.Length; i++)
+            {
+                if (!Enum.TryParse(splittedParams[i], out parsedEnums[i]))
+                {
+                    parsedEnums = null;
+                    return false;
+                }
+            }
+            
+            return true;
         }
+
+        public override void TakeAction() 
+        {
+            saveAction(parsedEnums);
+            parsedEnums = null;
+        } // TODO: should there be some parameter check - mandatory etc.?
     }           //TODO Michael
 
 
