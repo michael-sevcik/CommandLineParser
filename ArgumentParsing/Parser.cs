@@ -14,27 +14,27 @@ namespace ArgumentParsing
     public enum ParserErrorType : byte 
     {
         /// <summary>
-        /// Occurs when there is on the command line -{InvalidIdentifier} or --{InvalidIdentifier} before the plain arguments separator --.
+        /// There was no option with the specified identifier.
         /// </summary>
         InvalidOptionIdentifier,
 
         /// <summary>
-        /// Occurs when the option could not parse the parameter belonging to her.
+        /// Option could not parse the parameter belonging to her.
         /// </summary>
         CouldNotParseTheParameter,
 
         /// <summary>
-        /// Occurs when there is Mandatory option missing on the command line.
+        /// There is Mandatory option missing on the command line.
         /// </summary>
         MissingMandatoryOption,
 
         /// <summary>
-        /// Occurs when there is not enough plain arguments to satisfy number of the mandatory plain arguments.
+        /// There are not enough plain arguments to satisfy number of the mandatory plain arguments.
         /// </summary>
         MissingMandatoryPlainArgument,
 
         /// <summary>
-        /// TODO:
+        /// Argument for an option with a required argument was not passed.
         /// </summary>
         MissingOptionParameter,
 
