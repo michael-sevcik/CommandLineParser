@@ -5,6 +5,13 @@
     /// </summary>
     public class OptionBuilder      //TODO Michal 
     {
+        int lowerBound, upperBound;
+        bool requiresParameter = false;
+        bool isMandatory = false;
+        char[]? shortSynonyms = null;
+        string[]? longSynonyms= null;
+
+        enum OptionType { parameterless, parameter, mulitpleParameter };
         /// <summary>
         /// Lets you define short synonyms for the option being built.
         /// </summary>
@@ -12,7 +19,8 @@
         /// <returns>Object that builds the desired option</returns>
         public OptionBuilder WithShortSynonyms(params char[]? shortSynonyms)
         {
-            throw new NotImplementedException(); 
+            this.shortSynonyms = shortSynonyms;
+            return this;
         }
 
         /// <summary>
@@ -22,7 +30,8 @@
         /// <returns>Object that builds the desired option</returns>
         public OptionBuilder WithLongSynonyms(params string[]? longSynonyms)
         {
-            throw new NotImplementedException();
+            this.longSynonyms = longSynonyms;
+            return this;
         }
 
         //Following three methods determine what kind of option (implementing one of the 3 option interfaces) it will be.
@@ -78,7 +87,8 @@
         /// <remarks>Options are optional by default.</remarks>
         public OptionBuilder SetAsMandatory()
         {
-            throw new NotImplementedException();
+            this.isMandatory= true;
+            return this;
         }
 
         /// <summary>
@@ -88,7 +98,8 @@
         /// <returns>Object that builds the desired option</returns>
         public OptionBuilder RequiresParameter() 
         {
-            throw new NotImplementedException();
+            this.requiresParameter = true;
+            return this;
         }
 
         /// <summary>
@@ -120,7 +131,8 @@
         /// <exception cref="NotImplementedException"></exception>
         public OptionBuilder WithLowerBound(int lowerBound)
         {
-            throw new NotImplementedException();
+            this.lowerBound= lowerBound;
+            return this;
         }
         /// <summary>
         /// Lets you set the upper bound for the int option. Otherwise it has no effect on the option creation.
@@ -130,7 +142,8 @@
         /// <exception cref="NotImplementedException"></exception>
         public OptionBuilder WithUpperBound(int upperBound)
         {
-            throw new NotImplementedException();
+            this.upperBound = upperBound;
+            return this;
         }
         /// <summary>
         /// Lets you set the lower upper bound for the int option. Otherwise it has no effect on the option creation.
@@ -141,7 +154,9 @@
         /// <exception cref="NotImplementedException"></exception>
         public OptionBuilder WithBounds(int lowerBound,int upperBound)
         {
-            throw new NotImplementedException();
+            this.lowerBound = lowerBound;
+            this.upperBound = upperBound;
+            return this;
         }
 
         /// <summary>
