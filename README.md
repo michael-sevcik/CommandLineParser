@@ -70,6 +70,13 @@ Empty explanation will be showed if user does not provide any helpString (does n
 - `public bool RegisterOption(Parser parser)` -> Adds the configured option to the particular parser.
 - `public OptionBuilder Reset()` -> resets the object to the same state as when it was created.
 Is used after registering one option, then the reset is called and you can start creating another one.
+- `public OptionBuilder WithLowerBound(int lowerBound)` -> sets the lower bound for int option (its parameters). If it's called
+on another type of Option, it is ignored.
+- `public OptionBuilder WithUpperBound(int upperBound)` -> sets the upper bound for int option (its parameters). If it's called
+on another type of Option, it is ignored.
+- `public OptionBuilder WithBounds(int lowerBound,int upperBound)` -> sets both the upper and lower bound
+- for int option. If called on another type of Option it is ignored.
+
 
 
 ### Option Interfaces
