@@ -1,17 +1,26 @@
-﻿namespace ArgumentParsing
+﻿using ArgumentParsing.Option;
+using System.Threading.Channels;
+using System.Xml;
+
+namespace ArgumentParsing
 {
     /// <summary>
     /// The <see cref="OptionBuilder"/> Enables creating of options using fluent syntax.
     /// </summary>
     public class OptionBuilder      //TODO Michal 
     {
-        int lowerBound, upperBound;
+        int? lowerBound, upperBound;
         bool requiresParameter = false;
         bool isMandatory = false;
         char[]? shortSynonyms = null;
         string[]? longSynonyms= null;
+        char separator = ',';
 
-        enum OptionType { parameterless, parameter, mulitpleParameter };
+
+        Type actionType;
+        object action;
+        (Type actionType, object action) actionTuple;
+
         /// <summary>
         /// Lets you define short synonyms for the option being built.
         /// </summary>
@@ -45,7 +54,8 @@
         /// <returns>Object that builds the desired option</returns>
         public OptionBuilder WithAction(Action action)
         {
-            throw new NotImplementedException();
+            actionTuple = (typeof(Action), action);
+            return this;
         }
 
         /// <summary>
@@ -59,9 +69,15 @@
         /// </param>
         /// <returns>Object that builds the desired option</returns>
         /// <exception cref="InvalidOperationException">Thrown when wrong <typeparamref name="TArgument"/> is chosen. Accepted types are bool, string, int, enum.</exception>
-        public OptionBuilder WithParametrizedAction<TArgument> (Action<TArgument?> action)
+        public OptionBuilder WithParametrizedAction<TArgument> (Action<TArgument?> action) // TODO: TArgument is from the supported types, throw exception.
         {
-            throw new NotImplementedException();
+            actionTuple = (typeof(TArgument), action);
+            //if (typeof(TArgument).IsSubclassOf(typeof(Enum)))
+            if (typeof(TArgument).IsSubclassOf(typeof(Enum)))
+            {
+
+            }
+            return this;
         }
 
         /// <summary>
@@ -109,7 +125,8 @@
         /// <returns>Object that builds the desired option.</returns>
         public OptionBuilder WithSeparator(char separator = ',')
         {
-            throw new NotImplementedException();
+            this.separator= separator;
+            return this;
         }
 
         /// <summary>
@@ -169,6 +186,86 @@
         /// </returns>
         public bool RegisterOption(Parser parser)
         {
+            (Type actionType, object action) = actionTuple;
+            if (actionTuple.actionType == typeof(Action))       //No parameter option
+            {
+                parser.Add( new NoParameterOption((Action)action,isMandatory,shortSynonyms,longSynonyms));                
+            }
+            else if (actionType == typeof(Action<string?>))     //String Option
+            {
+                parser.Add(new GenericClassParameterOption<string>(parseString, (Action<string?>)action, isMandatory, shortSynonyms, longSynonyms));
+            }
+            else if (actionType == typeof(Action<string[]?>))     //String Option multiple parameters
+            {
+                parser.Add(new GenericClassParameterOption<string[]>(parseStringMultipleParameters, (Action<string[]?>)action, isMandatory, shortSynonyms, longSynonyms,separator));
+            }
+            else if (actionType == typeof(Action<int?>))     //Int Option
+            {
+                parser.Add(new GenericStructParameterOption<int>(parseInt, (Action<int?>)action, isMandatory, shortSynonyms, longSynonyms));
+            }
+            else if (actionType == typeof(Action<int[]?>))     //Int Option multiple parameters
+            {
+                parser.Add(new GenericClassParameterOption<int[]>(parseIntMultipleParameters, (Action<int[]?>)action, isMandatory, shortSynonyms, longSynonyms, separator));
+            }
+            else if (actionType == typeof(Action<bool?>))     //Bool Option
+            {
+                parser.Add(new GenericStructParameterOption<bool>(parseBool, (Action<bool?>)action, isMandatory, shortSynonyms, longSynonyms));
+            }
+            else if (actionType == typeof(Action<bool[]?>))     //Bool Option multiple parameters
+            {
+                parser.Add(new GenericClassParameterOption<bool[]>(parseBoolMultipleParameters, (Action<bool[]?>)action, isMandatory, shortSynonyms, longSynonyms, separator));
+            }
+
+            else if (actionType == typeof(Action<Enum>))
+            return false;
+        }
+
+
+        bool parseString(string input,out string output)
+        {
+            output = input;
+            return true;
+        }
+
+        bool parseStringMultipleParameters(string input, out string[] output)
+        {
+            output = input.Split(separator);
+            return true;
+        }
+
+        bool parseInt(string input, out int output) => Int32.TryParse(input, out output);
+        
+        bool parseIntMultipleParameters(string input, out int[] output)
+        {
+            var inputParts = input.Split(separator);
+            var result = new int[inputParts.Length];
+            output = new int[] { };
+            for(int i = 0; i < result.Length; i++)
+            {
+                if (!Int32.TryParse(inputParts[i], out result[i])) return false;
+            }
+            output = result;
+            return true;
+        }
+
+        bool parseBool(string input, out bool output) => bool.TryParse(input, out output);
+
+        bool parseBoolMultipleParameters(string input, out bool[] output)
+        {
+            var inputParts = input.Split(separator);
+            var result = new bool[inputParts.Length];
+            output = new bool[] { };
+            for (int i = 0; i < result.Length; i++)
+            {
+                if (!bool.TryParse(inputParts[i], out result[i])) return false;
+            }
+            output = result;
+            return true;
+        }
+
+
+        bool parseEnumMultipleParameters(string input, out string output)
+        {
             throw new NotImplementedException();
         }
 
@@ -180,7 +277,7 @@
         /// </returns>
         public OptionBuilder Reset()
         {
-            throw new NotImplementedException();
+            return new OptionBuilder();
         }
     }
 }
