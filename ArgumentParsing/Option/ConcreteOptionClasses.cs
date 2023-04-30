@@ -449,7 +449,7 @@ namespace ArgumentParsing.Option
         {
             saveAction(parsedEnums);
             parsedEnums = null;
-        } // TODO: should there be some parameter check - mandatory etc.?
+        }
     }           //TODO Michael
 
 }
