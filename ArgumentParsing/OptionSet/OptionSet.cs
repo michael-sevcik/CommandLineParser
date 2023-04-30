@@ -13,6 +13,18 @@
     {
         private Dictionary<string, Option> longOptions = new();
         private Dictionary<char, Option> shortOptions = new();
+        private List<IOption> mandatoryOptions = new();
+        private List<IPlainArgument> mandatoryPlainArguments = new();
+
+        /// <summary>
+        /// Gets the list of options that were added to the OptionSet and are mandatory.
+        /// </summary>
+        public IReadOnlyList<IOption> MandatoryOptions => mandatoryOptions;
+
+        /// <summary>
+        /// Gets the list of plain arguments that were added to the OptionSet and are mandatory.
+        /// </summary>
+        public IReadOnlyList<IPlainArgument> MandatoryPlainArguments => mandatoryPlainArguments;
 
         /// <summary>
         /// Adds the option to the OptionSet.
@@ -43,6 +55,11 @@
         /// <param name="longIdentifier">Long identifier of an option.</param>
         /// <returns>Returns an option if corresponding one was found, otherwise null.</returns>
         public IOption? Find(string longIdentifier)
+        {
+            throw new NotImplementedException();
+        }
+
+        public IReadOnlyList<IOption> GetMandatoryOptions()
         {
             throw new NotImplementedException();
         }
