@@ -117,7 +117,7 @@ namespace ArgumentParsing.Option
     /// <summary>
     /// Generic class for parametrized options.
     /// </summary>
-    internal class GenericStructParameterOption<T> : ParameterOption,IMultipleParameterOption where T:struct
+    internal class GenericParameterOption<T> : ParameterOption,IMultipleParameterOption 
     {
         Action<T?> action;
         ParseMethodDelegate<T> parser;
@@ -130,7 +130,7 @@ namespace ArgumentParsing.Option
 
         
 
-        public GenericStructParameterOption(
+        public GenericParameterOption(
             ParseMethodDelegate<T> parser,
             Action<T?> action,
             bool isMandatory,
@@ -171,7 +171,7 @@ namespace ArgumentParsing.Option
         }
     }
 
-    internal class GenericClassParameterOption<T> : ParameterOption where T : struct?
+    internal class GenericClassParameterOption<T> : ParameterOption where T : class
     {
         Action<T?> action;
         ParseMethodDelegate<T> parser;

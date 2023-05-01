@@ -217,7 +217,7 @@ namespace ArgumentParsing
             {
                 
                 if (!multipleParameterOption)
-                    return parser.Add(new GenericStructParameterOption<int>(parseInt, (Action<int?>)actionObject, isMandatory, shortSynonyms, longSynonyms));
+                    return parser.Add(new GenericParameterOption<int?>(parseInt, (Action<int?>)actionObject, isMandatory, shortSynonyms, longSynonyms));
 
                 return parser.Add(new GenericMultipleParameterOption<int>(parseIntMultipleParameters, (Action<int[]?>)actionObject, isMandatory, shortSynonyms, longSynonyms, separator));
             
@@ -274,7 +274,7 @@ namespace ArgumentParsing
                     var action = Convert.ChangeType(actionObject, actionT);
 
                     var instance = Activator.CreateInstance(
-                        typeof(GenericClassParameterOption<>).MakeGenericType(actionType),
+                        typeof(GenericParameterOption<>).MakeGenericType(actionType),
                         parseMethodDelegate,
                         action,
                         isMandatory,
@@ -302,7 +302,15 @@ namespace ArgumentParsing
             return true;
         }
 
-        static bool parseInt(string input, out int output, char separator = ',') => Int32.TryParse(input, out output);
+        static bool parseInt(string input, out int? output, char separator = ',')
+        {
+            int result;
+            var success = Int32.TryParse(input, out result);
+            output = result;
+            return success;
+
+        }
+
 
         static bool parseIntMultipleParameters(string input, out int[] output, char separator = ',')
         {
