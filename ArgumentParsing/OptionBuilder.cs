@@ -1,4 +1,6 @@
 ﻿using ArgumentParsing.Option;
+using System;
+using System.Reflection;
 using System.Threading.Channels;
 using System.Xml;
 
@@ -13,13 +15,15 @@ namespace ArgumentParsing
         bool requiresParameter = false;
         bool isMandatory = false;
         char[]? shortSynonyms = null;
-        string[]? longSynonyms= null;
+        string[]? longSynonyms = null;
         char separator = ',';
+        string? helpString = null;
 
 
-        Type actionType;
-        object action;
-        (Type actionType, object action) actionTuple;
+        bool multipleParameterOption = false;
+
+        (Type actionType, Delegate action) actionTuple;
+        Type multipleParameterOptionType;
 
         /// <summary>
         /// Lets you define short synonyms for the option being built.
@@ -55,6 +59,7 @@ namespace ArgumentParsing
         public OptionBuilder WithAction(Action action)
         {
             actionTuple = (typeof(Action), action);
+            multipleParameterOption = false;
             return this;
         }
 
@@ -62,21 +67,19 @@ namespace ArgumentParsing
         /// Calling this method will determine that the option will be Parametrized and take 0 to 1 parameters, as specified
         /// in the IParametrizedOption interface. Also allows you to specify action to be called with the parsed parameter.
         /// </summary>
-        /// <typeparam name="TArgument">Determines the type of which the parameters accepted by this option should be. Accepted types are bool, string, int, enum</typeparam>
+        /// <typeparam name="TArgument">Determines the type of which the parameters accepted by this option should be. Accepted types are bool, string, int, Enum and its descendants
+        /// Also note that the TArgument should not be declared as nullable.</typeparam>
         /// <param name="action">Specifies action, which is called, when option is present on command line. If isMandatory is set to true,
         /// action is called with one parameter of type T, else it is called with 0(null) to 1 parameters of type T according to the number of parameters
         /// provided on command line.
         /// </param>
         /// <returns>Object that builds the desired option</returns>
-        /// <exception cref="InvalidOperationException">Thrown when wrong <typeparamref name="TArgument"/> is chosen. Accepted types are bool, string, int, enum.</exception>
-        public OptionBuilder WithParametrizedAction<TArgument> (Action<TArgument?> action) // TODO: TArgument is from the supported types, throw exception.
+        /// <exception cref="InvalidOperationException">Thrown when wrong <typeparamref name="TArgument"/> is chosen. Accepted types are bool, string, int,
+        /// Enum and its descendants.</exception>
+        public OptionBuilder WithParametrizedAction<TArgument>(Action<TArgument?> action) // TODO: TArgument is from the supported types, throw exception.
         {
             actionTuple = (typeof(TArgument), action);
-            //if (typeof(TArgument).IsSubclassOf(typeof(Enum)))
-            if (typeof(TArgument).IsSubclassOf(typeof(Enum)))
-            {
-
-            }
+            multipleParameterOption = false;
             return this;
         }
 
@@ -93,7 +96,10 @@ namespace ArgumentParsing
         /// <exception cref="InvalidOperationException">Thrown when wrong <typeparamref name="TArgument"/> is chosen. Accepted types are bool, string, int, enum.</exception>
         public OptionBuilder WithMultipleParametersAction<TArgument>(Action<TArgument[]?> action)
         {
-            throw new NotImplementedException();
+            multipleParameterOption = true;
+            actionTuple = (typeof(TArgument), action);
+            multipleParameterOptionType = typeof(TArgument[]);
+            return this;
         }
 
         /// <summary>
@@ -103,7 +109,7 @@ namespace ArgumentParsing
         /// <remarks>Options are optional by default.</remarks>
         public OptionBuilder SetAsMandatory()
         {
-            this.isMandatory= true;
+            this.isMandatory = true;
             return this;
         }
 
@@ -112,7 +118,7 @@ namespace ArgumentParsing
         /// command line.
         /// </summary>
         /// <returns>Object that builds the desired option</returns>
-        public OptionBuilder RequiresParameter() 
+        public OptionBuilder RequiresParameter()
         {
             this.requiresParameter = true;
             return this;
@@ -125,7 +131,7 @@ namespace ArgumentParsing
         /// <returns>Object that builds the desired option.</returns>
         public OptionBuilder WithSeparator(char separator = ',')
         {
-            this.separator= separator;
+            this.separator = separator;
             return this;
         }
 
@@ -137,7 +143,8 @@ namespace ArgumentParsing
         /// <returns>Object that builds the desired option.</returns>
         public OptionBuilder WithHelpString(string helpString)
         {
-            throw new NotImplementedException();
+            this.helpString = helpString;
+            return this;
         }
 
         /// <summary>
@@ -148,7 +155,7 @@ namespace ArgumentParsing
         /// <exception cref="NotImplementedException"></exception>
         public OptionBuilder WithLowerBound(int lowerBound)
         {
-            this.lowerBound= lowerBound;
+            this.lowerBound = lowerBound;
             return this;
         }
         /// <summary>
@@ -169,7 +176,7 @@ namespace ArgumentParsing
         /// <param name="upperBound">Upper bound of int parameter.</param>
         /// <returns>Object that builds the desired option.</returns>
         /// <exception cref="NotImplementedException"></exception>
-        public OptionBuilder WithBounds(int lowerBound,int upperBound)
+        public OptionBuilder WithBounds(int lowerBound, int upperBound)
         {
             this.lowerBound = lowerBound;
             this.upperBound = upperBound;
@@ -186,61 +193,123 @@ namespace ArgumentParsing
         /// </returns>
         public bool RegisterOption(Parser parser)
         {
-            (Type actionType, object action) = actionTuple;
+            (Type actionType, Delegate actionObject) = actionTuple;
             if (actionTuple.actionType == typeof(Action))       //No parameter option
             {
-                parser.Add( new NoParameterOption((Action)action,isMandatory,shortSynonyms,longSynonyms));                
+                return parser.Add(new NoParameterOption((Action)actionObject, isMandatory, shortSynonyms, longSynonyms));
             }
-            else if (actionType == typeof(Action<string?>))     //String Option
+            else if (actionType == typeof(string))     //String Options
             {
-                parser.Add(new GenericClassParameterOption<string>(parseString, (Action<string?>)action, isMandatory, shortSynonyms, longSynonyms));
-            }
-            else if (actionType == typeof(Action<string[]?>))     //String Option multiple parameters
-            {
-                parser.Add(new GenericClassParameterOption<string[]>(parseStringMultipleParameters, (Action<string[]?>)action, isMandatory, shortSynonyms, longSynonyms,separator));
-            }
-            else if (actionType == typeof(Action<int?>))     //Int Option
-            {
-                parser.Add(new GenericStructParameterOption<int>(parseInt, (Action<int?>)action, isMandatory, shortSynonyms, longSynonyms));
-            }
-            else if (actionType == typeof(Action<int[]?>))     //Int Option multiple parameters
-            {
-                parser.Add(new GenericClassParameterOption<int[]>(parseIntMultipleParameters, (Action<int[]?>)action, isMandatory, shortSynonyms, longSynonyms, separator));
-            }
-            else if (actionType == typeof(Action<bool?>))     //Bool Option
-            {
-                parser.Add(new GenericStructParameterOption<bool>(parseBool, (Action<bool?>)action, isMandatory, shortSynonyms, longSynonyms));
-            }
-            else if (actionType == typeof(Action<bool[]?>))     //Bool Option multiple parameters
-            {
-                parser.Add(new GenericClassParameterOption<bool[]>(parseBoolMultipleParameters, (Action<bool[]?>)action, isMandatory, shortSynonyms, longSynonyms, separator));
-            }
+                if (!multipleParameterOption)
+                    return parser.Add(new GenericClassParameterOption<string>(parseString, (Action<string?>)actionObject, isMandatory, shortSynonyms, longSynonyms));
 
-            else if (actionType == typeof(Action<Enum>))
+                return parser.Add(new GenericMultipleParameterOption<string>(
+                    parseStringMultipleParameters,
+                    (Action<string[]?>)actionObject,
+                    isMandatory,
+                    shortSynonyms,
+                    longSynonyms,
+                    separator
+                    )
+                    );
+            }
+            else if (actionType == typeof(int?))     //Int Option
+            {
+                
+                if (!multipleParameterOption)
+                    return parser.Add(new GenericStructParameterOption<int>(parseInt, (Action<int?>)actionObject, isMandatory, shortSynonyms, longSynonyms));
+
+                return parser.Add(new GenericMultipleParameterOption<int>(parseIntMultipleParameters, (Action<int[]?>)actionObject, isMandatory, shortSynonyms, longSynonyms, separator));
+            
+                
+            }
+            else if (actionType == typeof(bool))     //Bool Option
+            {
+                /*
+                if (!multipleParameterOption)
+                    return parser.Add(new GenericStructParameterOption<bool>(parseBool, (Action<bool?>)actionObject, isMandatory, shortSynonyms, longSynonyms));
+                */
+                return parser.Add(new GenericMultipleParameterOption<bool>(
+                    parseBoolMultipleParameters,
+                    (Action<bool[]?>)actionObject,
+                    isMandatory,
+                    shortSynonyms,
+                    longSynonyms,
+                    separator
+                    )
+                    );
+            }
+            else if (Nullable.GetUnderlyingType(actionType).IsEnum)
+            {
+
+
+                if (multipleParameterOption)
+                {
+                    var method = typeof(OptionBuilder).GetMethod(nameof(parseEnumMultipleParameters), BindingFlags.Static | BindingFlags.NonPublic)!.MakeGenericMethod(actionType); // TODO: Can this ever fail?
+                    var parseMethodDelegateType = typeof(ParseMethodDelegateMultipleOption<>).MakeGenericType(actionType);
+                    var generalDelegate = Delegate.CreateDelegate(parseMethodDelegateType, method);
+                    var parseMethodDelegate = Convert.ChangeType(generalDelegate, parseMethodDelegateType);
+
+                    var actionT = typeof(Action<>).MakeGenericType(multipleParameterOptionType);
+                    var action = Convert.ChangeType(actionObject,actionT);
+
+                    var instance = Activator.CreateInstance(
+                        typeof(GenericMultipleParameterOption<>).MakeGenericType(actionType),
+                        parseMethodDelegate,
+                        action,
+                        isMandatory,
+                        shortSynonyms,
+                        longSynonyms,
+                        separator
+                        );
+                    return parser.Add((IOption)instance);
+                }
+                else
+                {
+                    var method = typeof(OptionBuilder).GetMethod(nameof(parseEnum), BindingFlags.Static | BindingFlags.NonPublic)!.MakeGenericMethod(actionType); // TODO: Can this ever fail?
+                    var parseMethodDelegateType = typeof(ParseMethodDelegate<>).MakeGenericType(actionType);
+                    var generalDelegate = Delegate.CreateDelegate(parseMethodDelegateType, method);
+                    var parseMethodDelegate = Convert.ChangeType(generalDelegate, parseMethodDelegateType);
+                    var actionT = typeof(Action<>).MakeGenericType(actionType);
+                    var action = Convert.ChangeType(actionObject, actionT);
+
+                    var instance = Activator.CreateInstance(
+                        typeof(GenericClassParameterOption<>).MakeGenericType(actionType),
+                        parseMethodDelegate,
+                        action,
+                        isMandatory,
+                        shortSynonyms,
+                        longSynonyms,
+                        separator
+                        );
+                    return parser.Add((IOption)instance);
+                }
+
+            }
             return false;
         }
 
 
-        bool parseString(string input,out string output)
+        static bool parseString(string input, out string output, char separator = ',')
         {
             output = input;
             return true;
         }
 
-        bool parseStringMultipleParameters(string input, out string[] output)
+        static bool parseStringMultipleParameters(string input, out string[] output, char separator = ',')
         {
             output = input.Split(separator);
             return true;
         }
 
-        bool parseInt(string input, out int output) => Int32.TryParse(input, out output);
-        
-        bool parseIntMultipleParameters(string input, out int[] output)
+        static bool parseInt(string input, out int output, char separator = ',') => Int32.TryParse(input, out output);
+
+        static bool parseIntMultipleParameters(string input, out int[] output, char separator = ',')
         {
             var inputParts = input.Split(separator);
             var result = new int[inputParts.Length];
             output = new int[] { };
-            for(int i = 0; i < result.Length; i++)
+            for (int i = 0; i < result.Length; i++)
             {
                 if (!Int32.TryParse(inputParts[i], out result[i])) return false;
             }
@@ -248,9 +317,9 @@ namespace ArgumentParsing
             return true;
         }
 
-        bool parseBool(string input, out bool output) => bool.TryParse(input, out output);
+        static bool parseBool(string input, out bool output, char separator = ',') => bool.TryParse(input, out output);
 
-        bool parseBoolMultipleParameters(string input, out bool[] output)
+        static bool parseBoolMultipleParameters(string input, out bool[] output, char separator = ',')
         {
             var inputParts = input.Split(separator);
             var result = new bool[inputParts.Length];
@@ -262,11 +331,50 @@ namespace ArgumentParsing
             output = result;
             return true;
         }
+        static bool parseEnum<TEnum>(string input, out TEnum output, char separator = ',') 
+        {      
+            var names = Enum.GetNames(typeof(TEnum));
+            if (names.Contains(input))
+            {
+                output = (TEnum)Enum.Parse(typeof(TEnum), input);
+                return true;
+            }
+            output = default(TEnum);
+            return false;
+            
 
+        }
 
-        bool parseEnumMultipleParameters(string input, out string output)
+        static bool parseEnumMultipleParameters<TEnum>(string input, out TEnum[] output, char separator = ',') 
         {
-            throw new NotImplementedException();
+
+            var names = Enum.GetNames(typeof(TEnum));
+            var splittedParams = input.Split(separator);
+            output = new TEnum[splittedParams.Length];
+            for (int i = 0; i < splittedParams.Length; i++)
+            {
+                if (names.Contains(splittedParams[i]))
+                {
+                    output[i] = (TEnum)Enum.Parse(typeof(TEnum), input);
+
+                }
+                else return false;
+
+            }
+            return true;
+
+        }
+        static TEnum[] parseEnumMultipleParametersInternal<TEnum>(string input, char separator = ',') where TEnum : struct, Enum
+        {
+            
+            var splittedParams = input.Split(separator);
+            var output = new TEnum[splittedParams.Length];
+            for (int i = 0; i < splittedParams.Length; i++)
+            {
+                if (!Enum.TryParse(splittedParams[i], out output[i])) throw new InvalidOperationException();
+
+            }            
+            return output;
         }
 
         /// <summary>

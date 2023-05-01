@@ -1,6 +1,4 @@
-﻿
-
-namespace ArgumentParsing.Option
+﻿namespace ArgumentParsing.Option
 {
 
     /// <summary>
