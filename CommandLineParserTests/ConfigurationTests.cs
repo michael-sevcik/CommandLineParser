@@ -72,19 +72,18 @@ namespace CommandLineParserTests
             bool correctAddingOfOptions = optionBuilder.Reset()
                                              .WithShortSynonyms('f')
                                              .WithLongSynonyms("format")
-                                             .WithMultipleParametersAction<string[]?>(formats => Console.WriteLine(formats))
+                                             .WithMultipleParametersAction<string>((string[]?formats) => Console.WriteLine(formats))
                                              .RequiresParameter()
                                              .WithHelpString("Specify output format, possibly overriding the format specified in the environment variable TIME.")
                                              .RegisterOption(parser);
 
             // assert
-            Assert.IsFalse(correctAddingOfOptions);
+            Assert.IsTrue(correctAddingOfOptions);
         }
         [Test]
         public void optionBuilderNotResetBeforeAddingAnotherOption() 
         {
             // act 
-            // there is default value, which was not mentioned in documentation
             bool correctAddingOfOptions = optionBuilder
                                             .WithShortSynonyms('p')
                                             .WithLongSynonyms("portability")
@@ -94,7 +93,7 @@ namespace CommandLineParserTests
                                             .RegisterOption(parser);
 
             // assert
-            Assert.IsTrue(correctAddingOfOptions);
+            Assert.IsFalse(correctAddingOfOptions);
         }
         [Test]
         public void noActionSpecifiedForOption()
