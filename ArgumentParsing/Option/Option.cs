@@ -90,7 +90,7 @@ namespace ArgumentParsing.Option
     /// <summary>
     /// Abstract class for parametrized options.
     /// </summary>
-    internal abstract class ParameterOption : Option, IParametrizedOption
+    internal abstract class ParameterOption : Option, IParametrizedOption,IPlainArgument
     {
         
         /// <summary>
@@ -120,7 +120,7 @@ namespace ArgumentParsing.Option
     /// Generic class for parametrized options.
     /// </summary>
     /// /// <typeparam name="T"> Type of parameter</typeparam>
-    internal class GenericParameterOption<T> : ParameterOption, IParametrizedOption
+    internal class GenericParameterOption<T> : ParameterOption, IParametrizedOption , IPlainArgument
     {
         Action<T?> action;
         ParseMethodDelegate<T> parser;
@@ -175,7 +175,7 @@ namespace ArgumentParsing.Option
     /// Generic class for Multiple parameter options.
     /// </summary>
     /// <typeparam name="T"> Type of parameters</typeparam>
-    internal class GenericMultipleParameterOption<T> : ParameterOption , IMultipleParameterOption
+    internal class GenericMultipleParameterOption<T> : ParameterOption , IMultipleParameterOption , IPlainArgument
     {
         Action<T[]?> action;
         ParseMethodDelegateMultipleOption<T> parser;
