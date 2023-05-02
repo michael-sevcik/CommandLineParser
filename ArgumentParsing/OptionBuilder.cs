@@ -12,6 +12,7 @@ namespace ArgumentParsing
     /// </summary>
     public class OptionBuilder      //TODO Michal 
     {
+        //configuration variables
         int? lowerBound = null;
         int? upperBound = null;
         bool requiresParameter = false;
@@ -20,12 +21,10 @@ namespace ArgumentParsing
         string[]? longSynonyms = null;
         char separator = ',';
         string? helpString = null;
-
-
         bool multipleParameterOption = false;
 
-        (Type actionType, Delegate action) actionTuple;
-        Type multipleParameterOptionType;
+        (Type actionType, Delegate action) actionTuple;     //User provided action and its type, which is used for retrieving parsed parameters.
+        Type multipleParameterOptionType;       //Type which represents array of User-chosen type. For example user choses T here is typeof(T[])
 
         /// <summary>
         /// Lets you define short synonyms for the option being built.
@@ -202,6 +201,10 @@ namespace ArgumentParsing
             return parser.Add(option);           
         }
 
+        /// <summary>
+        /// Creates particular option, which is then registered in parser. Enables easier help string handling.
+        /// </summary>
+        /// <returns>Object representing particular option</returns>
         public IOption CreateParticularOptionForRegistration()
         {
             (Type actionType, Delegate actionObject) = actionTuple;
@@ -211,10 +214,10 @@ namespace ArgumentParsing
             }
             else if (actionType == typeof(string))     //String Options
             {
-                if (!multipleParameterOption)
+                if (!multipleParameterOption)       //Parametrized option
                     return new GenericParameterOption<string>(parseString, (Action<string?>)actionObject, isMandatory, shortSynonyms, longSynonyms,requiresParameter);
 
-                return new GenericMultipleParameterOption<string>(
+                return new GenericMultipleParameterOption<string>(  //Multiple parameter option
                     parseStringMultipleParameters,
                     (Action<string[]?>)actionObject,
                     isMandatory,
@@ -226,19 +229,34 @@ namespace ArgumentParsing
             }
             else if (actionType == typeof(int?) || actionType == typeof(int))     //Int Options
             {
-                if (!multipleParameterOption)
+                if (!multipleParameterOption)   //Parametrized option
                     return new GenericParameterOption<int?>(parseInt, (Action<int?>)actionObject, isMandatory, shortSynonyms, longSynonyms,requiresParameter);
 
-                return new GenericMultipleParameterOption<int>(parseIntMultipleParameters, (Action<int[]?>)actionObject, isMandatory, shortSynonyms, longSynonyms, requiresParameter, separator);
+                return new GenericMultipleParameterOption<int>( //Multiple parameter Option
+                    parseIntMultipleParameters,
+                    (Action<int[]?>)actionObject,
+                    isMandatory,
+                    shortSynonyms,
+                    longSynonyms,
+                    requiresParameter,
+                    separator
+                    );
 
             }
             else if (actionType == typeof(bool?) || actionType == typeof(bool))    //Bool Option
             {
 
-                if (!multipleParameterOption)
-                    return new GenericParameterOption<bool?>(parseBool, (Action<bool?>)actionObject, isMandatory, shortSynonyms, longSynonyms,requiresParameter);
+                if (!multipleParameterOption) //Parametrized option
+                    return new GenericParameterOption<bool?>(
+                        parseBool,
+                        (Action<bool?>)actionObject,
+                        isMandatory,
+                        shortSynonyms,
+                        longSynonyms,
+                        requiresParameter
+                        );
 
-                return new GenericMultipleParameterOption<bool>(
+                return new GenericMultipleParameterOption<bool>(        //Multiple parameter option
                     parseBoolMultipleParameters,
                     (Action<bool[]?>)actionObject,
                     isMandatory,
@@ -251,16 +269,33 @@ namespace ArgumentParsing
             }
             else // we check that it is one of the supported types in action registration methods. -> Enum options
             {
-                if (multipleParameterOption)
+                if (multipleParameterOption)        //complex solution, because we do knot know the user's defined type of enum in advance
                 {
-                    var method = typeof(OptionBuilder).GetMethod(nameof(parseEnumMultipleParameters), BindingFlags.Static | BindingFlags.NonPublic)!.MakeGenericMethod(actionType); // TODO: Can this ever fail?
-                    var parseMethodDelegateType = typeof(ParseMethodDelegateMultipleOption<>).MakeGenericType(actionType);
-                    var generalDelegate = Delegate.CreateDelegate(parseMethodDelegateType, method);
-                    var parseMethodDelegate = Convert.ChangeType(generalDelegate, parseMethodDelegateType);
+                    //creates lambda function with right generic parameter
+                    var method = typeof(OptionBuilder).
+                        GetMethod(nameof(parseEnumMultipleParameters), BindingFlags.Static | BindingFlags.NonPublic)!.
+                        MakeGenericMethod(actionType); 
 
+                    //creates delegate type with right generic parameter
+                    var parseMethodDelegateType = typeof(ParseMethodDelegateMultipleOption<>).
+                        MakeGenericType(actionType);
+
+                    //creates delegate of right generic parameter with our method created above
+                    var generalDelegate = Delegate.
+                        CreateDelegate(parseMethodDelegateType, method);
+
+                    //converts general delegate to the right type of delegate
+                    var parseMethodDelegate = Convert.
+                        ChangeType(generalDelegate, parseMethodDelegateType);
+
+                    //creates action type with right generic parameter
                     var actionT = typeof(Action<>).MakeGenericType(multipleParameterOptionType);
+
+                    //converts the action to the specific generic type
                     var action = Convert.ChangeType(actionObject, actionT);
 
+
+                    //creates an instance of desired option
                     var instance = Activator.CreateInstance(
                         typeof(GenericMultipleParameterOption<>).MakeGenericType(actionType),
                         parseMethodDelegate,
@@ -276,13 +311,32 @@ namespace ArgumentParsing
                 }
                 else
                 {
-                    var method = typeof(OptionBuilder).GetMethod(nameof(parseEnum), BindingFlags.Static | BindingFlags.NonPublic)!.MakeGenericMethod(actionType); // TODO: Can this ever fail?
-                    var parseMethodDelegateType = typeof(ParseMethodDelegate<>).MakeGenericType(actionType);
-                    var generalDelegate = Delegate.CreateDelegate(parseMethodDelegateType, method);
-                    var parseMethodDelegate = Convert.ChangeType(generalDelegate, parseMethodDelegateType);
-                    var actionT = typeof(Action<>).MakeGenericType(actionType);
-                    var action = Convert.ChangeType(actionObject, actionT);
+                    //creates lambda function with right generic parameter
+                    var method = typeof(OptionBuilder).
+                        GetMethod(nameof(parseEnum), BindingFlags.Static | BindingFlags.NonPublic)!.
+                        MakeGenericMethod(actionType);
 
+                    //creates delegate type with right generic parameter
+                    var parseMethodDelegateType = typeof(ParseMethodDelegate<>).
+                        MakeGenericType(actionType);
+
+                    //creates general delegate of right generic parameter with our method created above
+                    var generalDelegate = Delegate.
+                        CreateDelegate(parseMethodDelegateType, method);
+
+                    //converts general delegate to the right type of delegate
+                    var parseMethodDelegate = Convert.
+                        ChangeType(generalDelegate, parseMethodDelegateType);
+
+                    //creates action type with right generic parameter
+                    var actionT = typeof(Action<>).
+                        MakeGenericType(actionType);
+
+                    //converts the action to the specific generic type
+                    var action = Convert.
+                        ChangeType(actionObject, actionT);
+
+                    //creates an instance of desired option
                     var instance = Activator.CreateInstance(
                         typeof(GenericParameterOption<>).MakeGenericType(actionType),
                         parseMethodDelegate,
@@ -298,6 +352,11 @@ namespace ArgumentParsing
             }
             
         }
+
+        /// <summary>
+        /// Function that checks whether user provided type is acceptable for Parametrized Option
+        /// </summary>
+        /// <param name="type">User-provided type for option</param>
         static bool isOfSupportedTypesForParametrizedOption(Type type)
         {
             if(type == typeof(string) || type == typeof(int?) || type == typeof(bool?) ||
@@ -305,23 +364,53 @@ namespace ArgumentParsing
                 return true;
             return false;
         }
+
+        /// <summary>
+        /// Function that checks whether user provided type is acceptable for Multiple parameter Option
+        /// </summary>
+        /// <param name="type">User-provided type for option</param>
         static bool isOfSupportedTypesForMultipleParamOption(Type type)
         {
             if (type == typeof(int) || type == typeof(bool) || type == typeof(string) || type.IsSubclassOf(typeof(Enum))) return true;
             return false;
         }
+
+        /// <summary>
+        /// Function which is passed as delegate to the objects representing Parametrized string Option, which is used for
+        /// parsing the string input on command line.
+        /// </summary>
+        /// <param name="input">command line parameter following the option</param>
+        /// <param name="output">where the option can store the parsed input and later return it to the user</param>
+        /// <returns>True if parsing was successful, false otherwise.</returns>
         static bool parseString(string input, out string output)
         {
             output = input;
             return true;
         }
 
+        /// <summary>
+        /// Function which is passed as delegate to the objects representing Multiple parameter string Option,
+        /// which is used for parsing the string input on command line.
+        /// </summary>
+        /// <param name="input">command line parameters (one string) following the option</param>
+        /// <param name="output">where the option can store the parsed input and later return it to the user</param>
+        /// <param name="separator">Non-whitespace separator by which option expects the parameters to be separated with.</param>
+        /// <returns>True if parsing was successful, false otherwise.</returns>
         static bool parseStringMultipleParameters(string input, out string[] output, char separator = ',')
         {
             output = input.Split(separator);
             return true;
         }
 
+        /// <summary>
+        /// Function which is passed as delegate to the objects representing Parametrized int Option, which is used for
+        /// parsing the string input on command line. Function is non static as it uses lambda function to capture local parameters
+        /// lower and upper bound. These variables live only inside the scope of Lambda function, as Reset function creates new option Builder.
+        /// That implies that they won't be affected by another options creations.
+        /// </summary>
+        /// <param name="input">command line parameter following the option</param>
+        /// <param name="output">where the option can store the parsed input and later return it to the user</param>
+        /// <returns>True if parsing was successful, false otherwise.</returns>
         public bool parseInt(string input, out int? output)
         {
             
@@ -358,6 +447,16 @@ namespace ArgumentParsing
             output = null;
             return false;
         }
+
+        /// <summary>
+        /// Function which is passed as delegate to the objects representing Multiple parameter int Option, which is used for
+        /// parsing the string input on command line. Function is non static as it uses lambda function to capture local parameters
+        /// lower and upper bound. These variables live only inside the scope of Lambda function, as Reset function creates new option Builder.
+        /// </summary>
+        /// <param name="input">command line parameters (one string) following the option</param>
+        /// <param name="output">where the option can store the parsed input and later return it to the user</param>
+        /// <param name="separator">Non-whitespace separator by which option expects the prameters to be separated with.</param>
+        /// <returns></returns>
         bool parseIntMultipleParameters(string input, out int[]? output, char separator = ',')
         {
             ParseMethodDelegate<int[]?> parseIntMultipleParametersLambda = (string input, out int[]? output) =>
@@ -381,6 +480,14 @@ namespace ArgumentParsing
             
         }
 
+        /// <summary>
+        /// Function which is passed as delegate to the objects representing Parametrized bool Option, which is used for
+        /// parsing the string input on command line.
+        /// </summary>
+        /// <param name="input">command line parameter following the option</param>
+        /// <param name="output">where the option can store the parsed input and later return it to the user</param>
+        /// <returns>True if parsing was successful, false otherwise.</returns>
+
         static bool parseBool(string input, out bool? output)
         {
             bool result;
@@ -394,6 +501,14 @@ namespace ArgumentParsing
             return false;
         }
 
+        /// <summary>
+        /// Function which is passed as delegate to the objects representing Multiple parameter string Option,
+        /// which is used for parsing the string input on command line.
+        /// </summary>
+        /// <param name="input">command line parameters (one string) following the option</param>
+        /// <param name="output">where the option can store the parsed input and later return it to the user</param>
+        /// <param name="separator">Non-whitespace separator by which option expects the parameters to be separated with.</param>
+        /// <returns>True if parsing was successful, false otherwise.</returns>
         static bool parseBoolMultipleParameters(string input, out bool[] output, char separator = ',')
         {
             var inputParts = input.Split(separator);
@@ -406,6 +521,14 @@ namespace ArgumentParsing
             output = result;
             return true;
         }
+
+        /// <summary>
+        /// Function which is passed as delegate to the objects representing Parametrized enum Option, which is used for
+        /// parsing the string input on command line.
+        /// </summary>
+        /// <param name="input">command line parameter following the option</param>
+        /// <param name="output">where the option can store the parsed input and later return it to the user</param>
+        /// <returns>True if parsing was successful, false otherwise.</returns>
         static bool parseEnum<TEnum>(string input, out TEnum output) 
         {
             var type = Nullable.GetUnderlyingType(typeof(TEnum));
@@ -421,6 +544,14 @@ namespace ArgumentParsing
 
         }
 
+        /// <summary>
+        /// Function which is passed as delegate to the objects representing Multiple parameter enum Option,
+        /// which is used for parsing the string input on command line.
+        /// </summary>
+        /// <param name="input">command line parameters (one string) following the option</param>
+        /// <param name="output">where the option can store the parsed input and later return it to the user</param>
+        /// <param name="separator">Non-whitespace separator by which option expects the parameters to be separated with.</param>
+        /// <returns>True if parsing was successful, false otherwise.</returns>
         static bool parseEnumMultipleParameters<TEnum>(string input, out TEnum[] output, char separator = ',') 
         {
 
@@ -440,24 +571,12 @@ namespace ArgumentParsing
             return true;
 
         }
-        static TEnum[] parseEnumMultipleParametersInternal<TEnum>(string input, char separator = ',') where TEnum : struct, Enum
-        {
-            
-            var splittedParams = input.Split(separator);
-            var output = new TEnum[splittedParams.Length];
-            for (int i = 0; i < splittedParams.Length; i++)
-            {
-                if (!Enum.TryParse(splittedParams[i], out output[i])) throw new InvalidOperationException();
-
-            }            
-            return output;
-        }
 
         /// <summary>
         /// Resets the current option configuration.
         /// </summary>
         /// <returns>
-        /// Object that builds the desired option.
+        /// New OptionBuilder instance.
         /// </returns>
         public OptionBuilder Reset()
         {
