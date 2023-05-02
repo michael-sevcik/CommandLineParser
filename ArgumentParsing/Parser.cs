@@ -171,7 +171,11 @@ public sealed partial class Parser      // TODO: Michael
             }
         }
 
-        argumentProcessor.FinalizeProcessing(out var result);
+        if (!argumentProcessor.FinalizeProcessing(out var result))
+        {
+            Error = argumentProcessor.Error;
+            return false;
+        }
         RemainingPlainArguments = result.excessivePlainArgumentsEntries;
 
         foreach (var option in result.optionsToTakeAction)
