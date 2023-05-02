@@ -126,7 +126,7 @@ namespace ArgumentParsing.Option
         /// <summary>
         /// Separator of multiple parameter entries. 
         /// </summary>
-        public char Separator { get; init; }        
+        public char Separator { get; init; }
 
         public GenericParameterOption(
             ParseMethodDelegate<T> parser,
@@ -134,7 +134,9 @@ namespace ArgumentParsing.Option
             bool isMandatory,
             char[]? shortSynonyms = null,
             string[]? longSynonyms = null,
+            bool requiresParameter = false,
             char separator = ','
+            
             )
         {
             this.parser = parser;
@@ -142,8 +144,9 @@ namespace ArgumentParsing.Option
             this.IsMandatory = isMandatory;
             this.ShortSynonyms = shortSynonyms;
             this.LongSynonyms = longSynonyms;
+            this.IsParameterRequired = requiresParameter;
             this.Separator = separator;
-
+            
         }
 
         /// <summary>
@@ -179,6 +182,7 @@ namespace ArgumentParsing.Option
             bool isMandatory,
             char[]? shortSynonyms = null,
             string[]? longSynonyms = null,
+            bool requiresParameter = false,
             char separator = ','
             )
         {
@@ -187,6 +191,7 @@ namespace ArgumentParsing.Option
             this.IsMandatory = isMandatory;
             this.ShortSynonyms = shortSynonyms;
             this.LongSynonyms = longSynonyms;
+            this.IsParameterRequired = requiresParameter;
             this.Separator = separator;
 
         }
