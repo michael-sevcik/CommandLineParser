@@ -119,7 +119,7 @@ namespace CommandLineParserTests
             optionBuilder.Reset()
                  .WithShortSynonyms('f')
                  .WithLongSynonyms("format")                 
-                 .WithMultipleParametersAction<string[]?>(formats => Console.WriteLine(formats))                
+                 .WithMultipleParametersAction<string>((string[]?formats )=> Console.WriteLine(formats))                
                  .RequiresParameter()
                  // .WithSeparator(char separator = ',') // I was not able to add the separator
                  .WithHelpString("Specify output format, possibly overriding the format specified in the environment variable TIME.")
