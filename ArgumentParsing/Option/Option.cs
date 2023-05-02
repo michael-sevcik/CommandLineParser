@@ -111,13 +111,13 @@ namespace ArgumentParsing.Option
 
     }
 
-    delegate bool ParseMethodDelegate<T>(string input, out T? output , char separator = ',');
-    delegate bool ParseMethodDelegateMultipleOption<T>(string input, out T[] output, char separator = ',');
+    delegate bool ParseMethodDelegate<T>(string input, out T output );
+    delegate bool ParseMethodDelegateMultipleOption<T>(string input, out T[]? output, char separator = ',');
 
     /// <summary>
     /// Generic class for parametrized options.
     /// </summary>
-    internal class GenericParameterOption<T> : ParameterOption,IMultipleParameterOption 
+    internal class GenericParameterOption<T> : ParameterOption, IParametrizedOption
     {
         Action<T?> action;
         ParseMethodDelegate<T> parser;
@@ -126,9 +126,7 @@ namespace ArgumentParsing.Option
         /// <summary>
         /// Separator of multiple parameter entries. 
         /// </summary>
-        public char Separator { get; init; }
-
-        
+        public char Separator { get; init; }        
 
         public GenericParameterOption(
             ParseMethodDelegate<T> parser,
@@ -156,75 +154,15 @@ namespace ArgumentParsing.Option
         public override bool ProcessParameter(string param)
         {
             var wasSuccessful = parser(param, out T output);
-            if (wasSuccessful) 
-            {
-                parserResult = output;
-            }
-
+            if (wasSuccessful) parserResult = output;
             return wasSuccessful;
         }
 
-        public override void TakeAction()
-        {
-            action(parserResult);
-            
-        }
+        public override void TakeAction() => action(parserResult);
+
     }
 
-    internal class GenericClassParameterOption<T> : ParameterOption where T : class
-    {
-        Action<T?> action;
-        ParseMethodDelegate<T> parser;
-        T? parserResult;
-
-        /// <summary>
-        /// Separator of multiple parameter entries. 
-        /// </summary>
-        public char Separator { get; init; }
-
-        public GenericClassParameterOption(
-            ParseMethodDelegate<T> parser,
-            Action<T?> action,
-            bool isMandatory,
-            char[]? shortSynonyms = null,
-            string[]? longSynonyms = null,
-            char separator = ','
-            )
-        {
-            this.parser = parser;
-            this.action = action;
-            this.IsMandatory = isMandatory;
-            this.ShortSynonyms = shortSynonyms;
-            this.LongSynonyms = longSynonyms;
-            this.Separator = separator;
-
-        }
-
-        /// <summary>
-        /// Parses the parameter.
-        /// </summary>
-        /// <param name="param">Parameter which followed the option.</param>
-        /// <returns>True if parsing was successful, otherwise false.</returns> // TODO: maybe redo comments.
-        public override bool ProcessParameter(string param)
-        {
-            var wasSuccessful = parser(param, out T output);
-            if (wasSuccessful)
-            {
-                parserResult = output;
-            }
-
-            return wasSuccessful;
-        }
-
-        /// <inheritdoc/>
-        public override void TakeAction()
-        {
-            action(parserResult);
-            parserResult = null;
-        }
-    }
-
-    internal class GenericMultipleParameterOption<T> : ParameterOption 
+    internal class GenericMultipleParameterOption<T> : ParameterOption , IMultipleParameterOption
     {
         Action<T[]?> action;
         ParseMethodDelegateMultipleOption<T> parser;
@@ -260,12 +198,8 @@ namespace ArgumentParsing.Option
         /// <returns>True if parsing was successful, otherwise false.</returns> // TODO: maybe redo comments.
         public override bool ProcessParameter(string param)
         {
-            var wasSuccessful = parser(param, out T[] output);
-            if (wasSuccessful)
-            {
-                parserResult = output;
-            }
-
+            var wasSuccessful = parser(param, out T[]? output);
+            if (wasSuccessful) parserResult = output;
             return wasSuccessful;
         }
 
