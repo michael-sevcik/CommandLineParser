@@ -190,7 +190,14 @@ namespace ArgumentParsing
            bool isMandatory
            )
         {
-            throw new NotImplementedException();
+
+            var builder = new OptionBuilder();
+            builder.WithParametrizedAction<TArgument>( action );
+
+            if (isMandatory) builder.SetAsMandatory();
+
+            return (IPlainArgument)builder.CreateParticularOptionForRegistration();
+
         }
 
         /// <summary>
@@ -212,7 +219,14 @@ namespace ArgumentParsing
            char separator = ','
            )
         {
-            throw new NotImplementedException();
+            var builder = new OptionBuilder();
+            builder.
+                WithMultipleParametersAction<TArgument>(action).
+                WithSeparator(separator);
+
+            if (isMandatory) builder.SetAsMandatory();
+
+            return (IPlainArgument)builder.CreateParticularOptionForRegistration();
         }
 
     }
