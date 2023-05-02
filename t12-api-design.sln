@@ -18,7 +18,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ApiTests", "ApiTests\ApiTes
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CommandLineParserTests", "CommandLineParserTests\CommandLineParserTests.csproj", "{F5B2FB40-82A0-4071-8412-3EB29C4AD37E}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "test", "test\test.csproj", "{335BCB6E-2F25-4189-BCD4-B0E9E843DEBD}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "test", "test\test.csproj", "{335BCB6E-2F25-4189-BCD4-B0E9E843DEBD}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MichaloveTesty", "TestProject2\MichaloveTesty.csproj", "{E39695F5-F34E-4136-B21A-8B63E588B1AA}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -46,6 +48,10 @@ Global
 		{335BCB6E-2F25-4189-BCD4-B0E9E843DEBD}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{335BCB6E-2F25-4189-BCD4-B0E9E843DEBD}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{335BCB6E-2F25-4189-BCD4-B0E9E843DEBD}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E39695F5-F34E-4136-B21A-8B63E588B1AA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E39695F5-F34E-4136-B21A-8B63E588B1AA}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E39695F5-F34E-4136-B21A-8B63E588B1AA}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E39695F5-F34E-4136-B21A-8B63E588B1AA}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
