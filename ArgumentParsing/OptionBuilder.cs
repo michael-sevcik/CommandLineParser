@@ -197,54 +197,56 @@ namespace ArgumentParsing
         /// </returns>
         public bool RegisterOption(Parser parser)
         {
+            return parser.Add(CreateParticularOptionForRegistration());           
+        }
+
+        public IOption CreateParticularOptionForRegistration()
+        {
             (Type actionType, Delegate actionObject) = actionTuple;
             if (actionType == typeof(Action))       //No parameter option
             {
-                return parser.Add(new NoParameterOption((Action)actionObject, isMandatory, shortSynonyms, longSynonyms));
+                return new NoParameterOption((Action)actionObject, isMandatory, shortSynonyms, longSynonyms);
             }
             else if (actionType == typeof(string))     //String Options
             {
                 if (!multipleParameterOption)
-                    return parser.Add(new GenericClassParameterOption<string>(parseString, (Action<string?>)actionObject, isMandatory, shortSynonyms, longSynonyms));
+                    return new GenericParameterOption<string>(parseString, (Action<string?>)actionObject, isMandatory, shortSynonyms, longSynonyms);
 
-                return parser.Add(new GenericMultipleParameterOption<string>(
+                return new GenericMultipleParameterOption<string>(
                     parseStringMultipleParameters,
                     (Action<string[]?>)actionObject,
                     isMandatory,
                     shortSynonyms,
                     longSynonyms,
                     separator
-                    )
                     );
             }
-            else if (actionType == typeof(int?)||actionType==typeof(int))     //Int Options
-            {                
-                if (!multipleParameterOption)
-                    return parser.Add(new GenericParameterOption<int?>(parseInt, (Action<int?>)actionObject, isMandatory, shortSynonyms, longSynonyms));
-
-                return parser.Add(new GenericMultipleParameterOption<int>(parseIntMultipleParameters, (Action<int[]?>)actionObject, isMandatory, shortSynonyms, longSynonyms, separator));
-                
-            }
-            else if (actionType == typeof(bool?)||actionType == typeof(bool))    //Bool Option
+            else if (actionType == typeof(int?) || actionType == typeof(int))     //Int Options
             {
-                
                 if (!multipleParameterOption)
-                    return parser.Add(new GenericParameterOption<bool?>(parseBool, (Action<bool?>)actionObject, isMandatory, shortSynonyms, longSynonyms));
-                
-                return parser.Add(new GenericMultipleParameterOption<bool>(
+                    return new GenericParameterOption<int?>(parseInt, (Action<int?>)actionObject, isMandatory, shortSynonyms, longSynonyms);
+
+                return new GenericMultipleParameterOption<int>(parseIntMultipleParameters, (Action<int[]?>)actionObject, isMandatory, shortSynonyms, longSynonyms, separator);
+
+            }
+            else if (actionType == typeof(bool?) || actionType == typeof(bool))    //Bool Option
+            {
+
+                if (!multipleParameterOption)
+                    return new GenericParameterOption<bool?>(parseBool, (Action<bool?>)actionObject, isMandatory, shortSynonyms, longSynonyms);
+
+                return new GenericMultipleParameterOption<bool>(
                     parseBoolMultipleParameters,
                     (Action<bool[]?>)actionObject,
                     isMandatory,
                     shortSynonyms,
                     longSynonyms,
                     separator
-                    )
                     );
+                    
             }
-            else if (actionType.IsSubclassOf(typeof(Enum)) ||  (Nullable.GetUnderlyingType(actionType)is not null && Nullable.GetUnderlyingType(actionType).IsEnum))
+            else // we check that it is one of the supported types in action registration methods. -> Enum options
             {
-
-
                 if (multipleParameterOption)
                 {
                     var method = typeof(OptionBuilder).GetMethod(nameof(parseEnumMultipleParameters), BindingFlags.Static | BindingFlags.NonPublic)!.MakeGenericMethod(actionType); // TODO: Can this ever fail?
@@ -253,7 +255,7 @@ namespace ArgumentParsing
                     var parseMethodDelegate = Convert.ChangeType(generalDelegate, parseMethodDelegateType);
 
                     var actionT = typeof(Action<>).MakeGenericType(multipleParameterOptionType);
-                    var action = Convert.ChangeType(actionObject,actionT);
+                    var action = Convert.ChangeType(actionObject, actionT);
 
                     var instance = Activator.CreateInstance(
                         typeof(GenericMultipleParameterOption<>).MakeGenericType(actionType),
@@ -264,7 +266,7 @@ namespace ArgumentParsing
                         longSynonyms,
                         separator
                         );
-                    return parser.Add((IOption)instance);
+                    return (IOption)instance;
                 }
                 else
                 {
@@ -284,13 +286,11 @@ namespace ArgumentParsing
                         longSynonyms,
                         separator
                         );
-                    return parser.Add((IOption)instance);
+                    return (IOption)instance;
                 }
-
             }
-            return false;
+            
         }
-
         static bool isOfSupportedTypesForParametrizedOption(Type type)
         {
             if(type == typeof(string) || type == typeof(int?) || type == typeof(bool?) ||
@@ -326,8 +326,8 @@ namespace ArgumentParsing
 
                 if(success)
                 {
-                    if (lowerBound is not null) success = result > lowerBound;
-                    if (upperBound is not null) success = success && (result < upperBound);
+                    if (lowerBound is not null) success = result >= lowerBound;
+                    if (upperBound is not null) success = success && (result <= upperBound);
                 }
                 
                 if (!success) output = null; //make the output null if the operation was not succesful
@@ -400,11 +400,12 @@ namespace ArgumentParsing
             return true;
         }
         static bool parseEnum<TEnum>(string input, out TEnum output) 
-        {      
-            var names = Enum.GetNames(typeof(TEnum));
+        {
+            var type = Nullable.GetUnderlyingType(typeof(TEnum));
+            var names = Enum.GetNames(type);
             if (names.Contains(input))
             {
-                output = (TEnum)Enum.Parse(typeof(TEnum), input);
+                output = (TEnum)Enum.Parse(type, input);
                 return true;
             }
             output = default(TEnum);
@@ -423,7 +424,7 @@ namespace ArgumentParsing
             {
                 if (names.Contains(splittedParams[i]))
                 {
-                    output[i] = (TEnum)Enum.Parse(typeof(TEnum), input);
+                    output[i] = (TEnum)Enum.Parse(typeof(TEnum), splittedParams[i]);
 
                 }
                 else return false;
