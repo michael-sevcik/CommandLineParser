@@ -198,7 +198,7 @@ namespace ArgumentParsing
         /// <returns>Returns true if there were no problems adding the option,
         /// returns false if an error occurred, such as synonyms colliding with already added options, no short options and
         /// no long options at the same time and other undefined behavior.
-        /// </returns>
+        /// </returns>e
         public bool RegisterOption(Parser parser)
         {
             if (!wasActionSpecified) return false;
