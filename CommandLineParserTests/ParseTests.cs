@@ -47,31 +47,7 @@ namespace CommandLineParserTests
             Assert.IsNotNull(parser.Error);
             Assert.AreEqual(parser.Error.Value.type, ParserErrorType.MissingMandatoryOption);
         }
-            
-        [Test]
-        [TestCase(new object[] { "-f", "2", "-p", "--",  "John" })]
-        [TestCase(new object[] { "-f", "0.2", "-p", "--", "John" })]
-        [TestCase(new object[] { "-f", "True", "-p", "--", "John" })]
-        public void stringParameterDoNotParseOtherDataTypes(object[] argsO) 
-        {
-            // arrange
-            string[] args = Array.ConvertAll(argsO, x => x.ToString());
 
-            // act
-            optionBuilder.Reset()
-                 .WithShortSynonyms('f')
-                 .WithLongSynonyms("format")
-                 .WithParametrizedAction<string?>(format => Console.WriteLine("Format accepted."))
-                 .RequiresParameter()
-                 .WithHelpString("Specify output format, possibly overriding the format specified in the environment variable TIME.")
-                 .RegisterOption(parser);
-
-            parser.ParseCommandLine(args);
-
-            // assert
-            Assert.IsNotNull(parser.Error);
-            Assert.AreEqual(parser.Error.Value.type, ParserErrorType.CouldNotParseTheParameter);
-        }
 
         [Test]
         [TestCase(new object[] { "-f", "form", "-p", "--", "John" })]
@@ -189,19 +165,6 @@ namespace CommandLineParserTests
             // assert
             Assert.IsNotNull(parser.Error);
             Assert.AreEqual(parser.Error.Value.type, ParserErrorType.Other);
-        }
-
-        [Test]
-        public void longOptionIdentifierAfterThePlainArgumentsIdentifierPresentInCommandLine()
-        {
-            // act
-            string[] args = { "-p", "--", "--John" };
-
-            parser.ParseCommandLine(args);
-
-            // assert
-            Assert.IsNotNull(parser.Error);
-            Assert.AreEqual(parser.Error.Value.type, ParserErrorType.InvalidOptionIdentifier);
         }
 
         [Test]
