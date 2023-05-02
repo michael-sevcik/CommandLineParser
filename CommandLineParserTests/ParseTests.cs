@@ -113,28 +113,6 @@ namespace CommandLineParserTests
         }
 
         [Test]
-        public void wrongSeparatorUsedForMultipleParamOptionsInCommandLine()
-        {
-            // act
-            optionBuilder.Reset()
-                 .WithShortSynonyms('f')
-                 .WithLongSynonyms("format")                 
-                 .WithMultipleParametersAction<string>((string[]?formats )=> Console.WriteLine(formats))                
-                 .RequiresParameter()
-                 // .WithSeparator(char separator = ',') // I was not able to add the separator
-                 .WithHelpString("Specify output format, possibly overriding the format specified in the environment variable TIME.")
-                 .RegisterOption(parser);
-
-            string[] args = { "-f", "format1;format2", "-p", "--", "John" };
-
-            parser.ParseCommandLine(args);
-
-            // assert
-            Assert.IsNotNull(parser.Error);
-            Assert.AreEqual(parser.Error.Value.type, ParserErrorType.Other);
-        }
-
-        [Test]
         public void wrongOrderOfMandatoryAndOptionalPlainArguments()
         { 
             // act

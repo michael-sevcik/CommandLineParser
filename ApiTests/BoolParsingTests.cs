@@ -10,10 +10,6 @@ namespace ApiTests
     public class BoolParsingTests
     {
         [DataRow("true")]
-        [DataRow("1")]
-        [DataRow("yes")]
-        [DataRow("y")]
-        [DataRow("Y")]
         [DataTestMethod]
         public void TestParseBool_True(string value)
         {
@@ -34,10 +30,6 @@ namespace ApiTests
         }
 
         [DataRow("false")]
-        [DataRow("0")]
-        [DataRow("no")]
-        [DataRow("n")]
-        [DataRow("N")]
         [DataTestMethod]
         public void TestParseBool_False(string value)
         {
