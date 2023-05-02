@@ -23,6 +23,8 @@ namespace ArgumentParsing
         string? helpString = null;
         bool multipleParameterOption = false;
 
+        bool wasActionSpecified = false;
+
         (Type actionType, Delegate action) actionTuple;     //User provided action and its type, which is used for retrieving parsed parameters.
         Type multipleParameterOptionType;       //Type which represents array of User-chosen type. For example user choses T here is typeof(T[])
 
@@ -61,6 +63,7 @@ namespace ArgumentParsing
         {
             actionTuple = (typeof(Action), action);
             multipleParameterOption = false;
+            wasActionSpecified = true;
             return this;
         }
 
@@ -82,6 +85,7 @@ namespace ArgumentParsing
             if (!isOfSupportedTypesForParametrizedOption(typeof(TArgument)))throw new InvalidOperationException();
             actionTuple = (typeof(TArgument), action);
             multipleParameterOption = false;
+            wasActionSpecified = true;
             return this;
         }
 
@@ -102,6 +106,7 @@ namespace ArgumentParsing
             multipleParameterOption = true;
             actionTuple = (typeof(TArgument), action);
             multipleParameterOptionType = typeof(TArgument[]);
+            wasActionSpecified = true;
             return this;
         }
 
@@ -196,6 +201,7 @@ namespace ArgumentParsing
         /// </returns>
         public bool RegisterOption(Parser parser)
         {
+            if (!wasActionSpecified) return false;
             var option = CreateParticularOptionForRegistration();
             option.HelpString = helpString;
             return parser.Add(option);           

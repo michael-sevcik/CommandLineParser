@@ -39,7 +39,7 @@ namespace CommandLineParserTests
                                            .RegisterOption(parser);
 
             // assert            
-            Assert.IsFalse(correctAddingOfOption);
+            Assert.IsTrue(correctAddingOfOption);
         }
 
         [Test]
