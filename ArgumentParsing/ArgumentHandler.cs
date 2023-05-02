@@ -1,4 +1,5 @@
-﻿using System;
+﻿using ArgumentParsing.Option;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics;
@@ -10,7 +11,7 @@ namespace ArgumentParsing;
 
 public partial class Parser
 {
-    partial class ArgumentProcessor
+    partial class ArgumentProcessor // TODO: Should there be a clear/restart method?
     {
         public struct ArgumentProcessingResult
         {
@@ -37,6 +38,7 @@ public partial class Parser
 
         readonly IPlainArgument[]? plainArguments;
         readonly OptionSet.OptionSet options;
+        readonly IReadOnlyList<IPlainArgument>? mandatoryPlainArguments;
 
         HashSet<IOption> optionsToTakeAction = new();
         HashSet<IPlainArgument> plainArgumentsToTakeAction = new();
@@ -57,6 +59,7 @@ public partial class Parser
         {
             plainArguments = parser.plainArguments;
             options = parser.options;
+            mandatoryPlainArguments = parser.mandatoryPlainArguments;
         }
 
         public bool ProcessArgument(string argument) // TODO: test what happens when an argument enclosed in '"' is passed. If it is already trimmed or not.
@@ -91,24 +94,32 @@ public partial class Parser
             {
                 if (!optionsToTakeAction.Contains(option))
                 {
-                    // todo: handle error.
+                    Error = new(
+                        ParserErrorType.MissingMandatoryOption,
+                        "A mandatory option did not occur on the command-line.",
+                        option);
+
+                    return false;
                 }
             }
 
-            foreach (var plainArgument in options.MandatoryPlainArguments)
+            foreach (var plainArgument in mandatoryPlainArguments ?? Array.Empty<IPlainArgument>())
             {
                 if (!plainArgumentsToTakeAction.Contains(plainArgument))
                 {
-                    // todo: handle error.
+                    Error = new(
+                        ParserErrorType.MissingMandatoryPlainArgument,
+                        "A mandatory plain argument did not occur on the command-line.",
+                        plainArgumentInError: plainArgument);
+
+                    return false;
                 }
             }
 
-            result = new
-            (
+            result = new(
                 optionsToTakeAction: optionsToTakeAction.ToArray(),
                 plainArgumentsToTakeAction: plainArgumentsToTakeAction.ToArray(),
-                excessivePlainArgumentsEntries: excessivePlainArgumentsEntries.ToArray()
-            );
+                excessivePlainArgumentsEntries: excessivePlainArgumentsEntries.ToArray());
 
             optionsToTakeAction.Clear();
             plainArgumentsToTakeAction.Clear();
@@ -164,7 +175,7 @@ public partial class Parser
                 return true;
             }
 
-            // plainArguments want ever be null here thanks to the starting check
+            // plainArguments won't ever be null here thanks to the starting check
             var plainArgumentToProcess = plainArguments![nextPlainArgumentPosition++];
 
             if (!plainArgumentToProcess.ProcessParameter(argument))
@@ -183,8 +194,14 @@ public partial class Parser
             var findResult = options.Find(identifier[1]); // get the identifier letter.
             if (findResult is null)
             {
-                var errorMessage = $"Option with an identifier \"{identifier}\" could not be found.";
+                var errorMessage = $"Option with an identifier \"{identifier}\" could not be found."; // TODO: Try to encapsulate error in a function together.
                 Error = new(ParserErrorType.InvalidOptionIdentifier, errorMessage);
+                return false;
+            }
+
+            if (optionsToTakeAction.Contains(findResult)) // double occurrence of the same option // TODO: Consider MOVING this to a method.
+            {
+                Error = new(ParserErrorType.RepeatedOccurenceOfOption, "The given option already occurred on the commaind-line.", findResult);
                 return false;
             }
 
@@ -192,9 +209,9 @@ public partial class Parser
             {
                 optionAwaitingParameter = parametrizedOption;
             }
-            else
-            {
-                optionsToTakeAction.Add(findResult); // TODO: handle double occurrence.
+            else 
+            { 
+                optionsToTakeAction.Add(findResult);
             }
 
             return true;
@@ -211,13 +228,19 @@ public partial class Parser
                 return false;
             }
 
+            if (optionsToTakeAction.Contains(optionFindResult)) // double occurrence of the same option  // TODO: duplicit
+            {
+                Error = new(ParserErrorType.RepeatedOccurenceOfOption, "The given option already occurred on the commaind-line.", optionFindResult);
+                return false;
+            }
+
             if (optionFindResult is not IParametrizedOption parametrizedOption)
             {
                 optionsToTakeAction.Add(optionFindResult);
                 return true;
             }
 
-            // Processing parametrized option
+            // Processing parametrized option // TODO: Consider encapsulating this in a function.
 
             // if there is no parameter
             if (splitted.Length < 2)
@@ -250,16 +273,16 @@ public partial class Parser
             return true;
         }
 
-        void HandleError(string message) { }
+        void HandleError(string message) {  } // TODO: remove?
 
         private ArgumentType DetermineArgumentType(string argument)
-            => argument switch
-            {
-                "--" => ArgumentType.PlainArgumentsDelimiter,
-                _ when argument.Length > 2 && argument.StartsWith("--") => ArgumentType.ShortOptionIdentifier,
-                _ when argument.Length > 2 && argument.StartsWith('-') => ArgumentType.ShortOptionIdentifier,
-                _ => ArgumentType.Other
-            };
+        => argument switch
+        {
+            "--" => ArgumentType.PlainArgumentsDelimiter,
+            _ when argument.Length > 2 && argument.StartsWith("--") => ArgumentType.ShortOptionIdentifier,
+            _ when argument.Length > 2 && argument.StartsWith('-') => ArgumentType.ShortOptionIdentifier,
+            _ => ArgumentType.Other
+        };
     }
 }
 

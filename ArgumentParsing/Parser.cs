@@ -40,6 +40,11 @@ public enum ParserErrorType : byte
     MissingOptionParameter,
 
     /// <summary>
+    /// A given option occurred on the command-line more than once. // TODO: Add to documentation.
+    /// </summary>
+    RepeatedOccurenceOfOption,
+
+    /// <summary>
     /// When other errors occur.
     /// </summary>
     Other
@@ -57,9 +62,14 @@ public readonly struct ParserError // TODO: Consider changing ParserError to Par
     public readonly ParserErrorType type;
 
     /// <summary>
-    /// Option related to the error.
+    /// Option related to the error. Null if there is no option related
     /// </summary>
     public readonly IOption? optionInError;
+
+    /// <summary>
+    /// PlainArgument related to the error. Null if there is no plain argument related.
+    /// </summary>
+    public readonly IPlainArgument? plainArgumentInError;
 
     /// <summary>
     /// Description of the error that has occurred.
@@ -69,10 +79,11 @@ public readonly struct ParserError // TODO: Consider changing ParserError to Par
     /// <summary>
     /// Creates instance of <see cref="ParserError"/> with a specified type, option and additional info message.
     /// </summary>
-    public ParserError(ParserErrorType type, string message, IOption? optionInError = null)
+    public ParserError(ParserErrorType type, string message, IOption? optionInError = null, IPlainArgument plainArgumentInError = null)
     {
         this.type = type;
         this.optionInError = optionInError;
+        this.plainArgumentInError = plainArgumentInError;
         this.message = message;
     }
 }
@@ -80,7 +91,7 @@ public readonly struct ParserError // TODO: Consider changing ParserError to Par
 /// <summary>
 /// The Parser class enables parsing of command-line inputs.
 /// </summary>
-public sealed partial class Parser      //TODO: Michael
+public sealed partial class Parser      // TODO: Michael
 {
     partial class ArgumentProcessor { }
 
@@ -91,9 +102,12 @@ public sealed partial class Parser      //TODO: Michael
         PlainArgumentsDelimiter,
         Other
     }
+    // TODO: Consider merging IOption a IPlainArgument
+    // TODO: Custom types of options and plain arguments should be also immutable. -  documentation
 
-    private IPlainArgument[]? plainArguments = null;
-    private OptionSet.OptionSet options = new();
+    private readonly IPlainArgument[]? plainArguments = null;
+    private readonly OptionSet.OptionSet options = new();
+    private readonly IPlainArgument[]? mandatoryPlainArguments;
 
     // TODO: add the null info to the documentation
     /// <summary>
@@ -109,10 +123,7 @@ public sealed partial class Parser      //TODO: Michael
     /// <summary>
     /// Creates instance of <see cref="Parser"/> without specified types of plain parameters.
     /// </summary>
-    public Parser()
-    {
-        plainArguments = null;
-    }
+    public Parser() { }
 
     /// <summary>
     /// Creates instance of <see cref="Parser"/> with specified types of plain parameters.
@@ -126,7 +137,10 @@ public sealed partial class Parser      //TODO: Michael
     public Parser(IPlainArgument[] plainArguments)
     {
         this.plainArguments = plainArguments;
-    }
+        mandatoryPlainArguments = this.plainArguments.Where(plainArgument => plainArgument.IsMandatory).ToArray();
+    } 
+    // TODO: Add to documentation that the plainArguments (especially the default library types) had to be unique,
+    // otherwise the parser will fail on repeated plainArgument occurrence OR WE CAN JUST RISK LOSING SOME DATA.
 
     /// <summary>
     /// Adds the option to the OptionSet.
@@ -144,22 +158,32 @@ public sealed partial class Parser      //TODO: Michael
     /// </summary>
     /// <param name="args">Command line arguments.</param>
     /// <returns>True when parsing was successful, otherwise false.</returns>
-    public bool ParseCommandLine(string[] args) // TODO: We will possibly need to add a method used to restore the IParametrizedOption instance, when the parsing fails.
+    public bool ParseCommandLine(string[] args) // TODO: We will probably need to add a method used to restore the IParametrizedOption instance, when the parsing fails.
     {
-        // TODO: check that all mandatory options are present.
         ArgumentProcessor argumentProcessor = new(this);
 
         for (int i = 0; i < args.Length; i++)
         {
             if (!argumentProcessor.ProcessArgument(args[i]))
             {
-                // TODO: add error handling
+                Error = argumentProcessor.Error;
                 return false;
             }
         }
 
-        // todo: finalize argument processing
-        // todo: transfer excessive plain arguments.
+        argumentProcessor.FinalizeProcessing(out var result);
+        RemainingPlainArguments = result.excessivePlainArgumentsEntries;
+
+        foreach (var option in result.optionsToTakeAction)
+        {
+            option.TakeAction();
+        }
+
+        foreach (var plainArgument in result.plainArgumentsToTakeAction)
+        {
+            plainArgument.TakeAction();
+        }
+
         return true;
     }
 
