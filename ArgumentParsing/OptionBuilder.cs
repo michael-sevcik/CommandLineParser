@@ -197,7 +197,9 @@ namespace ArgumentParsing
         /// </returns>
         public bool RegisterOption(Parser parser)
         {
-            return parser.Add(CreateParticularOptionForRegistration());           
+            var option = CreateParticularOptionForRegistration();
+            option.HelpString = helpString;
+            return parser.Add(option);           
         }
 
         public IOption CreateParticularOptionForRegistration()
@@ -210,7 +212,7 @@ namespace ArgumentParsing
             else if (actionType == typeof(string))     //String Options
             {
                 if (!multipleParameterOption)
-                    return new GenericParameterOption<string>(parseString, (Action<string?>)actionObject, isMandatory, shortSynonyms, longSynonyms);
+                    return new GenericParameterOption<string>(parseString, (Action<string?>)actionObject, isMandatory, shortSynonyms, longSynonyms,requiresParameter);
 
                 return new GenericMultipleParameterOption<string>(
                     parseStringMultipleParameters,
@@ -218,22 +220,23 @@ namespace ArgumentParsing
                     isMandatory,
                     shortSynonyms,
                     longSynonyms,
+                    requiresParameter,
                     separator
                     );
             }
             else if (actionType == typeof(int?) || actionType == typeof(int))     //Int Options
             {
                 if (!multipleParameterOption)
-                    return new GenericParameterOption<int?>(parseInt, (Action<int?>)actionObject, isMandatory, shortSynonyms, longSynonyms);
+                    return new GenericParameterOption<int?>(parseInt, (Action<int?>)actionObject, isMandatory, shortSynonyms, longSynonyms,requiresParameter);
 
-                return new GenericMultipleParameterOption<int>(parseIntMultipleParameters, (Action<int[]?>)actionObject, isMandatory, shortSynonyms, longSynonyms, separator);
+                return new GenericMultipleParameterOption<int>(parseIntMultipleParameters, (Action<int[]?>)actionObject, isMandatory, shortSynonyms, longSynonyms, requiresParameter, separator);
 
             }
             else if (actionType == typeof(bool?) || actionType == typeof(bool))    //Bool Option
             {
 
                 if (!multipleParameterOption)
-                    return new GenericParameterOption<bool?>(parseBool, (Action<bool?>)actionObject, isMandatory, shortSynonyms, longSynonyms);
+                    return new GenericParameterOption<bool?>(parseBool, (Action<bool?>)actionObject, isMandatory, shortSynonyms, longSynonyms,requiresParameter);
 
                 return new GenericMultipleParameterOption<bool>(
                     parseBoolMultipleParameters,
@@ -241,6 +244,7 @@ namespace ArgumentParsing
                     isMandatory,
                     shortSynonyms,
                     longSynonyms,
+                    requiresParameter,
                     separator
                     );
                     
@@ -264,7 +268,9 @@ namespace ArgumentParsing
                         isMandatory,
                         shortSynonyms,
                         longSynonyms,
+                        requiresParameter,
                         separator
+                        
                         );
                     return (IOption)instance;
                 }
@@ -284,6 +290,7 @@ namespace ArgumentParsing
                         isMandatory,
                         shortSynonyms,
                         longSynonyms,
+                        requiresParameter,
                         separator
                         );
                     return (IOption)instance;
