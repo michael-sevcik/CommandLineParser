@@ -109,7 +109,7 @@ namespace CommandLineParserTests
 
             // assert
             Assert.IsNotNull(parser.Error);
-            Assert.AreEqual(parser.Error.Value.type, ParserErrorType.Other);
+            Assert.AreEqual(ParserErrorType.MissingOptionParameter, parser.Error.Value.type);
         }
         [Test]
         public void optionWithMaxOneParamRequiredHasMultipleParamsInCommandLine()
@@ -190,7 +190,7 @@ namespace CommandLineParserTests
 
             // assert
             Assert.IsNotNull(parser.Error);
-            Assert.AreEqual(parser.Error.Value.type, ParserErrorType.CouldNotParseTheParameter);
+            Assert.AreEqual(ParserErrorType.MissingMandatoryPlainArgument, parser.Error.Value.type);
         }
 
         [Test]
