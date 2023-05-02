@@ -284,7 +284,7 @@ public partial class Parser
         {
             "--" => ArgumentType.PlainArgumentsDelimiter,
             _ when argument.Length > 2 && argument.StartsWith("--") => ArgumentType.ShortOptionIdentifier,
-            _ when argument.Length > 2 && argument.StartsWith('-') => ArgumentType.ShortOptionIdentifier,
+            _ when argument.Length >= 2 && argument.StartsWith('-') => ArgumentType.ShortOptionIdentifier,
             _ => ArgumentType.Other
         };
     }
