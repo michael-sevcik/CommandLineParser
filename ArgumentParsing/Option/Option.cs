@@ -111,12 +111,15 @@ namespace ArgumentParsing.Option
 
     }
 
+    //delegates which we pass to Generic Option classes, which are used for parsing the parameters on command line
+    //decreases number of classes needed to be implemented
     delegate bool ParseMethodDelegate<T>(string input, out T output );
     delegate bool ParseMethodDelegateMultipleOption<T>(string input, out T[]? output, char separator = ',');
 
     /// <summary>
     /// Generic class for parametrized options.
     /// </summary>
+    /// /// <typeparam name="T"> Type of parameter</typeparam>
     internal class GenericParameterOption<T> : ParameterOption, IParametrizedOption
     {
         Action<T?> action;
@@ -161,10 +164,17 @@ namespace ArgumentParsing.Option
             return wasSuccessful;
         }
 
+        /// <summary>
+        /// Calls the user-provided action, which returns parsed parameter to the user
+        /// </summary>
         public override void TakeAction() => action(parserResult);
 
     }
 
+    /// <summary>
+    /// Generic class for Multiple parameter options.
+    /// </summary>
+    /// <typeparam name="T"> Type of parameters</typeparam>
     internal class GenericMultipleParameterOption<T> : ParameterOption , IMultipleParameterOption
     {
         Action<T[]?> action;
