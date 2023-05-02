@@ -14,11 +14,11 @@
             {
                 if (dictionary.ContainsKey(shortSynonym))
                 {
-                    return false;
+                    return true;
                 }
             }
 
-            return true;
+            return false;
         }
     }
 

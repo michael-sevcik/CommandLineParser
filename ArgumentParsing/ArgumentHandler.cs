@@ -53,7 +53,11 @@ public partial class Parser
         /// <summary>
         /// If an error occurs during parsing it gets a instance of <see cref="ParserError"/> that is describing the problem, otherwise null.
         /// </summary>
-        public ParserError? Error { get; private set; } = null;
+        public ParserError? Error 
+        { 
+            get; 
+            private set; 
+        } = null;
 
         public ArgumentProcessor(Parser parser)
         {
