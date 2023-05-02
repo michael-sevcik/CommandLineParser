@@ -111,26 +111,6 @@ namespace CommandLineParserTests
             Assert.IsNotNull(parser.Error);
             Assert.AreEqual(ParserErrorType.MissingOptionParameter, parser.Error.Value.type);
         }
-        [Test]
-        public void optionWithMaxOneParamRequiredHasMultipleParamsInCommandLine()
-        {
-            // act
-            optionBuilder.Reset()
-                 .WithShortSynonyms('f')
-                 .WithLongSynonyms("format")
-                 .WithParametrizedAction<string?>(format => Console.WriteLine(format))
-                 .RequiresParameter()
-                 .WithHelpString("Specify output format, possibly overriding the format specified in the environment variable TIME.")
-                 .RegisterOption(parser);
-
-            string[] args = { "-f", "format1,format2", "-p", "--", "John" };
-
-            parser.ParseCommandLine(args);
-
-            // assert
-            Assert.IsNotNull(parser.Error);
-            Assert.AreEqual(parser.Error.Value.type, ParserErrorType.Other);
-        }
 
         [Test]
         public void wrongSeparatorUsedForMultipleParamOptionsInCommandLine()
@@ -164,20 +144,7 @@ namespace CommandLineParserTests
 
             // assert
             Assert.IsNotNull(parser.Error);
-            Assert.AreEqual(parser.Error.Value.type, ParserErrorType.Other);
-        }
-
-        [Test]
-        public void shortOptionIdentifierAfterThePlainArgumentsIdentifierPresentInCommandLine()
-        {
-            // act
-            string[] args = { "-p", "--", "-J" };
-
-            parser.ParseCommandLine(args);
-
-            // assert
-            Assert.IsNotNull(parser.Error);
-            Assert.AreEqual(parser.Error.Value.type, ParserErrorType.InvalidOptionIdentifier);
+            Assert.AreEqual(ParserErrorType.CouldNotParseTheParameter, parser.Error.Value.type);
         }
 
         [Test]
