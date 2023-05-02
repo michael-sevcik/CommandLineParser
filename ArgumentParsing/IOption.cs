@@ -106,6 +106,7 @@ namespace ArgumentParsing
     /// </summary>
     public interface IMultipleParameterOption : IParametrizedOption
     {
+        public char Separator { get; }
         /// <summary>
         /// Creates an instance of <see cref="IMultipleParameterOption"/>.
         /// </summary>
