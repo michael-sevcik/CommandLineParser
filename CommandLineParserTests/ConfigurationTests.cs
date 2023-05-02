@@ -83,7 +83,8 @@ namespace CommandLineParserTests
         [Test]
         public void optionBuilderNotResetBeforeAddingAnotherOption() 
         {
-            // act
+            // act 
+            // there is default value, which was not mentioned in documentation
             bool correctAddingOfOptions = optionBuilder
                                             .WithShortSynonyms('p')
                                             .WithLongSynonyms("portability")
@@ -93,7 +94,7 @@ namespace CommandLineParserTests
                                             .RegisterOption(parser);
 
             // assert
-            Assert.IsFalse(correctAddingOfOptions);
+            Assert.IsTrue(correctAddingOfOptions);
         }
         [Test]
         public void noActionSpecifiedForOption()
