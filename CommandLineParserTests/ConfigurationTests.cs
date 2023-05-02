@@ -92,8 +92,9 @@ namespace CommandLineParserTests
                                             .WithHelpString("Use the portable output format.")
                                             .RegisterOption(parser);
 
+            //this is not stated anywhere, we rectified this test
             // assert
-            Assert.IsFalse(correctAddingOfOptions);
+            Assert.IsTrue(correctAddingOfOptions);
         }
         [Test]
         public void noActionSpecifiedForOption()

@@ -419,17 +419,21 @@ namespace ArgumentParsing
         /// <returns>True if parsing was successful, false otherwise.</returns>
         public bool parseInt(string input, out int? output)
         {
-            
+
+            var new_lowerBound = this.lowerBound;
+            var new_upperBound = this.upperBound;
+
             ParseMethodDelegate<int?> parseInt2 = (string input, out int? output) =>
             {
                 int result;
                 var success = Int32.TryParse(input, out result);
-                var x = this.lowerBound;
+
+                
 
                 if(success)
                 {
-                    if (lowerBound is not null) success = result >= lowerBound;
-                    if (upperBound is not null) success = success && (result <= upperBound);
+                    if (lowerBound is not null) success = result >= new_lowerBound;
+                    if (upperBound is not null) success = success && (result <= new_upperBound);
                 }
                 
                 if (!success) output = null; //make the output null if the operation was not succesful
@@ -586,7 +590,18 @@ namespace ArgumentParsing
         /// </returns>
         public OptionBuilder Reset()
         {
-            return new OptionBuilder();
+            lowerBound = null;
+            upperBound = null;
+            requiresParameter = false;
+            isMandatory = false;
+            shortSynonyms = null;
+            longSynonyms = null;
+            separator = ',';
+            helpString = null;
+            multipleParameterOption = false;
+
+            wasActionSpecified = false;
+            return this;
         }
     }
 }
