@@ -108,19 +108,11 @@ namespace CommandLineParserTests
             string[] args = Array.ConvertAll(argsO, x => x.ToString());
 
             // act
-            optionBuilder.Reset()
+            Assert.Throws<InvalidOperationException>(()=>optionBuilder.Reset()
                  .WithShortSynonyms('f')
                  .WithLongSynonyms("format")
-                 .WithParametrizedAction<float?>(format => Console.WriteLine("Format accepted."))
-                 .RequiresParameter()
-                 .WithHelpString("Specify output format, possibly overriding the format specified in the environment variable TIME.")
-                 .RegisterOption(parser);
-
-            parser.ParseCommandLine(args);
-
-            // assert
-            Assert.IsNotNull(parser.Error);
-            Assert.AreEqual(parser.Error.Value.type, ParserErrorType.CouldNotParseTheParameter);
+                 .WithParametrizedAction<float?>(format => Console.WriteLine("Format accepted.")));
+            
         }
         
         [Test]
