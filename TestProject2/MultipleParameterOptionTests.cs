@@ -116,7 +116,7 @@ namespace MultipleParameterOptionTests
         [Test]
         [TestCase("156,1566,-1", null)]
         [TestCase("10,20,30,2147483647", null)]
-        public void SimpleTestWithUpperAndLowerBoundShouldNotPass(string input, int? expectedOutput)
+        public void SimpleTestWithUpperAndLowerBoundShouldNotPass(string input, int[]? expectedOutput)
         {
             OptionBuilder ob = new OptionBuilder();
             int[]? result = null;
