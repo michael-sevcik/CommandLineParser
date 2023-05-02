@@ -1,6 +1,26 @@
 ﻿namespace ArgumentParsing.OptionSet
 {
     using Option;
+    internal static class DictionaryExtensions
+    {
+        public static bool ContainsOneOfKeys<TKey, TValue>(this Dictionary<TKey, TValue> dictionary, TKey[]? keys) where TKey : notnull
+        {
+            if (keys is null)
+            {
+                return false;
+            }
+
+            foreach (var shortSynonym in keys)
+            {
+                if (dictionary.ContainsKey(shortSynonym))
+                {
+                    return false;
+                }
+            }
+
+            return true;
+        }
+    }
 
     /// <summary>
     /// The OptionSet class is used to define the set of options that can be parsed by the Parser class.
@@ -11,8 +31,15 @@
     /// </Remarks>
     internal class OptionSet
     {
-        private Dictionary<string, Option> longOptions = new();
-        private Dictionary<char, Option> shortOptions = new();
+        private Dictionary<string, IOption> optionsByLongSynonyms = new();
+        private Dictionary<char, IOption> optionsByShortSynonyms = new();
+        private List<IOption> mandatoryOptions = new();
+
+        /// <summary>
+        /// Gets the list of options that were added to the OptionSet and are mandatory.
+        /// </summary>
+        public IReadOnlyList<IOption> MandatoryOptions => mandatoryOptions;
+
 
         /// <summary>
         /// Adds the option to the OptionSet.
@@ -24,7 +51,13 @@
         /// </returns>
         public bool Add(IOption option)
         {
-            throw new NotImplementedException();
+            if (!IsOptionAddable(option))
+            {
+                return false;
+            }
+
+            RegisterOption(option);
+            return true;
         }
 
         /// <summary>
@@ -33,9 +66,7 @@
         /// <param name="shortIdentifier">Short identifier of an option.</param>
         /// <returns>Returns an option if corresponding one was found, otherwise null.</returns>
         public IOption? Find(char shortIdentifier)
-        {
-            throw new NotImplementedException();
-        }
+        => optionsByShortSynonyms.GetValueOrDefault(shortIdentifier);
 
         /// <summary>
         /// Looks for option that was added to the OptionSet and has the specified identifier.
@@ -43,8 +74,48 @@
         /// <param name="longIdentifier">Long identifier of an option.</param>
         /// <returns>Returns an option if corresponding one was found, otherwise null.</returns>
         public IOption? Find(string longIdentifier)
+        => optionsByLongSynonyms.GetValueOrDefault(longIdentifier);
+
+        private bool IsOptionAddable(IOption option)
         {
-            throw new NotImplementedException();
+            if (optionsByShortSynonyms.ContainsOneOfKeys(option.ShortSynonyms)) 
+            {
+                return false;
+            }
+
+            if (optionsByLongSynonyms.ContainsOneOfKeys(option.LongSynonyms))
+            {
+                return false;
+            }
+
+            return true;
         }
+
+        private void RegisterOption(IOption option)
+        {
+            if (option.IsMandatory)
+            {
+                mandatoryOptions.Add(option);
+            }
+
+            if (option.ShortSynonyms is not null)
+            {
+                foreach (var synonym in option.ShortSynonyms)
+                {
+                    optionsByShortSynonyms.Add(synonym, option);
+                }
+            }
+            
+            if (option.LongSynonyms is not null)
+            {
+                foreach (var synonym in option.LongSynonyms)
+                {
+                    optionsByLongSynonyms.Add(synonym, option);
+                }
+            }
+        }
+
+        
+        
     }
 }
