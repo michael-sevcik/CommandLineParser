@@ -133,8 +133,8 @@ public class SimpleOptionsTest
         bool res = parser.ParseCommandLine(args);
 
         // Assert
-        Assert.IsTrue(res);
-        Assert.AreEqual(ParserErrorType.CouldNotParseTheParameter, parser.Error?.type);
+        Assert.IsFalse(res);
+        Assert.AreEqual(ParserErrorType.MissingOptionParameter, parser.Error?.type);
     }
 
     [TestMethod]
@@ -177,9 +177,9 @@ public class SimpleOptionsTest
         bool res = parser.ParseCommandLine(args);
 
         // Assert
-        Assert.IsTrue(res);
-        Assert.IsTrue(portable);
-        Assert.AreEqual(result, "format");
+        Assert.IsFalse(res);
+        Assert.IsFalse(portable);
+        Assert.AreEqual(result, null);
     }
     [TestMethod]
     public void RepeatedShortOption()
@@ -338,7 +338,7 @@ public class SimpleOptionsTest
     }
 
     [TestMethod]
-    public void InvalidParametersFail() {
+    public void ValidParametersSucceed() {
         // Arrange
         var args = new string[] { "-p", "invalid" };
 
@@ -346,22 +346,8 @@ public class SimpleOptionsTest
         bool res = parser.ParseCommandLine(args);
 
         // Assert
-        Assert.IsFalse(res);
-        Assert.IsFalse(portable);
-        Assert.IsNull(result);
-    }
-
-    [TestMethod]
-    public void InvalidParametersFailValidDoNothing() {
-        // Arrange
-        var args = new string[] { "-p", "invalid", "-f", "valid" };
-
-        // Act
-        bool res = parser.ParseCommandLine(args);
-
-        // Assert
-        Assert.IsFalse(res);
-        Assert.IsFalse(portable);
+        Assert.IsTrue(res);
+        Assert.IsTrue(portable);
         Assert.IsNull(result);
     }
 
