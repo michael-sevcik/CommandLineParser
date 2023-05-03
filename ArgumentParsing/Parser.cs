@@ -95,17 +95,11 @@ public sealed partial class Parser      // TODO: Michael
 {
     partial class ArgumentProcessor { }
 
-    enum ArgumentType : byte
-    {
-        ShortOptionIdentifier,
-        LongOptionIdentifier,
-        PlainArgumentsDelimiter,
-        Other
-    }
     // TODO: Consider merging IOption a IPlainArgument
     // TODO: Custom types of options and plain arguments should be also immutable. -  documentation
 
-    private readonly IPlainArgument[]? plainArguments = null;
+    private readonly IPlainArgument[]? plainArguments;
+    private readonly string? plainArgumentsHelpMessage;
     private readonly OptionSet.OptionSet options = new();
     private readonly IPlainArgument[]? mandatoryPlainArguments;
 
@@ -134,10 +128,11 @@ public sealed partial class Parser      // TODO: Michael
     /// IMultipleParameterOption when he wants to process plain arguments separated by the separator. Or he can create them manually and non-necessary
     /// fields and properties are mentioned next to the mentioned methods.
     /// </param>
-    public Parser(IPlainArgument[] plainArguments)
+    public Parser(IPlainArgument[] plainArguments, string? plainArgumentsHelpMessage = null) // Todo: Add parameter to documentation.
     {
         this.plainArguments = plainArguments;
         mandatoryPlainArguments = this.plainArguments.Where(plainArgument => plainArgument.IsMandatory).ToArray();
+        this.plainArgumentsHelpMessage = plainArgumentsHelpMessage;
     } 
     // TODO: Add to documentation that the plainArguments (especially the default library types) had to be unique,
     // otherwise the parser will fail on repeated plainArgument occurrence OR WE CAN JUST RISK LOSING SOME DATA.
@@ -206,10 +201,7 @@ public sealed partial class Parser      // TODO: Michael
     /// </summary>
     /// <param name="PAHelpString">Help string to be shown next to -- in help page.</param>
 
-    public void SetPlainArgumentHelpString(string PAHelpString)
-    {
-        throw new NotImplementedException();
-    }
+    //public void SetPlainArgumentHelpString(string PAHelpString) // TODO: delete this from documentation.
 
 
 }

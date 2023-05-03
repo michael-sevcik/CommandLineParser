@@ -1,4 +1,5 @@
 ﻿using ArgumentParsing.Option;
+using NUnit.Framework;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -13,6 +14,14 @@ public partial class Parser
 {
     partial class ArgumentProcessor // TODO: Should there be a clear/restart method?
     {
+        enum ArgumentType : byte
+        {
+            ShortOptionIdentifier,
+            LongOptionIdentifier,
+            PlainArgumentsDelimiter,
+            Other
+        }
+
         public struct ArgumentProcessingResult
         {
             public readonly IOption[] optionsToTakeAction;
@@ -53,10 +62,10 @@ public partial class Parser
         /// <summary>
         /// If an error occurs during parsing it gets a instance of <see cref="ParserError"/> that is describing the problem, otherwise null.
         /// </summary>
-        public ParserError? Error 
-        { 
-            get; 
-            private set; 
+        public ParserError? Error
+        {
+            get;
+            private set;
         } = null;
 
         public ArgumentProcessor(Parser parser)
@@ -67,7 +76,7 @@ public partial class Parser
         }
 
         public bool ProcessArgument(string argument) // TODO: test what happens when an argument enclosed in '"' is passed. If it is already trimmed or not.
-        {            
+        {
             if (state == ParsingState.PlainArguments)
             {
                 return HandlePlainArgument(argument);
@@ -75,13 +84,12 @@ public partial class Parser
 
             return DetermineArgumentType(argument) switch
             {
-                // TODO: If the option identifier is invalid, should it be passed to optionAwaitingParameter or it should be perceived as a error?
                 ArgumentType.ShortOptionIdentifier => ProcessPossibleWaitingOption() && HandleShortOptionIdentifier(argument),
                 ArgumentType.LongOptionIdentifier => ProcessPossibleWaitingOption() && HandleLongOptionIdentifier(argument),
                 ArgumentType.PlainArgumentsDelimiter => ProcessPossibleWaitingOption() && ProcessPlainArgumentDelimiter(),
                 ArgumentType.Other when optionAwaitingParameter is not null => PassArgumentToWaitingOption(argument),
                 ArgumentType.Other => HandlePlainArgument(argument),
-                _ => false, // Cannot occur.
+                _ => throw new AssertionException("Not defined Argument type value."), // Cannot occur.
             };
         }
 
@@ -100,7 +108,7 @@ public partial class Parser
                 {
                     Error = new(
                         ParserErrorType.MissingMandatoryOption,
-                        "A mandatory option did not occur on the command-line.",
+                        CreateErrorMessage(ParserErrorType.MissingMandatoryOption),
                         option);
 
                     return false;
@@ -113,7 +121,7 @@ public partial class Parser
                 {
                     Error = new(
                         ParserErrorType.MissingMandatoryPlainArgument,
-                        "A mandatory plain argument did not occur on the command-line.",
+                        CreateErrorMessage(ParserErrorType.MissingMandatoryPlainArgument),
                         plainArgumentInError: plainArgument);
 
                     return false;
@@ -135,7 +143,7 @@ public partial class Parser
         {
             if (!optionAwaitingParameter!.ProcessParameter(argument))
             {
-                var errorMessage = $"Option could not parse the argument: \"{argument}\".";
+                var errorMessage = CreateErrorMessage(ParserErrorType.CouldNotParseTheParameter, argument);
                 Error = new(ParserErrorType.CouldNotParseTheParameter, errorMessage, optionAwaitingParameter);
                 return false;
             }
@@ -158,7 +166,7 @@ public partial class Parser
 
             if (optionAwaitingParameter.IsParameterRequired)
             {
-                var errorMessage = "There was no parameter for option requiring one.";
+                var errorMessage = CreateErrorMessage(ParserErrorType.MissingOptionParameter);
                 Error = new(ParserErrorType.MissingOptionParameter, errorMessage, optionAwaitingParameter);
                 return false;
             }
@@ -167,7 +175,7 @@ public partial class Parser
                 optionsToTakeAction.Add(optionAwaitingParameter);
                 optionAwaitingParameter = null;
             }
-            
+
             return true;
         }
 
@@ -184,7 +192,7 @@ public partial class Parser
 
             if (!plainArgumentToProcess.ProcessParameter(argument))
             {
-                var errorMessage = $"Option could not parse the argument: \"{argument}\".";
+                var errorMessage = CreateErrorMessage(ParserErrorType.CouldNotParseTheParameter, argument);
                 Error = new(ParserErrorType.CouldNotParseTheParameter, errorMessage, optionAwaitingParameter);
                 return false;
             }
@@ -196,16 +204,8 @@ public partial class Parser
         private bool HandleShortOptionIdentifier(string identifier)
         {
             var findResult = options.Find(identifier[1]); // get the identifier letter.
-            if (findResult is null)
+            if ((Error = CheckFindResult(findResult, identifier)) is not null)
             {
-                var errorMessage = $"Option with an identifier \"{identifier}\" could not be found."; // TODO: Try to encapsulate error in a function together.
-                Error = new(ParserErrorType.InvalidOptionIdentifier, errorMessage);
-                return false;
-            }
-
-            if (optionsToTakeAction.Contains(findResult)) // double occurrence of the same option // TODO: Consider MOVING this to a method.
-            {
-                Error = new(ParserErrorType.RepeatedOccurenceOfOption, "The given option already occurred on the commaind-line.", findResult);
                 return false;
             }
 
@@ -213,54 +213,51 @@ public partial class Parser
             {
                 optionAwaitingParameter = parametrizedOption;
             }
-            else 
-            { 
-                optionsToTakeAction.Add(findResult);
+            else
+            {
+                optionsToTakeAction.Add(findResult!); // CheckFindResult also checks null value.
             }
 
             return true;
         }
 
-        private bool HandleLongOptionIdentifier(string identifier)
+        private bool HandleLongOptionIdentifier(string argument)
         {
-            var splitted = identifier.Split('='); // TODO: Consider using find and substring.
-            var optionFindResult = options.Find(splitted[0].Substring(2)); // starting "--" is removed
-            if (optionFindResult is null)
+
+            var splittedArgument = SplitOptionIdentifierParameterPair(argument);
+
+            var identifier = splittedArgument[0].Substring(2); // starting "--" is removed
+            var findResult = options.Find(identifier);
+            ParserError? checkResult;
+            if ((checkResult = CheckFindResult(findResult, identifier)) is not null)
             {
-                var errorMessage = $"Option with an identifier \"{identifier}\" could not be found."; // TODO: duplicit
-                Error = new(ParserErrorType.InvalidOptionIdentifier, errorMessage);
+                this.Error = checkResult;
                 return false;
             }
 
-            if (optionsToTakeAction.Contains(optionFindResult)) // double occurrence of the same option  // TODO: duplicit
+            if (findResult is not IParametrizedOption parametrizedOption)
             {
-                Error = new(ParserErrorType.RepeatedOccurenceOfOption, "The given option already occurred on the commaind-line.", optionFindResult);
-                return false;
-            }
-
-            if (optionFindResult is not IParametrizedOption parametrizedOption)
-            {
-                optionsToTakeAction.Add(optionFindResult);
+                optionsToTakeAction.Add(findResult!); // CheckFindResult also checks null value.
                 return true;
             }
 
             // Processing parametrized option // TODO: Consider encapsulating this in a function.
 
             // if there is no parameter
-            if (splitted.Length < 2)
+            if (splittedArgument.Length < 2)
             {
                 if (parametrizedOption.IsParameterRequired)
                 {
-                    var errorMessage = "There was no parameter for option requiring one.";
-                    Error = new(ParserErrorType.MissingOptionParameter, errorMessage, optionFindResult);
+                    var errorMessage = CreateErrorMessage(ParserErrorType.MissingOptionParameter);
+                    Error = new(ParserErrorType.MissingOptionParameter, errorMessage, findResult);
                     return false;
                 }
             }
 
             // There is a parameter, try to parse it and handle an eventual parsing error.
-            else if (!parametrizedOption.ProcessParameter(splitted[1]))
+            else if (!parametrizedOption.ProcessParameter(splittedArgument[1]))
             {
-                var errorMessage = $"Option could not parse the argument: \"{splitted[1]}\".";
+                var errorMessage = CreateErrorMessage(ParserErrorType.CouldNotParseTheParameter, splittedArgument[1]);
                 Error = new(ParserErrorType.CouldNotParseTheParameter, errorMessage, optionAwaitingParameter);
                 return false;
             }
@@ -271,19 +268,110 @@ public partial class Parser
             return true;
         }
 
+        string[] SplitOptionIdentifierParameterPair(string optionIdentifier)
+        {
+            var equalsSignPosiotion = optionIdentifier.IndexOf("=");
+            string[] splittedInput;
+            if (equalsSignPosiotion < 0)
+            {
+                splittedInput = new string[] { optionIdentifier };
+            }
+            else
+            {
+                splittedInput = new string[]
+                {
+                    optionIdentifier.Substring(0, equalsSignPosiotion), // Option identifier
+                    optionIdentifier.Substring(equalsSignPosiotion + 1) // Parameter trimmed of equals sign
+                };
+            }
+
+            return splittedInput;
+        }
+
+        ParserError? CheckFindResult(IOption? optionFindResult, string identifier)
+        {
+            if (optionFindResult is null)
+            {
+                var errorMessage = CreateErrorMessage(ParserErrorType.InvalidOptionIdentifier, identifier);
+                return new(ParserErrorType.InvalidOptionIdentifier, errorMessage);
+            }
+
+            if (optionsToTakeAction.Contains(optionFindResult))
+            {
+                return new(
+                    ParserErrorType.RepeatedOccurenceOfOption,
+                    CreateErrorMessage(ParserErrorType.RepeatedOccurenceOfOption),
+                    optionFindResult);
+            }
+
+            return null;
+        }
+
+        ParserError? ProcessArgument()
+        {
+            throw new NotImplementedException();
+        }
+
         bool ProcessPlainArgumentDelimiter()
         {
             state = ParsingState.PlainArguments;
             return true;
         }
 
-        void HandleError(string message) {  } // TODO: remove?
+        string CreateErrorMessage(ParserErrorType type, string? additionalInfo = null)
+        {
+            string errorMessage = string.Empty;
+            if (additionalInfo is not null)
+            {
+                errorMessage = type switch
+                {
+                    ParserErrorType.InvalidOptionIdentifier
+                    => $"Option with an identifier \"{additionalInfo}\" could not be found.",
+                    ParserErrorType.CouldNotParseTheParameter
+                    => $"Option could not parse the argument: \"{additionalInfo}\".",
+                    ParserErrorType.MissingMandatoryOption
+                    => "A mandatory option did not occur on the command-line. " + additionalInfo,
+                    ParserErrorType.MissingMandatoryPlainArgument
+                    => "A mandatory plain argument did not occur on the command-line. " + additionalInfo,
+                    ParserErrorType.MissingOptionParameter
+                    => "There was no parameter for option requiring one. " + additionalInfo,
+                    ParserErrorType.RepeatedOccurenceOfOption
+                    => "The given option already occurred on the commaind-line. " + additionalInfo,
+                    ParserErrorType.Other
+                    => "Not closer defined error. " + additionalInfo,
+                    _ => throw new AssertionException("Enum type has not defined value")
+                };
+            }
+            else
+            {
+                errorMessage = type switch
+                {
+                    ParserErrorType.InvalidOptionIdentifier
+                    => $"Option could not be found.",
+                    ParserErrorType.CouldNotParseTheParameter
+                    => $"Option could not parse its argument.",
+                    ParserErrorType.MissingMandatoryOption
+                    => "A mandatory option did not occur on the command-line.",
+                    ParserErrorType.MissingMandatoryPlainArgument
+                    => "A mandatory plain argument did not occur on the command-line.",
+                    ParserErrorType.MissingOptionParameter
+                    => "There was no parameter for option requiring one.",
+                    ParserErrorType.RepeatedOccurenceOfOption
+                    => "The given option already occurred on the commaind-line.",
+                    ParserErrorType.Other
+                    => "Not closer defined error.",
+                    _ => throw new AssertionException("Enum type has not defined value")
+                };
+            }
+
+            return errorMessage;
+        }
 
         private ArgumentType DetermineArgumentType(string argument)
         => argument switch
         {
             "--" => ArgumentType.PlainArgumentsDelimiter,
-            _ when argument.Length > 2 && argument.StartsWith("--") => ArgumentType.ShortOptionIdentifier,
+            _ when argument.Length > 2 && argument.StartsWith("--") => ArgumentType.LongOptionIdentifier,
             _ when argument.Length >= 2 && argument.StartsWith('-') => ArgumentType.ShortOptionIdentifier,
             _ => ArgumentType.Other
         };
