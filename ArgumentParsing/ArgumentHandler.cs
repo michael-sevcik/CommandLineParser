@@ -203,7 +203,7 @@ public partial class Parser
 
         private bool HandleShortOptionIdentifier(string identifier)
         {
-            var findResult = options.Find(identifier[1]); // get the identifier letter.
+            var findResult = (identifier.Length == 2) ? options.Find(identifier[1]) : null; // Check the identifier and get the identifier letter.
             if ((Error = CheckFindResult(findResult, identifier)) is not null)
             {
                 return false;
