@@ -22,7 +22,6 @@ class RequiredOptionsTests
     {
         // Create Parser.
         parser = new();
-        parser.SetPlainArgumentHelpString("Terminate option list.");
 
         //Create option builder object
         var optionBuilder = new OptionBuilder();
