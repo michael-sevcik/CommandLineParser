@@ -22,6 +22,12 @@ public partial class Parser
             Other
         }
 
+        enum ParsingState : byte
+        {
+            PlainArguments,
+            Mixed
+        }
+
         public struct ArgumentProcessingResult
         {
             public readonly IOption[] optionsToTakeAction;
@@ -37,12 +43,6 @@ public partial class Parser
                 this.plainArgumentsToTakeAction = plainArgumentsToTakeAction;
                 this.excessivePlainArgumentsEntries = excessivePlainArgumentsEntries;
             }
-        }
-
-        enum ParsingState : byte
-        {
-            PlainArguments,
-            Mixed
         }
 
         readonly IPlainArgument[]? plainArguments;
@@ -241,8 +241,7 @@ public partial class Parser
                 return true;
             }
 
-            // Processing parametrized option // TODO: Consider encapsulating this in a function.
-
+            // Processing parametrized option 
             // if there is no parameter
             if (splittedArgument.Length < 2)
             {
