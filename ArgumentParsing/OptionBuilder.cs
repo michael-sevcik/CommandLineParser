@@ -10,7 +10,7 @@ namespace ArgumentParsing
     /// <summary>
     /// The <see cref="OptionBuilder"/> Enables creating of options using fluent syntax.
     /// </summary>
-    public class OptionBuilder      //TODO Michal 
+    public class OptionBuilder      
     {
         //configuration variables
         int? lowerBound = null;
@@ -71,7 +71,8 @@ namespace ArgumentParsing
         /// Calling this method will determine that the option will be Parametrized and take 0 to 1 parameters, as specified
         /// in the IParametrizedOption interface. Also allows you to specify action to be called with the parsed parameter.
         /// </summary>
-        /// <typeparam name="TArgument">Determines the type of which the parameters accepted by this option should be. Accepted types are bool?, string, int?, Enum? and its descendants
+        /// <typeparam name="TArgument">Determines the type of which the parameters accepted by this option should be. Accepted types are bool?, string?, int?,
+        /// Enum? and its descendants
         /// Also note that the TArgument should not be declared as nullable.</typeparam>
         /// <param name="action">Specifies action, which is called, when option is present on command line. If isMandatory is set to true,
         /// action is called with one parameter of type T, else it is called with 0(null) to 1 parameters of type T according to the number of parameters
@@ -80,7 +81,7 @@ namespace ArgumentParsing
         /// <returns>Object that builds the desired option</returns>
         /// <exception cref="InvalidOperationException">Thrown when wrong <typeparamref name="TArgument"/> is chosen. Accepted types are bool?, string, int?,
         /// Enum? and its descendants.</exception>
-        public OptionBuilder WithParametrizedAction<TArgument>(Action<TArgument?> action) // TODO: TArgument is from the supported types, throw exception.
+        public OptionBuilder WithParametrizedAction<TArgument>(Action<TArgument> action) 
         {
             if (!isOfSupportedTypesForParametrizedOption(typeof(TArgument)))throw new InvalidOperationException();
             actionTuple = (typeof(TArgument), action);
@@ -93,7 +94,8 @@ namespace ArgumentParsing
         /// Calling this method will determine that the option will be MultipleParameter and take 0 to unlimited parameters, as specified
         /// in the IMultipleParameterOption interface. Also allows you to specify action to be called with the parsed parameter(s).
         /// </summary>
-        /// <typeparam name="TArgument">Determines the type of which the parameters accepted by this option should be. Accepted types are bool, string, int, enum.</typeparam>
+        /// <typeparam name="TArgument">Determines the type of which the parameters accepted by this option should be. Accepted types are bool, string, int, enum
+        /// and its descendants.</typeparam>
         /// <param name="action">Specifies action, which is called, when option is present on command line. It is called
         /// with 0(null) to unlimited number of parameters of type T according to the number of parameters provided on command line.
         /// If isMandatory is true, there must be at least one parameter present on command line.
@@ -426,9 +428,7 @@ namespace ArgumentParsing
             ParseMethodDelegate<int?> parseInt2 = (string input, out int? output) =>
             {
                 int result;
-                var success = Int32.TryParse(input, out result);
-
-                
+                var success = Int32.TryParse(input, out result);              
 
                 if(success)
                 {
