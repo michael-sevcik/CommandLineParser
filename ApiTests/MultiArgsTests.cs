@@ -10,12 +10,11 @@ namespace ApiTests
     public class MultiArgsTests
     {
         [DataRow(new string[] {"-a" , "a=1,2,3" }, true, 3)]
-        [DataRow(new string[] {"-a" , "a=1,2,3" }, true, 1, ';')]
-        [DataRow(new string[] { "--a=1,2,3" }, true, 1, ';')]
+        [DataRow(new string[] {"-a" , "1,2,3" }, true, 1, ';')]
         [DataRow(new string[] { "--a=1a2a3" }, true, 3, 'a')]
-        [DataRow(new string[] { "--a=" }, true, 0, '=')]
-        [DataRow(new string[] { "--a=" }, true, 0, 'a')]
-        [DataRow(new string[] { "--a=" }, true, 0, '-')]
+        [DataRow(new string[] { "--a=" }, true, 1, '=')]
+        [DataRow(new string[] { "--a=" }, true, 1, 'a')]
+        [DataRow(new string[] { "--a=" }, true, 1, '-')]
         [DataRow(new string[] { "--a=aaa" }, true, 4, 'a')]
         [DataRow(new string[] { "--a=,,," }, true, 4)]
         [DataRow(new string[] { "--ab=,,," }, false, 0, 'b')]
@@ -27,10 +26,14 @@ namespace ApiTests
 
             string[] resultArray = null;
 
-            var opt_desc = IMultipleParameterOption.CreateMulitipleParameterOption<string>(
-                x => { }, true, true, new char[] { 'a' }, separator: separator);
-
-            parser.Add(opt_desc);
+            var builder = new OptionBuilder();
+            builder.WithMultipleParametersAction<string>(x => { resultArray = x; }).
+                SetAsMandatory().
+                RequiresParameter().
+                WithShortSynonyms(new char[] { 'a' }).
+                WithLongSynonyms("a").
+                WithSeparator(separator).
+                RegisterOption(parser);
 
             // Act
             var res = parser.ParseCommandLine(arg);

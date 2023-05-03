@@ -36,23 +36,6 @@ namespace ArgumentParsing
         /// </summary>
         public void TakeAction();
 
-        /// <summary>
-        /// Creates an instance of <see cref="IOption"/> with desired properties.
-        /// </summary>
-        /// <param name="action">Encapsulated method to call, when the option occurs in the parsed command.</param>
-        /// <param name="isMandatory">Determines whether a given option must occur in a parsed command.</param>        /// 
-        /// <param name="shortSynonyms"> Specifies what kind of short synonyms should option represent (e.g. "-v").</param>
-        /// <param name="longSynonyms"> Specifies what kind of long synonyms should option represent. (e.g. "--version")</param>
-        public static IOption CreateNoParameterOption(
-            Action action,
-            bool isMandatory,
-            char[]? shortSynonyms = null,
-            string[]? longSynonyms = null
-            )
-        {
-            throw new NotImplementedException();
-        }
-
     }
 
     /// <summary>
@@ -72,33 +55,6 @@ namespace ArgumentParsing
         /// <returns>True if no error occurred during processing, otherwise false.</returns>
         public bool ProcessParameter(string parameter);
 
-        /// <summary>
-        /// Constructs an instance of <see cref="IParametrizedOption"/> that takes 0 to 1 parameters (based on isParameterRequired) of type T .
-        /// </summary>
-        /// <param name="action"> Specifies action, which is called, when option is present on command line. If isMandatory is set to true,
-        /// action is called with one parameter of type T, else it is called with 0(null) to 1 parameters of type T according to the number of parameters
-        /// provided on command line.
-        /// </param>
-        /// <param name="isParameterRequired"> Specifies whether the option requires at least one parameter present on
-        /// command line.
-        /// </param>
-        /// <typeparam name="TArgument">Specifies of what type this option's parameter should be. Accepted types are bool, string, int, enum.</typeparam>
-        /// <param name="isMandatory"> Specifies whether option is mandatory i. e. must be present on command line.</param>
-        /// <param name="shortSynonyms"> Specifies what kind of short synonyms should option represent (e.g. "-v").</param>
-        /// <param name="longSynonyms"> Specifies what kind of long synonyms should option represent. (e.g. "--version")</param>
-        /// <exception cref="InvalidOperationException">Thrown when wrong <typeparamref name="TArgument"/> is chosen. Accepted types are bool, string, int, enum.</exception>
-        public static IParametrizedOption CreateParameterOption<TArgument>(
-            Action<TArgument?> action,
-            bool isMandatory,
-            bool isParameterRequired = false,
-            char[]? shortSynonyms = null,
-            string[]? longSynonyms = null
-            )
-        {
-            throw new NotImplementedException();
-        }
-
-
     }
 
     /// <summary>
@@ -106,36 +62,10 @@ namespace ArgumentParsing
     /// </summary>
     public interface IMultipleParameterOption : IParametrizedOption
     {
-        public char Separator { get; }
         /// <summary>
-        /// Creates an instance of <see cref="IMultipleParameterOption"/>.
+        /// Separates the parameters following and option on command line. Must be non-white space.
         /// </summary>
-        /// <param name="action">Specifies action, which is called, when option is present on command line. It is called
-        /// with 0(null) to unlimited number of parameters of type T according to the number of parameters provided on command line.
-        /// If isMandatory is true, there must be at least one parameter present on command line.
-        /// </param>
-        /// <param name="isParameterRequired"> Specifies whether the option requires at least one parameter present on
-        /// command line.
-        /// </param>
-        /// <typeparam name="TArgument">Specifies of what type this option's parameters should be. Accepted types are bool, string, int, enum.</typeparam>
-        /// <param name="isMandatory"> Specifies whether option is mandatory i. e. must be present on command line.</param>
-        /// <param name="shortSynonyms"> Specifies what kind of short synonyms should option represent (e.g. "-v").</param>
-        /// <param name="longSynonyms"> Specifies what kind of long synonyms should option represent. (e.g. "--version")</param>
-        /// <param name="separator"> Specifies what char is used to separate multiple parameter entries. (e.g. "--version")</param>
-        /// <exception cref="InvalidOperationException">Thrown when wrong <typeparamref name="TArgument"/> is chosen. Accepted types are bool, string, int, enum.</exception>
-
-        public static IMultipleParameterOption CreateMulitipleParameterOption<TArgument>(
-           Action<TArgument[]?> action,
-           bool isMandatory,
-           bool isParameterRequired = false,
-           char[]? shortSynonyms = null,
-           string[]? longSynonyms = null,
-           char separator = ','
-           )
-        {
-            throw new NotImplementedException();
-        }
-
+        public char Separator { get; }
 
     }
     /// <summary>

@@ -48,34 +48,44 @@ This was just a simple example, now we'll proceed to some key concepts.
 ## Key Concepts
 
 The library uses a hierarchy of building components for setting up command-line parsing. The main component is `Parser` class, to which `IOption`s
-can be added. Basic types of options (non parametrized, bool, string, int and enum) can be created either with `OptionBuilder` using fluent syntax
-or via factory methods that are defined on option interfaces. See the text bellow for details.
+can be added. Basic types of options (non parametrized, bool, string, int and enum) can be created  with `OptionBuilder` using fluent syntax. See the text bellow for details.
 
 ### OptionBuilder
 Object that enables creating of options using fluent syntax. To specify a option's configuration use the following listed methods:
 
-- `public OptionBuilder WithShortSynonyms(params char[]? shortSynonyms)` -> Sets the short synonyms of the option, e.g. "-f"
+- `public OptionBuilder WithShortSynonyms(params char[]? shortSynonyms)` -> Sets the short synonyms of the option, e.g. "-f".
+Default value is null.
 - `public OptionBuilder WithLongSynonyms(params string[]? longSynonyms)` -> Lets you define short synonyms for the option being built.
-- `public OptionBuilder WithAction(Action action)` -> Lets you define encapsulated method to call, when the option occurs in the parsed command.
-This determines that the option will be parameterless.
-- `public OptionBuilder WithParametrizedAction<TArgument> (Action<TArgument?> action)` -> Calling this method will determine that the option will be Parametrized and take 0 to 1 parameters, as specified
-in the IParametrizedOption interface. Also allows you to specify action to be called with the parsed parameter.
-- `public OptionBuilder WithMultipleParametersAction<TArgument>(Action<TArgument[]?> action)` -> Calling this method will determine that the option will be MultipleParameter and take 0 to unlimited parameters, as specified
-in the IMultipleParameterOption interface. Also allows you to specify action to be called with the parsed parameter(s).
+Default value is null.
 - `public OptionBuilder SetAsMandatory()` -> Sets the option as mandatory, i.e. it must be present on the command-line.
-- `public OptionBuilder RequiresParameter()` -> If the option has parametrized action, it must be invoked only with an argument, i.e. not null (must have argument e.g. "--format=argument" or "-f argument").
+By default the option is non mandatory.
+- `public OptionBuilder RequiresParameter()` -> If the option has parametrized action, it must be invoked only with an argument,
+i.e. not null (must have argument e.g. "--format=argument" or "-f argument"). By default the option does not require parameter.
 - `public OptionBuilder WithSeparator(char separator = ',')` -> Specifies by what char should be possible arguments separated in multiple parameter options.
+By default the separator is ','.
 - `public OptionBuilder WithHelpString(string helpString)` -> Sets explanation string - string which is shown when someone uses -h/--help on command line.
 Empty explanation will be showed if user does not provide any helpString (does not call this method).
 - `public bool RegisterOption(Parser parser)` -> Adds the configured option to the particular parser.
 - `public OptionBuilder Reset()` -> resets the object to the same state as when it was created.
-Is used after registering one option, then the reset is called and you can start creating another one.
+Is used after registering one option, then the reset is called and you can start creating another one. If not called, then the defined properties stays in the option builder object.
+You can maybe just change the ones needing the change.
 - `public OptionBuilder WithLowerBound(int lowerBound)` -> sets the lower bound for int option (its parameters). If it's called
 on another type of Option, it is ignored.
 - `public OptionBuilder WithUpperBound(int upperBound)` -> sets the upper bound for int option (its parameters). If it's called
 on another type of Option, it is ignored.
 - `public OptionBuilder WithBounds(int lowerBound,int upperBound)` -> sets both the upper and lower bound
-- for int option. If called on another type of Option it is ignored.
+for int option. If called on another type of Option it is ignored.
+- `public OptionBuilder WithAction(Action action)` -> Lets you define encapsulated method to call, when the option occurs in the parsed command.
+I.e. this is how you will be let know that the option occurred on command line. This determines that the option will be parameterless.
+- `public OptionBuilder WithParametrizedAction<TArgument> (Action<TArgument> action)` -> Calling this method will determine that the option will be Parametrized and take 0 to 1 parameters, as specified
+in the IParametrizedOption interface. Also allows you to specify action to be called with the parsed parameter. Allowed types are int?, string?, bool?,
+Enum? and its descendants.
+- `public OptionBuilder WithMultipleParametersAction<TArgument>(Action<TArgument[]?> action)` -> Calling this method will determine that the option will be MultipleParameter and take 0 to unlimited parameters, as specified
+in the IMultipleParameterOption interface. Also allows you to specify action to be called with the parsed parameter(s). Accepted types are: int,
+string, bool, Enum and its descendatns. NOTE: we do not use nullable variants here compared to `WithParametrizedAction<TArgument>`.
+
+NOTE: we want to emphasize that you have to call at least one of the Action methods as they are setting the type of desired option.
+If you do not call any of them, then calling RegisterOption will return false, as it is invalid option.
 
 
 
@@ -91,82 +101,25 @@ Represents an option, which takes no parameters and class implementing this inte
 - `public string[]? longSynonyms { get; }` contains long synonyms for option. (multiple char names without the '--')
 - `public bool SetHelpString(string helpString);` contains message to be shown, when help is invoked on command line.
 - `public void TakeAction();` method to be called, when option is present on command line. I. e. what should be done, when the option is present.
-
-```C#
-public static IOption CreateNoParameterOption(
-    Action action,
-    bool isMandatory,
-    char[]? shortSynonyms = null,
-    string[]? longSynonyms = null
-    )
-```
-
-This is factory method. It enables the user to create an instance of an object implementing this interface, suitable for his purposes.
-- `Action action` is method, to be called, when the option is present on the command line. User defines this method to suit his needs and parser
-calls it when the option is present. Can be called multiple times if the option is present multiple times on the command line.
-- `bool isMandatory` user sets this property to true, if the option must be present on the command line, false otherwise
-- `char[]? shortSynonyms = null` defines short synonyms(one letter) for the option, that means what kind of short names should this option respond to.
-For example `['p','k']` - option consumes -p and -k on command line.
-- `string[]? longSynonyms = null` defines long synonyms for the option, that means what kind of long names should this option respond to.
-For example `['portable','king']` - option consumes --portable and --king on command line.
  
 Watch out that if you don't provide any synonyms, your action will never be called. Also Synonyms for different options must not collide,
 otherwise you will not be able to add the latter colliding option to the Parser (Add method will return false).
 
 
 #### IParametrizedOption : IOption
-NOTE: that Long synonym on command line has form of: --{longSynonym}=parameter -> after the long option synonym
+NOTE: that Long synonym on command line has form of: --longSynonym=parameter -> after the long option synonym
 follows and equal sign and then the parameter(if present).
 Represents an option which can take a parameter. Class implementing this interface must implement except inherited methods and properties following:
 - `public bool IsParameterRequired { get; }` Indicates whether an option requires a parameter, if it doesn't and no parameter was passed, method `ProcessParameter()` 
 won't be called.
 - `public bool ProcessParameter(string parameter)` method to be called, when a parameter corresponding to the option occurs on the command line.
 
-```C#
-public static IParametrizedOption CreateParameterOption<TArgument>(
-    Action<TArgument?> action,
-    bool isMandatory,
-    bool isParameterRequired = false,
-    char[]? shortSynonyms = null,
-    string[]? longSynonyms = null 
-    )
-```
-This is also a factory method, it enables creation of IParametrizedOptions, which can take a parameter of a type TArgument. Following types are supported:
-- `int`
-- `bool`
-- `string`
-- derived `enum` type — this is used to represent set of words that are matched with passed parameter, e.g.:
-```C#
-enum format {
-    txt,
-    rtf,
-    pdf
-}
-```
-
 Compared to the `CreateNoParameterOption` method you need to specify whether the parameter is mandatory via the `isParameterRequired` parameter, i.e. option 
 can be used without its parameter.
 #### IMultipleParameterOption : IParametrizedOption
-```C#
-public static IMultipleParameterOption CreateMulitipleParameterOption<TArgument>(
-           Action<TArgument[]?> action,
-           bool isMandatory,
-           bool isParameterRequired = false,
-           char[]? shortSynonyms = null,
-           string[]? longSynonyms = null,
-           char separator = ','
-           )
-```
-This method creates an instance of an object implementing IMultipleParameterOption interface, with desired properties. This option can take
-0 to unlimited number of parameters based on user's preferences.
 
-- `Action<TArgument[]?> action` works same as for the IParametrizedOption, but takes array as an argument, because number of the parameters might exceed 1.
-- `bool isParameterRequired` works the same as in the previous Interfaces.
-- `bool isMandatory` works the same as in the previous Interfaces.
-- `char[]? shortSynonyms = null` works the same as in the previous Interfaces.
-- `string[]? longSynonyms = null` string[]? longSynonyms = null.
-- `char separator = ','` sets the separator, which user is expected to use on the command line to separate multiple parameters.
-Cannot be white-space character.
+- `public char Separator { get; }` -> Separator, by which the multiple parameters are separated with on command line following the option.
+Must be non-whitespace.
 
 ### Plain Arguments
 
