@@ -10,92 +10,92 @@ using ArgumentParsing.OptionSet;
 namespace ArgumentParsing;
 
 /// <summary>
-/// Specifies what kind of error occurred during the parsing of command line.
-/// </summary>
-public enum ParserErrorType : byte
-{
-    /// <summary>
-    /// There was no option with the specified identifier.
-    /// </summary>
-    InvalidOptionIdentifier,
-
-    /// <summary>
-    /// Option could not parse the parameter belonging to her.
-    /// </summary>
-    CouldNotParseTheParameter,
-
-    /// <summary>
-    /// There is Mandatory option missing on the command line.
-    /// </summary>
-    MissingMandatoryOption,
-
-    /// <summary>
-    /// There are not enough plain arguments to satisfy number of the mandatory plain arguments.
-    /// </summary>
-    MissingMandatoryPlainArgument,
-
-    /// <summary>
-    /// Argument for an option with a required argument was not passed.
-    /// </summary>
-    MissingOptionParameter,
-
-    /// <summary>
-    /// A given option occurred on the command-line more than once. // TODO: Add to documentation.
-    /// </summary>
-    RepeatedOccurenceOfOption,
-
-    /// <summary>
-    /// When other errors occur.
-    /// </summary>
-    Other
-
-}
-
-/// <summary>
-/// Object encapsulating information about an error in <see cref="Parser"/> class instance.
-/// </summary>
-public readonly struct ParserError // TODO: Consider changing ParserError to ParsingResult and returning it from Parse method.
-{
-    /// <summary>
-    /// Type of an error that has occurred.
-    /// </summary>
-    public readonly ParserErrorType type;
-
-    /// <summary>
-    /// Option related to the error. Null if there is no option related
-    /// </summary>
-    public readonly IOption? optionInError;
-
-    /// <summary>
-    /// PlainArgument related to the error. Null if there is no plain argument related.
-    /// </summary>
-    public readonly IPlainArgument? plainArgumentInError;
-
-    /// <summary>
-    /// Description of the error that has occurred.
-    /// </summary>
-    public readonly string message;
-
-    /// <summary>
-    /// Creates instance of <see cref="ParserError"/> with a specified type, option and additional info message.
-    /// </summary>
-    public ParserError(ParserErrorType type, string message, IOption? optionInError = null, IPlainArgument plainArgumentInError = null)
-    {
-        this.type = type;
-        this.optionInError = optionInError;
-        this.plainArgumentInError = plainArgumentInError;
-        this.message = message;
-    }
-}
-
-/// <summary>
 /// The Parser class enables parsing of command-line inputs.
 /// </summary>
-public sealed partial class Parser      // TODO: Michael
+public sealed partial class Parser
 {
+
+    /// <summary>
+    /// Specifies what kind of error occurred during the parsing of command line.
+    /// </summary>
+    public enum ParserErrorType : byte
+    {
+        /// <summary>
+        /// There was no option with the specified identifier.
+        /// </summary>
+        InvalidOptionIdentifier,
+
+        /// <summary>
+        /// Option could not parse the parameter belonging to her.
+        /// </summary>
+        CouldNotParseTheParameter,
+
+        /// <summary>
+        /// There is Mandatory option missing on the command line.
+        /// </summary>
+        MissingMandatoryOption,
+
+        /// <summary>
+        /// There are not enough plain arguments to satisfy number of the mandatory plain arguments.
+        /// </summary>
+        MissingMandatoryPlainArgument,
+
+        /// <summary>
+        /// Argument for an option with a required argument was not passed.
+        /// </summary>
+        MissingOptionParameter,
+
+        /// <summary>
+        /// A given option occurred on the command-line more than once. // TODO: Add to documentation.
+        /// </summary>
+        RepeatedOccurenceOfOption,
+
+        /// <summary>
+        /// When other errors occur.
+        /// </summary>
+        Other
+
+    }
+
+    /// <summary>
+    /// Object encapsulating information about an error in <see cref="Parser"/> class instance.
+    /// </summary>
+    public readonly struct ParserError
+    {
+        /// <summary>
+        /// Type of an error that has occurred.
+        /// </summary>
+        public readonly ParserErrorType type;
+
+        /// <summary>
+        /// Option related to the error. Null if there is no option related
+        /// </summary>
+        public readonly IOption? optionInError;
+
+        /// <summary>
+        /// PlainArgument related to the error. Null if there is no plain argument related.
+        /// </summary>
+        public readonly IPlainArgument? plainArgumentInError;
+
+        /// <summary>
+        /// Description of the error that has occurred.
+        /// </summary>
+        public readonly string message;
+
+        /// <summary>
+        /// Creates instance of <see cref="ParserError"/> with a specified type, option and additional info message.
+        /// </summary>
+        public ParserError(ParserErrorType type, string message, IOption? optionInError = null, IPlainArgument? plainArgumentInError = null)
+        {
+            this.type = type;
+            this.optionInError = optionInError;
+            this.plainArgumentInError = plainArgumentInError;
+            this.message = message;
+        }
+    }
+
     partial class ArgumentProcessor { }
 
-    // TODO: Consider merging IOption a IPlainArgument
     // TODO: Custom types of options and plain arguments should be also immutable. -  documentation
 
     private readonly IPlainArgument[]? plainArguments;
@@ -155,7 +155,7 @@ public sealed partial class Parser      // TODO: Michael
     /// <returns>True when parsing was successful, otherwise false.</returns>
     public bool ParseCommandLine(string[] args) // TODO: We will probably need to add a method used to restore the IParametrizedOption instance, when the parsing fails.
     {
-        ArgumentProcessor argumentProcessor = new(this);
+        ArgumentProcessor argumentProcessor = new(options, plainArguments, mandatoryPlainArguments);
 
         for (int i = 0; i < args.Length; i++)
         {
@@ -193,7 +193,12 @@ public sealed partial class Parser      // TODO: Michael
     /// <returns>Returns string to be shown when client uses -h/--help on command line</returns>
     public string GetHelpString()
     {
-        throw new NotImplementedException();
+        string helpString = "Options: \n";
+        helpString += options.GetHelpString();
+
+        helpString += "Plain arguments: \n";
+        helpString += plainArgumentsHelpMessage;
+        return helpString;
     }
 
     /// <summary>
@@ -201,7 +206,7 @@ public sealed partial class Parser      // TODO: Michael
     /// </summary>
     /// <param name="PAHelpString">Help string to be shown next to -- in help page.</param>
 
-    //public void SetPlainArgumentHelpString(string PAHelpString) // TODO: delete this from documentation.
+    //public void SetPlainArgumentHelpString(string PAHelpString) // TODO: delete this from documentation and example programs.
 
 
 }

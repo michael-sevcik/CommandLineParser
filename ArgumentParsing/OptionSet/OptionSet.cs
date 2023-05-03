@@ -1,6 +1,9 @@
 ﻿namespace ArgumentParsing.OptionSet
 {
     using Option;
+    using System.Linq;
+    using System.Text;
+
     internal static class DictionaryExtensions
     {
         public static bool ContainsOneOfKeys<TKey, TValue>(this Dictionary<TKey, TValue> dictionary, TKey[]? keys) where TKey : notnull
@@ -34,6 +37,7 @@
         private Dictionary<string, IOption> optionsByLongSynonyms = new();
         private Dictionary<char, IOption> optionsByShortSynonyms = new();
         private List<IOption> mandatoryOptions = new();
+        private List<IOption> options = new();
 
         /// <summary>
         /// Gets the list of options that were added to the OptionSet and are mandatory.
@@ -76,9 +80,27 @@
         public IOption? Find(string longIdentifier)
         => optionsByLongSynonyms.GetValueOrDefault(longIdentifier);
 
+        /// <summary>
+        /// Gets the help string for the OptionSet.
+        /// </summary>
+        /// <returns></returns>
+        public string GetHelpString()
+        {
+            StringBuilder sb = new();
+            foreach (var option in options)
+            {
+                sb.Append("Short identifiers: ").AppendJoin(", ", option.ShortSynonyms ?? Array.Empty<char>()).AppendLine();
+                sb.Append("Long identifiers: ").AppendJoin(", ", option.LongSynonyms ?? Array.Empty<string>()).AppendLine();
+                sb.Append("Option help message: ").Append(option.HelpString).AppendLine();
+                sb.AppendLine();
+            }
+
+            return sb.ToString();
+        }
+
         private bool IsOptionAddable(IOption option)
         {
-            if (optionsByShortSynonyms.ContainsOneOfKeys(option.ShortSynonyms)) 
+            if (optionsByShortSynonyms.ContainsOneOfKeys(option.ShortSynonyms))
             {
                 return false;
             }
@@ -105,7 +127,7 @@
                     optionsByShortSynonyms.Add(synonym, option);
                 }
             }
-            
+
             if (option.LongSynonyms is not null)
             {
                 foreach (var synonym in option.LongSynonyms)
@@ -113,9 +135,8 @@
                     optionsByLongSynonyms.Add(synonym, option);
                 }
             }
-        }
 
-        
-        
+            options.Add(option);
+        }
     }
 }

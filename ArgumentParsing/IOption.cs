@@ -196,7 +196,7 @@ namespace ArgumentParsing
 
             if (isMandatory) builder.SetAsMandatory();
 
-            return (IPlainArgument)builder.CreateParticularOptionForRegistration();
+            return (IPlainArgument)builder.CreateParticularOptionForRegistration(); // Does this really work?
 
         }
 

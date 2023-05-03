@@ -9,7 +9,6 @@ using System.Text;
 using System.Threading.Tasks;
 
 namespace ArgumentParsing;
-
 public partial class Parser
 {
     partial class ArgumentProcessor // TODO: Should there be a clear/restart method?
@@ -49,9 +48,9 @@ public partial class Parser
         readonly OptionSet.OptionSet options;
         readonly IReadOnlyList<IPlainArgument>? mandatoryPlainArguments;
 
-        HashSet<IOption> optionsToTakeAction = new();
-        HashSet<IPlainArgument> plainArgumentsToTakeAction = new();
-        List<string> excessivePlainArgumentsEntries = new();
+        readonly HashSet<IOption> optionsToTakeAction = new();
+        readonly HashSet<IPlainArgument> plainArgumentsToTakeAction = new();
+        readonly List<string> excessivePlainArgumentsEntries = new();
 
         IParametrizedOption? optionAwaitingParameter = null;
 
@@ -62,20 +61,16 @@ public partial class Parser
         /// <summary>
         /// If an error occurs during parsing it gets a instance of <see cref="ParserError"/> that is describing the problem, otherwise null.
         /// </summary>
-        public ParserError? Error
-        {
-            get;
-            private set;
-        } = null;
+        public ParserError? Error { get; private set; } = null;
 
-        public ArgumentProcessor(Parser parser)
+        public ArgumentProcessor(OptionSet.OptionSet options, IPlainArgument[]? plainArguments, IPlainArgument[]? mandatoryPlainArguments)
         {
-            plainArguments = parser.plainArguments;
-            options = parser.options;
-            mandatoryPlainArguments = parser.mandatoryPlainArguments;
+            this.plainArguments = plainArguments;
+            this.options = options;
+            this.mandatoryPlainArguments = mandatoryPlainArguments;
         }
 
-        public bool ProcessArgument(string argument) // TODO: test what happens when an argument enclosed in '"' is passed. If it is already trimmed or not.
+        public bool ProcessArgument(string argument) 
         {
             if (state == ParsingState.PlainArguments)
             {
@@ -267,7 +262,7 @@ public partial class Parser
             return true;
         }
 
-        string[] SplitOptionIdentifierParameterPair(string optionIdentifier)
+        static string[] SplitOptionIdentifierParameterPair(string optionIdentifier)
         {
             var equalsSignPosiotion = optionIdentifier.IndexOf("=");
             string[] splittedInput;
@@ -306,7 +301,7 @@ public partial class Parser
             return null;
         }
 
-        ParserError? ProcessArgument()
+        ParserError? ProcessArgument() // TODO:  
         {
             throw new NotImplementedException();
         }
@@ -317,7 +312,7 @@ public partial class Parser
             return true;
         }
 
-        string CreateErrorMessage(ParserErrorType type, string? additionalInfo = null)
+        static string CreateErrorMessage(ParserErrorType type, string? additionalInfo = null)
         {
             string errorMessage = string.Empty;
             if (additionalInfo is not null)
@@ -366,7 +361,7 @@ public partial class Parser
             return errorMessage;
         }
 
-        private ArgumentType DetermineArgumentType(string argument)
+        private static ArgumentType DetermineArgumentType(string argument)
         => argument switch
         {
             "--" => ArgumentType.PlainArgumentsDelimiter,
@@ -376,4 +371,5 @@ public partial class Parser
         };
     }
 }
+
 
