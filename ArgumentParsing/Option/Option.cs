@@ -213,7 +213,7 @@ namespace ArgumentParsing.Option
         /// <returns>True if parsing was successful, otherwise false.</returns> // TODO: maybe redo comments.
         public override bool ProcessParameter(string param)
         {
-            var wasSuccessful = parser(param, out T[]? output);
+            var wasSuccessful = parser(param, out T[]? output,Separator);
             if (wasSuccessful) parserResult = output;
             return wasSuccessful;
         }
