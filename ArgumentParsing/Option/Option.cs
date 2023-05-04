@@ -50,6 +50,7 @@ namespace ArgumentParsing.Option
         /// </summary>
         public abstract void TakeAction();
 
+        /// <inheritdoc/>
         public abstract void Restore();
 
         /// <inheritdoc/>
@@ -83,6 +84,7 @@ namespace ArgumentParsing.Option
         /// <inheritdoc/>
         public override bool IsParametrized => false;
 
+        /// <inheritdoc/>
         public override void Restore() { }
 
         /// <summary>
@@ -115,8 +117,8 @@ namespace ArgumentParsing.Option
 
     }
 
-    //delegates which we pass to Generic Option classes, which are used for parsing the parameters on command line
-    //decreases number of classes needed to be implemented
+    // delegates which we pass to Generic Option classes, which are used for parsing the parameters on command line
+    // decreases number of classes needed to be implemented
     delegate bool ParseMethodDelegate<T>(string input, out T output );
     delegate bool ParseMethodDelegateMultipleOption<T>(string input, out T[]? output, char separator = ',');
 
