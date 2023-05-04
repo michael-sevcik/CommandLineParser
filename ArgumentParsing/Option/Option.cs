@@ -50,8 +50,10 @@ namespace ArgumentParsing.Option
         /// </summary>
         public abstract void TakeAction();
 
+        public abstract void Restore();
+
         /// <inheritdoc/>
-        public string HelpString { get; set; }
+        public string HelpString { get; set; } = string.Empty;
 
     }
 
@@ -81,6 +83,8 @@ namespace ArgumentParsing.Option
         /// <inheritdoc/>
         public override bool IsParametrized => false;
 
+        public override void Restore() { }
+
         /// <summary>
         /// Method to call when option occurs in the parsed command-line.
         /// </summary>
@@ -90,7 +94,7 @@ namespace ArgumentParsing.Option
     /// <summary>
     /// Abstract class for parametrized options.
     /// </summary>
-    internal abstract class ParameterOption : Option, IParametrizedOption,IPlainArgument
+    internal abstract class ParameterOption : Option, IParametrizedOption, IPlainArgument
     {
         
         /// <summary>
@@ -124,7 +128,7 @@ namespace ArgumentParsing.Option
     {
         Action<T?> action;
         ParseMethodDelegate<T> parser;
-        T? parserResult;
+        T? parsingResult;
 
         /// <summary>
         /// Separator of multiple parameter entries. 
@@ -160,15 +164,20 @@ namespace ArgumentParsing.Option
         public override bool ProcessParameter(string param)
         {
             var wasSuccessful = parser(param, out T output);
-            if (wasSuccessful) parserResult = output;
+            if (wasSuccessful) parsingResult = output;
             return wasSuccessful;
         }
 
         /// <summary>
         /// Calls the user-provided action, which returns parsed parameter to the user
         /// </summary>
-        public override void TakeAction() => action(parserResult);
+        public override void TakeAction() => action(parsingResult);
 
+        /// <inheritdoc/>
+        public override void Restore()
+        {
+            parsingResult = default;
+        }
     }
 
     /// <summary>
@@ -179,7 +188,7 @@ namespace ArgumentParsing.Option
     {
         Action<T[]?> action;
         ParseMethodDelegateMultipleOption<T> parser;
-        T[]? parserResult;
+        T[]? parsingResult;
 
         /// <summary>
         /// Separator of multiple parameter entries. 
@@ -214,15 +223,20 @@ namespace ArgumentParsing.Option
         public override bool ProcessParameter(string param)
         {
             var wasSuccessful = parser(param, out T[]? output,Separator);
-            if (wasSuccessful) parserResult = output;
+            if (wasSuccessful) parsingResult = output;
             return wasSuccessful;
         }
 
         /// <inheritdoc/>
         public override void TakeAction()
         {
-            action(parserResult);
-            parserResult = null;
+            action(parsingResult);
+            parsingResult = null;
+        }
+
+        public override void Restore()
+        {
+            parsingResult = default;
         }
     }
 

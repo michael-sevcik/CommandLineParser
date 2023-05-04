@@ -1,7 +1,4 @@
-﻿
-using System;
-
-namespace ArgumentParsing
+﻿namespace ArgumentParsing
 {
     /// <summary>
     /// Defines a generalized object representing an option with identifiers (synonyms). 
@@ -35,6 +32,11 @@ namespace ArgumentParsing
         /// Method to call when option occurs in the parsed command-line.
         /// </summary>
         public void TakeAction();
+
+        /// <summary>
+        /// Restores the option to its initial state. // TODO: document.
+        /// </summary>
+        public void Restore();
 
     }
 
@@ -94,6 +96,11 @@ namespace ArgumentParsing
         public void TakeAction();
 
         /// <summary>
+        /// Restores the option to its initial state. // TODO: document.
+        /// </summary>
+        public void Restore();
+
+        /// <summary>
         /// Method to call with string corresponding to the option. In the case of the simple plain argument we should just parse the string
         /// In the case of Multiple parameters plain argument, we should (it is recommended) first split the <paramref name="parameter"/> according to the
         /// separator. When user implements this by himself he knows what kind of the separator should be present on the command line. When using our classes,
@@ -117,17 +124,14 @@ namespace ArgumentParsing
 
         public static IPlainArgument CreatePlainArgument<TArgument>(
            Action<TArgument?> action,
-           bool isMandatory
-           )
+           bool isMandatory)
         {
-
             var builder = new OptionBuilder();
-            builder.WithParametrizedAction<TArgument>( action );
+            builder.WithParametrizedAction<TArgument>(action);
 
             if (isMandatory) builder.SetAsMandatory();
 
             return (IPlainArgument)builder.CreateParticularOptionForRegistration(); // Does this really work?
-
         }
 
         /// <summary>
@@ -146,8 +150,7 @@ namespace ArgumentParsing
         public static IPlainArgument CreateMultipleParametersPlainArgument<TArgument>(
            Action<TArgument[]?> action,
            bool isMandatory,
-           char separator = ','
-           )
+           char separator = ',')
         {
             var builder = new OptionBuilder();
             builder.
