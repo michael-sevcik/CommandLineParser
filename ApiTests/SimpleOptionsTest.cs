@@ -119,7 +119,7 @@ public class SimpleOptionsTest
 
         // Assert
         Assert.IsFalse(res);
-        Assert.AreEqual(ParserErrorType.InvalidOptionIdentifier, parser.Error?.type);
+        Assert.AreEqual(Parser.ErrorType.InvalidOptionIdentifier, parser.Error?.type);
     }
 
     [TestMethod]
@@ -134,7 +134,7 @@ public class SimpleOptionsTest
 
         // Assert
         Assert.IsFalse(res);
-        Assert.AreEqual(ParserErrorType.MissingOptionParameter, parser.Error?.type);
+        Assert.AreEqual(Parser.ErrorType.MissingOptionParameter, parser.Error?.type);
     }
 
     [TestMethod]

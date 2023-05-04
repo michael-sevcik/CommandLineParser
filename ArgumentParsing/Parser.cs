@@ -18,7 +18,7 @@ public sealed partial class Parser
     /// <summary>
     /// Specifies what kind of error occurred during the parsing of command line.
     /// </summary>
-    public enum ParserErrorType : byte
+    public enum ErrorType : byte
     {
         /// <summary>
         /// There was no option with the specified identifier.
@@ -55,7 +55,7 @@ public sealed partial class Parser
         /// </summary>
         Other
 
-    }
+    } // TODO: document the changed location
 
     /// <summary>
     /// Object encapsulating information about an error in <see cref="Parser"/> class instance.
@@ -65,7 +65,7 @@ public sealed partial class Parser
         /// <summary>
         /// Type of an error that has occurred.
         /// </summary>
-        public readonly ParserErrorType type;
+        public readonly ErrorType type;
 
         /// <summary>
         /// Option related to the error. Null if there is no option related
@@ -85,7 +85,7 @@ public sealed partial class Parser
         /// <summary>
         /// Creates instance of <see cref="ParserError"/> with a specified type, option and additional info message.
         /// </summary>
-        public ParserError(ParserErrorType type, string message, IOption? optionInError = null, IPlainArgument? plainArgumentInError = null)
+        public ParserError(ErrorType type, string message, IOption? optionInError = null, IPlainArgument? plainArgumentInError = null)
         {
             this.type = type;
             this.optionInError = optionInError;

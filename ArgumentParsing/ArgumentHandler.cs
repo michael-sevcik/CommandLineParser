@@ -102,8 +102,8 @@ public partial class Parser
                 if (!optionsToTakeAction.Contains(option))
                 {
                     Error = new(
-                        ParserErrorType.MissingMandatoryOption,
-                        CreateErrorMessage(ParserErrorType.MissingMandatoryOption),
+                        ErrorType.MissingMandatoryOption,
+                        CreateErrorMessage(ErrorType.MissingMandatoryOption),
                         option);
 
                     return false;
@@ -115,8 +115,8 @@ public partial class Parser
                 if (!plainArgumentsToTakeAction.Contains(plainArgument))
                 {
                     Error = new(
-                        ParserErrorType.MissingMandatoryPlainArgument,
-                        CreateErrorMessage(ParserErrorType.MissingMandatoryPlainArgument),
+                        ErrorType.MissingMandatoryPlainArgument,
+                        CreateErrorMessage(ErrorType.MissingMandatoryPlainArgument),
                         plainArgumentInError: plainArgument);
 
                     return false;
@@ -138,8 +138,8 @@ public partial class Parser
         {
             if (!optionAwaitingParameter!.ProcessParameter(argument))
             {
-                var errorMessage = CreateErrorMessage(ParserErrorType.CouldNotParseTheParameter, argument);
-                Error = new(ParserErrorType.CouldNotParseTheParameter, errorMessage, optionAwaitingParameter);
+                var errorMessage = CreateErrorMessage(ErrorType.CouldNotParseTheParameter, argument);
+                Error = new(ErrorType.CouldNotParseTheParameter, errorMessage, optionAwaitingParameter);
                 return false;
             }
 
@@ -161,8 +161,8 @@ public partial class Parser
 
             if (optionAwaitingParameter.IsParameterRequired)
             {
-                var errorMessage = CreateErrorMessage(ParserErrorType.MissingOptionParameter);
-                Error = new(ParserErrorType.MissingOptionParameter, errorMessage, optionAwaitingParameter);
+                var errorMessage = CreateErrorMessage(ErrorType.MissingOptionParameter);
+                Error = new(ErrorType.MissingOptionParameter, errorMessage, optionAwaitingParameter);
                 return false;
             }
             else
@@ -187,8 +187,8 @@ public partial class Parser
 
             if (!plainArgumentToProcess.ProcessParameter(argument))
             {
-                var errorMessage = CreateErrorMessage(ParserErrorType.CouldNotParseTheParameter, argument);
-                Error = new(ParserErrorType.CouldNotParseTheParameter, errorMessage, optionAwaitingParameter);
+                var errorMessage = CreateErrorMessage(ErrorType.CouldNotParseTheParameter, argument);
+                Error = new(ErrorType.CouldNotParseTheParameter, errorMessage, optionAwaitingParameter);
                 return false;
             }
 
@@ -242,8 +242,8 @@ public partial class Parser
             {
                 if (parametrizedOption.IsParameterRequired)
                 {
-                    var errorMessage = CreateErrorMessage(ParserErrorType.MissingOptionParameter);
-                    Error = new(ParserErrorType.MissingOptionParameter, errorMessage, findResult);
+                    var errorMessage = CreateErrorMessage(ErrorType.MissingOptionParameter);
+                    Error = new(ErrorType.MissingOptionParameter, errorMessage, findResult);
                     return false;
                 }
             }
@@ -251,8 +251,8 @@ public partial class Parser
             // There is a parameter, try to parse it and handle an eventual parsing error.
             else if (!parametrizedOption.ProcessParameter(splittedArgument[1]))
             {
-                var errorMessage = CreateErrorMessage(ParserErrorType.CouldNotParseTheParameter, splittedArgument[1]);
-                Error = new(ParserErrorType.CouldNotParseTheParameter, errorMessage, optionAwaitingParameter);
+                var errorMessage = CreateErrorMessage(ErrorType.CouldNotParseTheParameter, splittedArgument[1]);
+                Error = new(ErrorType.CouldNotParseTheParameter, errorMessage, optionAwaitingParameter);
                 return false;
             }
 
@@ -286,15 +286,15 @@ public partial class Parser
         {
             if (optionFindResult is null)
             {
-                var errorMessage = CreateErrorMessage(ParserErrorType.InvalidOptionIdentifier, identifier);
-                return new(ParserErrorType.InvalidOptionIdentifier, errorMessage);
+                var errorMessage = CreateErrorMessage(ErrorType.InvalidOptionIdentifier, identifier);
+                return new(ErrorType.InvalidOptionIdentifier, errorMessage);
             }
 
             if (optionsToTakeAction.Contains(optionFindResult))
             {
                 return new(
-                    ParserErrorType.RepeatedOccurenceOfOption,
-                    CreateErrorMessage(ParserErrorType.RepeatedOccurenceOfOption),
+                    ErrorType.RepeatedOccurenceOfOption,
+                    CreateErrorMessage(ErrorType.RepeatedOccurenceOfOption),
                     optionFindResult);
             }
 
@@ -312,26 +312,26 @@ public partial class Parser
             return true;
         }
 
-        static string CreateErrorMessage(ParserErrorType type, string? additionalInfo = null)
+        static string CreateErrorMessage(ErrorType type, string? additionalInfo = null)
         {
             string errorMessage = string.Empty;
             if (additionalInfo is not null)
             {
                 errorMessage = type switch
                 {
-                    ParserErrorType.InvalidOptionIdentifier
+                    ErrorType.InvalidOptionIdentifier
                     => $"Option with an identifier \"{additionalInfo}\" could not be found.",
-                    ParserErrorType.CouldNotParseTheParameter
+                    ErrorType.CouldNotParseTheParameter
                     => $"Option could not parse the argument: \"{additionalInfo}\".",
-                    ParserErrorType.MissingMandatoryOption
+                    ErrorType.MissingMandatoryOption
                     => "A mandatory option did not occur on the command-line. " + additionalInfo,
-                    ParserErrorType.MissingMandatoryPlainArgument
+                    ErrorType.MissingMandatoryPlainArgument
                     => "A mandatory plain argument did not occur on the command-line. " + additionalInfo,
-                    ParserErrorType.MissingOptionParameter
+                    ErrorType.MissingOptionParameter
                     => "There was no parameter for option requiring one. " + additionalInfo,
-                    ParserErrorType.RepeatedOccurenceOfOption
+                    ErrorType.RepeatedOccurenceOfOption
                     => "The given option already occurred on the commaind-line. " + additionalInfo,
-                    ParserErrorType.Other
+                    ErrorType.Other
                     => "Not closer defined error. " + additionalInfo,
                     _ => throw new AssertionException("Enum type has not defined value")
                 };
@@ -340,19 +340,19 @@ public partial class Parser
             {
                 errorMessage = type switch
                 {
-                    ParserErrorType.InvalidOptionIdentifier
+                    ErrorType.InvalidOptionIdentifier
                     => $"Option could not be found.",
-                    ParserErrorType.CouldNotParseTheParameter
+                    ErrorType.CouldNotParseTheParameter
                     => $"Option could not parse its argument.",
-                    ParserErrorType.MissingMandatoryOption
+                    ErrorType.MissingMandatoryOption
                     => "A mandatory option did not occur on the command-line.",
-                    ParserErrorType.MissingMandatoryPlainArgument
+                    ErrorType.MissingMandatoryPlainArgument
                     => "A mandatory plain argument did not occur on the command-line.",
-                    ParserErrorType.MissingOptionParameter
+                    ErrorType.MissingOptionParameter
                     => "There was no parameter for option requiring one.",
-                    ParserErrorType.RepeatedOccurenceOfOption
+                    ErrorType.RepeatedOccurenceOfOption
                     => "The given option already occurred on the commaind-line.",
-                    ParserErrorType.Other
+                    ErrorType.Other
                     => "Not closer defined error.",
                     _ => throw new AssertionException("Enum type has not defined value")
                 };
