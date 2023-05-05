@@ -14,7 +14,6 @@ namespace ArgumentParsing;
 /// </summary>
 public sealed partial class Parser
 {
-
     /// <summary>
     /// Specifies what kind of error occurred during the parsing of command line.
     /// </summary>
@@ -55,7 +54,7 @@ public sealed partial class Parser
         /// </summary>
         Other
 
-    } // TODO: document the changed location
+    }
 
     /// <summary>
     /// Object encapsulating information about an error in <see cref="Parser"/> class instance.
@@ -96,18 +95,15 @@ public sealed partial class Parser
 
     partial class ArgumentProcessor { }
 
-    // TODO: Custom types of options and plain arguments should be also immutable. -  documentation
-
     private readonly IPlainArgument[]? plainArguments;
-    private readonly string? plainArgumentsHelpMessage;
+    private readonly string plainArgumentsHelpMessage = string.Empty;
     private readonly OptionSet.OptionSet options = new();
     private readonly IPlainArgument[]? mandatoryPlainArguments;
 
-    // TODO: add the null info to the documentation
     /// <summary>
     /// Gets remaining plain arguments, which were excessive in relation to the number of IPlainArguments passed in constructor. Null if there were no excessive plain arguments.
     /// </summary>
-    public string[]? RemainingPlainArguments { get; private set; } = null;
+    public string[] RemainingPlainArguments { get; private set; } = Array.Empty<string>();
 
     /// <summary>
     /// If an error occurs during parsing it gets a instance of <see cref="ParserError"/> that is describing the problem, otherwise null.
@@ -128,11 +124,11 @@ public sealed partial class Parser
     /// IMultipleParameterOption when he wants to process plain arguments separated by the separator. Or he can create them manually and non-necessary
     /// fields and properties are mentioned next to the mentioned methods.
     /// </param>
-    public Parser(IPlainArgument[] plainArguments, string? plainArgumentsHelpMessage = null) // Todo: Add parameter to documentation.
+    public Parser(IPlainArgument[] plainArguments, string? plainArgumentsHelpMessage = null)
     {
         this.plainArguments = plainArguments;
         mandatoryPlainArguments = this.plainArguments.Where(plainArgument => plainArgument.IsMandatory).ToArray();
-        this.plainArgumentsHelpMessage = plainArgumentsHelpMessage;
+        this.plainArgumentsHelpMessage = plainArgumentsHelpMessage ?? string.Empty;
     } 
     // TODO: Add to documentation that the plainArguments (especially the default library types) had to be unique,
     // otherwise the parser will fail on repeated plainArgument occurrence OR WE CAN JUST RISK LOSING SOME DATA.
@@ -153,7 +149,7 @@ public sealed partial class Parser
     /// </summary>
     /// <param name="args">Command line arguments.</param>
     /// <returns>True when parsing was successful, otherwise false.</returns>
-    public bool ParseCommandLine(string[] args) // TODO: We will probably need to add a method used to restore the IParametrizedOption instance, when the parsing fails.
+    public bool ParseCommandLine(string[] args)
     {
         ArgumentProcessor argumentProcessor = new(options, plainArguments, mandatoryPlainArguments);
 
@@ -166,11 +162,14 @@ public sealed partial class Parser
             }
         }
 
+        // TODO: add usement of the restore method in case of failure
+
         if (!argumentProcessor.FinalizeProcessing(out var result))
         {
             Error = argumentProcessor.Error;
             return false;
         }
+
         RemainingPlainArguments = result.excessivePlainArgumentsEntries;
 
         foreach (var option in result.optionsToTakeAction)
@@ -200,13 +199,4 @@ public sealed partial class Parser
         helpString += plainArgumentsHelpMessage;
         return helpString;
     }
-
-    /// <summary>
-    /// Allows user set help string for "--", which is shown when -h/--help is present on command line.
-    /// </summary>
-    /// <param name="PAHelpString">Help string to be shown next to -- in help page.</param>
-
-    //public void SetPlainArgumentHelpString(string PAHelpString) // TODO: delete this from documentation and example programs.
-
-
 }

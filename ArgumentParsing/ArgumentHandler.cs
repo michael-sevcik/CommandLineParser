@@ -27,7 +27,7 @@ public partial class Parser
             Mixed
         }
 
-        public struct ArgumentProcessingResult
+        public readonly struct ArgumentProcessingResult
         {
             public readonly IOption[] optionsToTakeAction;
             public readonly IPlainArgument[] plainArgumentsToTakeAction;
@@ -221,7 +221,7 @@ public partial class Parser
 
             var splittedArgument = SplitOptionIdentifierParameterPair(argument);
 
-            var identifier = splittedArgument[0].Substring(2); // starting "--" is removed
+            var identifier = splittedArgument[0][2..]; // starting "--" is removed
             var findResult = options.Find(identifier);
             ParserError? checkResult;
             if ((checkResult = CheckFindResult(findResult, identifier)) is not null)
@@ -274,8 +274,8 @@ public partial class Parser
             {
                 splittedInput = new string[]
                 {
-                    optionIdentifier.Substring(0, equalsSignPosiotion), // Option identifier
-                    optionIdentifier.Substring(equalsSignPosiotion + 1) // Parameter trimmed of equals sign
+                    optionIdentifier[..equalsSignPosiotion], // Option identifier
+                    optionIdentifier[(equalsSignPosiotion + 1)..] // Parameter trimmed of equals sign
                 };
             }
 
@@ -301,11 +301,6 @@ public partial class Parser
             return null;
         }
 
-        ParserError? ProcessArgument() // TODO:  
-        {
-            throw new NotImplementedException();
-        }
-
         bool ProcessPlainArgumentDelimiter()
         {
             state = ParsingState.PlainArguments;
@@ -314,7 +309,7 @@ public partial class Parser
 
         static string CreateErrorMessage(ErrorType type, string? additionalInfo = null)
         {
-            string errorMessage = string.Empty;
+            string errorMessage;
             if (additionalInfo is not null)
             {
                 errorMessage = type switch

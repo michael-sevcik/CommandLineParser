@@ -63,7 +63,7 @@ namespace ArgumentParsing.Option
     /// </summary>
     internal class NoParameterOption : Option
     {
-        Action action;
+        readonly Action action;
 
         /// <summary>
         /// Constructs instance of <see cref="NoParameterOption"/>.
@@ -128,8 +128,8 @@ namespace ArgumentParsing.Option
     /// /// <typeparam name="T"> Type of parameter</typeparam>
     internal class GenericParameterOption<T> : ParameterOption, IParametrizedOption , IPlainArgument
     {
-        Action<T?> action;
-        ParseMethodDelegate<T> parser;
+        readonly Action<T?> action;
+        readonly ParseMethodDelegate<T> parser;
         T? parsingResult;
 
         /// <summary>
@@ -188,8 +188,8 @@ namespace ArgumentParsing.Option
     /// <typeparam name="T"> Type of parameters</typeparam>
     internal class GenericMultipleParameterOption<T> : ParameterOption , IMultipleParameterOption , IPlainArgument
     {
-        Action<T[]?> action;
-        ParseMethodDelegateMultipleOption<T> parser;
+        readonly Action<T[]?> action;
+        readonly ParseMethodDelegateMultipleOption<T> parser;
         T[]? parsingResult;
 
         /// <summary>
