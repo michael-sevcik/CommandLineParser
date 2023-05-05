@@ -279,13 +279,10 @@ namespace ExampleProgramHard
             var plainArguments = new IPlainArgument[] { firstPlainArgument, secondPlainArgument };
 
             //create a new Parser
-            Parser parser = new Parser(plainArguments);
-
-            //we can add helpString that will be shown next to the -- when -h is invoked
-            parser.SetPlainArgumentHelpString("This will be shown next to --");
+            Parser parser = new(plainArguments, "Here we can describe what the individual plain arguments do.");
 
             //Create option builder object
-            var optionBuilder = new OptionBuilder();
+            var optionBuilder = new();
 
 
             //then we need to create desired options
