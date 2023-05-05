@@ -82,7 +82,7 @@ in the IParametrizedOption interface. Also allows you to specify action to be ca
 Enum? and its descendants.
 - `public OptionBuilder WithMultipleParametersAction<TArgument>(Action<TArgument[]?> action)` -> Calling this method will determine that the option will be MultipleParameter and take 0 to unlimited parameters, as specified
 in the IMultipleParameterOption interface. Also allows you to specify action to be called with the parsed parameter(s). Accepted types are: int,
-string, bool, Enum and its descendatns. NOTE: we do not use nullable variants here compared to `WithParametrizedAction<TArgument>`.
+string, bool, Enum and its descendants. NOTE: we do not use nullable variants here compared to `WithParametrizedAction<TArgument>`.
 
 NOTE: we want to emphasize that you have to call at least one of the Action methods as they are setting the type of desired option.
 If you do not call any of them, then calling RegisterOption will return false, as it is invalid option.
@@ -91,8 +91,9 @@ If you do not call any of them, then calling RegisterOption will return false, a
 
 ### Option Interfaces
 
-Application uses instances of objects, that implement one of the three following interfaces, which you can also use for implementing you own option types.
-If you wish to implement your own option class, it has to implement one of these interface, based on what type of option you want.
+Application uses instances of objects, that implement one of the three following interfaces, which you can also use for implementing your own option types.
+If you wish to implement your own option or plain argument class, it has to implement one of these interface, based on what type of option you want, and 
+**be immutable like the native library options** (this is important for a preprocessing that the parser does.).
 
 #### IOption 
 Represents an option, which takes no parameters and class implementing this interface must implement following methods and properties:
@@ -107,6 +108,7 @@ otherwise you will not be able to add the latter colliding option to the Parser 
 
 
 #### IParametrizedOption : IOption
+
 NOTE: that Long synonym on command line has form of: --longSynonym=parameter -> after the long option synonym
 follows and equal sign and then the parameter(if present).
 Represents an option which can take a parameter. Class implementing this interface must implement except inherited methods and properties following:
@@ -116,6 +118,7 @@ won't be called.
 
 Compared to the `CreateNoParameterOption` method you need to specify whether the parameter is mandatory via the `isParameterRequired` parameter, i.e. option 
 can be used without its parameter.
+
 #### IMultipleParameterOption : IParametrizedOption
 
 - `public char Separator { get; }` -> Separator, by which the multiple parameters are separated with on command line following the option.
@@ -179,6 +182,7 @@ When there are more plain arguments than the user defined, the remaining plain a
 where unused plain arguments are stored.
 
 ### Parser
+
 Second building component is `Parser` which is used for the actual parsing of the command line arguments.
 
 For adding IOption(instance of an object implementing this interface) to the Parser user uses method *Add* which takes as parameter instance
@@ -194,23 +198,26 @@ It returns true if no error occurred during the parsing, false otherwise — in 
 To get "HelpString" (man page info) user calls method *GetHelpString* which will provide HelpString to him 
 (based on HelpString settings at each submitted option).
 
-Redundant (unused) plain arguments the user can access via the `RemainingPlainArguments` property.
+Unused (were not passed to any `IPlainArgument instance`) plain arguments can be accessed via the `RemainingPlainArguments` property.
 
 Parser has two types of constructor:
 - `Parser ()` -> when this constructor is invoked, we do not expect any plain arguments on the command line. If there
-are any plain arguments present, they are ignored.
-- `Parser(IParametrizedOption[] plainArguments)` -> parameter 'plainArguments' represents expected plain arguments present
+are any plain arguments present, they are saved and accessible via the `Parser.RemainingPlainArguments` property.
+- `Parser(IParametrizedOption[] plainArguments, string? plainArgumentsHelpMessage = null)` -> parameter 'plainArguments' 
+represents expected plain arguments present
 on the command line. Parser then passes first plain argument to the first object in the `plainArguments` and continues
 until there are any plain arguments left. If there is more plain arguments present on command line than objects in 
-`plainArguments` the redundant ones are added to the `RemainingPlainArguments` property. If there is not enough plain arguments to satisfy number of mandatory
-plain arguments, it results in `ParseCommandLine` method returning false. 
+`plainArguments` the redundant ones are added to the `RemainingPlainArguments` property. If there is not enough plain arguments 
+to satisfy number of mandatory plain arguments, it results in `ParseCommandLine` method returning false. The `plainArgumentsHelpMessage`
+parameter enables user to specify help message for plain arguments, which is displayed after the help message for options.
 
 ### Parsing Errors
+
 Parsing Errors are returned via `ParserError` object, which encapsulates the information about the error which has occurred.
 ```C#
 public readonly struct ParserError
 {
-    public readonly ParserErrorType type;       
+    public readonly ErrorType type;       
     public readonly string message;        
 }
 ```
