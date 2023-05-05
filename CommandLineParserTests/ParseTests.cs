@@ -45,7 +45,7 @@ namespace CommandLineParserTests
             // assert
             // first check whether error occured, then check its type
             Assert.IsNotNull(parser.Error);
-            Assert.AreEqual(parser.Error.Value.type, ParserErrorType.MissingMandatoryOption);
+            Assert.AreEqual(parser.Error.Value.type, Parser.ErrorType.MissingMandatoryOption);
         }
 
 
@@ -71,7 +71,7 @@ namespace CommandLineParserTests
 
             // assert
             Assert.IsNotNull(parser.Error);
-            Assert.AreEqual(parser.Error.Value.type, ParserErrorType.CouldNotParseTheParameter);
+            Assert.AreEqual(parser.Error.Value.type, Parser.ErrorType.CouldNotParseTheParameter);
         }
 
         [Test]
@@ -109,7 +109,7 @@ namespace CommandLineParserTests
 
             // assert
             Assert.IsNotNull(parser.Error);
-            Assert.AreEqual(ParserErrorType.MissingOptionParameter, parser.Error.Value.type);
+            Assert.AreEqual(Parser.ErrorType.MissingOptionParameter, parser.Error.Value.type);
         }
 
         [Test]
@@ -122,7 +122,7 @@ namespace CommandLineParserTests
 
             // assert
             Assert.IsNotNull(parser.Error);
-            Assert.AreEqual(ParserErrorType.CouldNotParseTheParameter, parser.Error.Value.type);
+            Assert.AreEqual(Parser.ErrorType.CouldNotParseTheParameter, parser.Error.Value.type);
         }
 
         [Test]
@@ -135,7 +135,7 @@ namespace CommandLineParserTests
 
             // assert
             Assert.IsNotNull(parser.Error);
-            Assert.AreEqual(ParserErrorType.MissingMandatoryPlainArgument, parser.Error.Value.type);
+            Assert.AreEqual(Parser.ErrorType.MissingMandatoryPlainArgument, parser.Error.Value.type);
         }
 
         [Test]

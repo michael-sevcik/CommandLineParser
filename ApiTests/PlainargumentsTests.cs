@@ -31,6 +31,11 @@ namespace ApiTests
             {
                 Action.Invoke(value);
             }
+
+            public void Restore()
+            {
+                value = string.Empty;
+            }
         }
 
 
