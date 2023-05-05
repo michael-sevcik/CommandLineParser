@@ -142,7 +142,7 @@ public class SimpleOptionsTest
     public void NotRequiredOptionsAreNotRequired()
     {
         // Arrange
-        var args = new string[] { };
+        var args = Array.Empty<string>();
         // "Option -f requires a parameter.";
 
         // Act
