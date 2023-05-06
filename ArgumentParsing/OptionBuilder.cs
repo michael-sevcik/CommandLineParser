@@ -20,13 +20,13 @@ namespace ArgumentParsing
         char[]? shortSynonyms = null;
         string[]? longSynonyms = null;
         char separator = ',';
-        string? helpString = null;
+        string helpString = string.Empty;
         bool multipleParameterOption = false;
 
         bool wasActionSpecified = false;
 
         (Type actionType, Delegate action) actionTuple;     //User provided action and its type, which is used for retrieving parsed parameters.
-        Type multipleParameterOptionType;       //Type which represents array of User-chosen type. For example user choses T here is typeof(T[])
+        Type? multipleParameterOptionType;       //Type which represents array of User-chosen type. For example user choses T here is typeof(T[])
 
         /// <summary>
         /// Lets you define short synonyms for the option being built.
@@ -297,7 +297,7 @@ namespace ArgumentParsing
                         ChangeType(generalDelegate, parseMethodDelegateType);
 
                     //creates action type with right generic parameter
-                    var actionT = typeof(Action<>).MakeGenericType(multipleParameterOptionType);
+                    var actionT = typeof(Action<>).MakeGenericType(multipleParameterOptionType!);
 
                     //converts the action to the specific generic type
                     var action = Convert.ChangeType(actionObject, actionT);
@@ -315,7 +315,7 @@ namespace ArgumentParsing
                         separator
                         
                         );
-                    return (IOption)instance;
+                    return (IOption)instance!;
                 }
                 else
                 {
@@ -355,7 +355,7 @@ namespace ArgumentParsing
                         requiresParameter,
                         separator
                         );
-                    return (IOption)instance; // TODO: implement IDE suggestions and warnings.
+                    return (IOption)instance!; // TODO: implement IDE suggestions and warnings.
                 }
             }
             
@@ -368,7 +368,7 @@ namespace ArgumentParsing
         static bool isOfSupportedTypesForParametrizedOption(Type type)
         {
             if(type == typeof(string) || type == typeof(int?) || type == typeof(bool?) ||
-                (Nullable.GetUnderlyingType(type) is not null && Nullable.GetUnderlyingType(type).IsEnum))
+                (Nullable.GetUnderlyingType(type) is not null && Nullable.GetUnderlyingType(type!)!.IsEnum))
                 return true;
             return false;
         }
@@ -542,13 +542,13 @@ namespace ArgumentParsing
         static bool parseEnum<TEnum>(string input, out TEnum output) 
         {
             var type = Nullable.GetUnderlyingType(typeof(TEnum));
-            var names = Enum.GetNames(type);
+            var names = Enum.GetNames(type!);
             if (names.Contains(input))
             {
-                output = (TEnum)Enum.Parse(type, input);
+                output = (TEnum)Enum.Parse(type!, input);
                 return true;
             }
-            output = default(TEnum);
+            output = default(TEnum)!;
             return false;
             
 
@@ -597,7 +597,7 @@ namespace ArgumentParsing
             shortSynonyms = null;
             longSynonyms = null;
             separator = ',';
-            helpString = null;
+            helpString = string.Empty;
             multipleParameterOption = false;
 
             wasActionSpecified = false;
