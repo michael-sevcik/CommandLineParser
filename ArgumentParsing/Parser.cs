@@ -130,8 +130,6 @@ public sealed partial class Parser
         mandatoryPlainArguments = this.plainArguments.Where(plainArgument => plainArgument.IsMandatory).ToArray();
         this.plainArgumentsHelpMessage = plainArgumentsHelpMessage ?? string.Empty;
     } 
-    // TODO: Add to documentation that the plainArguments (especially the default library types) had to be unique,
-    // otherwise the parser will fail on repeated plainArgument occurrence OR WE CAN JUST RISK LOSING SOME DATA.
 
     /// <summary>
     /// Adds the option to the OptionSet.

@@ -12,6 +12,9 @@ namespace ArgumentParsing;
 public partial class Parser
 {
     /// <summary>
+    /// Argument processor class offers functionality connected with handling of each argument.
+    /// </summary>
+    partial class ArgumentProcessor
     {
         enum ArgumentType : byte
         {
@@ -27,6 +30,9 @@ public partial class Parser
             Mixed
         }
 
+        /// <summary>
+        /// Structure encapsulating results of the argument handling.
+        /// </summary>
         public readonly struct ArgumentProcessingResult
         {
             public readonly IOption[] optionsToTakeAction;
@@ -63,6 +69,12 @@ public partial class Parser
         /// </summary>
         public ParserError? Error { get; private set; } = null;
 
+        /// <summary>
+        /// Creates an instance of <see cref="ArgumentProcessor"/>.
+        /// </summary>
+        /// <param name="options">Set of options.</param>
+        /// <param name="plainArguments">An array with options in a given order, in which the command-line plain arguments should be processed.</param>
+        /// <param name="mandatoryPlainArguments">An array of preselected mandatory plain arguments.</param>
         public ArgumentProcessor(OptionSet.OptionSet options, IPlainArgument[]? plainArguments, IPlainArgument[]? mandatoryPlainArguments)
         {
             this.plainArguments = plainArguments;
@@ -70,6 +82,11 @@ public partial class Parser
             this.mandatoryPlainArguments = mandatoryPlainArguments;
         }
 
+        /// <summary>
+        /// Handles each command-line argument in an one by one manner.
+        /// </summary>
+        /// <param name="argument">The command-line argument.</param>
+        /// <returns>True if handling of the <paramref name="argument"/> was successful, otherwise false (see <see cref="Error"/>).</returns>
         public bool ProcessArgument(string argument) 
         {
             if (Error != null) 
@@ -93,6 +110,12 @@ public partial class Parser
             };
         }
 
+        /// <summary>
+        /// Signals the <see cref="ArgumentProcessor"/> that handling of the current command-line is over.
+        /// Generates an instance of <see cref="ArgumentProcessingResult"/>.
+        /// </summary>
+        /// <param name="result">Result of the argument processing.</param>
+        /// <returns>True if the finalization of processing was successful, otherwise false (see <see cref="Error"/>).</returns>
         public bool FinalizeProcessing(out ArgumentProcessingResult result)
         {
             result = new();
