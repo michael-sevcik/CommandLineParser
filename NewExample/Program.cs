@@ -4,33 +4,53 @@ using ArgumentParsing;
 namespace NewExample {
 	class Program {
 		public static void Main(string[] args) {
-			var interleaveOption = IParametrizedOption.CreateParameterOption<string>(InterleaveAction, false, true, new char[] { 'i' }, new string[] { "interleave" });
-			interleaveOption.SetHelpString("Interleave memory allocation across given nodes.");
+            Parser parser = new(null, "Terminate option list.");
 
-			var preferredOption = IParametrizedOption.CreateParameterOption<string>(PreferredAction, false, true, new char[] { 'p' }, new string[] { "preferred" });
-			preferredOption.SetHelpString("Prefer memory allocations from given node.");
+            var builder = new OptionBuilder();
+			builder.WithParametrizedAction<string>(InterleaveAction).
+				RequiresParameter()
+				.WithShortSynonyms('i').
+				WithLongSynonyms("interleave").
+				WithHelpString("Interleave memory allocation across given nodes.").
+				RegisterOption(parser);
 
-			var membindOption = IParametrizedOption.CreateParameterOption<string>(MembindAction, false, true, new char[] { 'm' }, new string[] { "membind" });
-			membindOption.SetHelpString("Allocate memory from given nodes only.");
+            builder.Reset().
+				WithParametrizedAction<string>(PreferredAction).
+                RequiresParameter()
+                .WithShortSynonyms('p').
+                WithLongSynonyms("preferred").
+                WithHelpString("Prefer memory allocations from given node.").
+                RegisterOption(parser);
 
-			var physcpubindOption = IParametrizedOption.CreateParameterOption<string>(PhyscpubindAction, false, true, new char[] { 'C' }, new string[] { "physcpubind" });
-			physcpubindOption.SetHelpString("Run on given CPUs only.");
+            builder.Reset().
+                WithParametrizedAction<string>(MembindAction).
+                RequiresParameter()
+                .WithShortSynonyms('m').
+                WithLongSynonyms("membind").
+                WithHelpString("Allocate memory from given nodes only.").
+                RegisterOption(parser);
 
-			var showOption = IOption.CreateNoParameterOption(ShowAction, false, new char[] { 's' }, new string[] { "show" });
-			showOption.SetHelpString("Show current NUMA policy.");
+            builder.Reset().
+                WithParametrizedAction<string>(PhyscpubindAction).
+                RequiresParameter()
+                .WithShortSynonyms('C').
+                WithLongSynonyms("physcpubind").
+                WithHelpString("Run on given CPUs only.").
+                RegisterOption(parser);
 
-			var hardwareOption = IOption.CreateNoParameterOption(HardwareAction, false, new char[] { 'H' }, new string[] { "hardware" });
-			hardwareOption.SetHelpString("Print hardware configuration.");
+            builder.Reset().
+                WithAction(ShowAction)
+                .WithShortSynonyms('s').
+                WithLongSynonyms("show").
+                WithHelpString("Show current NUMA policy.").
+                RegisterOption(parser);
 
-			Parser parser = new();
-			parser.SetPlainArgumentHelpString("Terminate option list.");
-
-			parser.Add(interleaveOption);
-			parser.Add(preferredOption);
-			parser.Add(membindOption);
-			parser.Add(physcpubindOption);
-			parser.Add(showOption);
-			parser.Add(hardwareOption);
+            builder.Reset().
+                WithAction(HardwareAction)
+                .WithShortSynonyms('H').
+                WithLongSynonyms("hardware").
+                WithHelpString("Print hardware configuration.").
+                RegisterOption(parser);
 
 			if (args.Length == 0)
 			{
