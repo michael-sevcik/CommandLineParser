@@ -11,7 +11,7 @@ using System.Threading.Tasks;
 namespace ArgumentParsing;
 public partial class Parser
 {
-    partial class ArgumentProcessor // TODO: Should there be a clear/restart method?
+    /// <summary>
     {
         enum ArgumentType : byte
         {
@@ -72,6 +72,11 @@ public partial class Parser
 
         public bool ProcessArgument(string argument) 
         {
+            if (Error != null) 
+            {
+                Error = null;
+            }
+
             if (state == ParsingState.PlainArguments)
             {
                 return HandlePlainArgument(argument);
@@ -91,49 +96,29 @@ public partial class Parser
         public bool FinalizeProcessing(out ArgumentProcessingResult result)
         {
             result = new();
-
-            if (!ProcessPossibleWaitingOption())
+            bool success = false;
+            if (Error is null && ProcessPossibleWaitingOption() && CheckMandatoryInstances())
             {
-                return false;
-            }
-
-            foreach (var option in options.MandatoryOptions)
-            {
-                if (!optionsToTakeAction.Contains(option))
-                {
-                    Error = new(
-                        ErrorType.MissingMandatoryOption,
-                        CreateErrorMessage(ErrorType.MissingMandatoryOption),
-                        option);
-
-                    return false;
-                }
-            }
-
-            foreach (var plainArgument in mandatoryPlainArguments ?? Array.Empty<IPlainArgument>())
-            {
-                if (!plainArgumentsToTakeAction.Contains(plainArgument))
-                {
-                    Error = new(
-                        ErrorType.MissingMandatoryPlainArgument,
-                        CreateErrorMessage(ErrorType.MissingMandatoryPlainArgument),
-                        plainArgumentInError: plainArgument);
-
-                    return false;
-                }
-            }
-
-            result = new(
+                result = new(
                 optionsToTakeAction: optionsToTakeAction.ToArray(),
                 plainArgumentsToTakeAction: plainArgumentsToTakeAction.ToArray(),
                 excessivePlainArgumentsEntries: excessivePlainArgumentsEntries.ToArray());
+
+                success = true;
+            }
+            else
+            {
+                RestoreInstancesToTakeAction();
+                success = false;
+            }
 
             optionsToTakeAction.Clear();
             plainArgumentsToTakeAction.Clear();
             excessivePlainArgumentsEntries.Clear();
 
-            return true;
+            return success;
         }
+
         private bool PassArgumentToWaitingOption(string argument)
         {
             if (!optionAwaitingParameter!.ProcessParameter(argument))
@@ -304,6 +289,50 @@ public partial class Parser
         bool ProcessPlainArgumentDelimiter()
         {
             state = ParsingState.PlainArguments;
+            return true;
+        }
+
+        void RestoreInstancesToTakeAction()
+        {
+            foreach (IOption option in optionsToTakeAction)
+            {
+                option.Restore();
+            }
+
+            foreach (IPlainArgument plainArgument in plainArgumentsToTakeAction)
+            {
+                plainArgument.Restore();
+            }
+        }
+
+        bool CheckMandatoryInstances()
+        {
+            foreach (var option in options.MandatoryOptions)
+            {
+                if (!optionsToTakeAction.Contains(option))
+                {
+                    Error = new(
+                        ErrorType.MissingMandatoryOption,
+                        CreateErrorMessage(ErrorType.MissingMandatoryOption),
+                        option);
+
+                    return false;
+                }
+            }
+
+            foreach (var plainArgument in mandatoryPlainArguments ?? Array.Empty<IPlainArgument>())
+            {
+                if (!plainArgumentsToTakeAction.Contains(plainArgument))
+                {
+                    Error = new(
+                        ErrorType.MissingMandatoryPlainArgument,
+                        CreateErrorMessage(ErrorType.MissingMandatoryPlainArgument),
+                        plainArgumentInError: plainArgument);
+
+                    return false;
+                }
+            }
+
             return true;
         }
 

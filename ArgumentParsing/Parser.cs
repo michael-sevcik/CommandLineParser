@@ -92,7 +92,7 @@ public sealed partial class Parser
             this.message = message;
         }
     }
-
+    
     partial class ArgumentProcessor { }
 
     private readonly IPlainArgument[]? plainArguments;
@@ -157,12 +157,9 @@ public sealed partial class Parser
         {
             if (!argumentProcessor.ProcessArgument(args[i]))
             {
-                Error = argumentProcessor.Error;
-                return false;
+                break;
             }
         }
-
-        // TODO: add usement of the restore method in case of failure
 
         if (!argumentProcessor.FinalizeProcessing(out var result))
         {
