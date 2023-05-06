@@ -194,5 +194,3 @@ In order to run the application use `dotnet <built dll path>`.
 
 In order to generate documentation use `doxygen <config_file>` command. Config file for Doxygen is 
 `Doxyfile` in the `t12-api-design` directory, with this configuration HTML documntation will be generated in the `html` directory.
-
-

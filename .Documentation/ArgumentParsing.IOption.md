@@ -14,7 +14,8 @@ Represents an option, which takes no parameters and class implementing this inte
 - `public char[]? shortSynonyms { get; }` contains short synonyms for option. (one char names without the '-')
 - `public string[]? longSynonyms { get; }` contains long synonyms for option. (multiple char names without the '--')
 - `public bool SetHelpString(string helpString);` contains message to be shown, when help is invoked on command line.
-- `public void TakeAction();` method to be called, when option is present on command line. I. e. what should be done, when the option is present.
+- `public void TakeAction()` method to be called, when option is present on command line. I. e. what should be done, when the option is present.
+- `public void Restore()` is called when a parsing error occurs, so that the option can restore its state to the state before parsing.
  
 Watch out that if you don't provide any synonyms, your action will never be called. Also Synonyms for different options must not collide,
 otherwise you will not be able to add the latter colliding option to the Parser (Add method will return false).
