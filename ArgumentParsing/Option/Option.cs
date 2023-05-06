@@ -35,17 +35,6 @@ namespace ArgumentParsing.Option
         public string[]? LongSynonyms { get; init; }
 
         /// <summary>
-        /// This method allow user to set the explanation string - string which is shown when someone uses -h/--help on command line.
-        /// Empty explanation will be showed if user does not provide any helpString (does not call this method).
-        /// </summary>
-        /// <param name="helpString">Text to be shown next to the option in explanation string</param>
-        /// <returns></returns>
-        public bool SetHelpString(string helpString)
-        {
-            throw new NotImplementedException();
-        }
-
-        /// <summary>
         /// Method to call when option occurs in the parsed command-line.
         /// </summary>
         public abstract void TakeAction();
