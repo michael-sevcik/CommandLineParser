@@ -124,10 +124,10 @@ public sealed partial class Parser
     /// IMultipleParameterOption when he wants to process plain arguments separated by the separator. Or he can create them manually and non-necessary
     /// fields and properties are mentioned next to the mentioned methods.
     /// </param>
-    public Parser(IPlainArgument[] plainArguments, string? plainArgumentsHelpMessage = null)
+    public Parser(IPlainArgument[]? plainArguments, string? plainArgumentsHelpMessage = null)
     {
         this.plainArguments = plainArguments;
-        mandatoryPlainArguments = this.plainArguments.Where(plainArgument => plainArgument.IsMandatory).ToArray();
+        mandatoryPlainArguments = this.plainArguments?.Where(plainArgument => plainArgument.IsMandatory).ToArray();
         this.plainArgumentsHelpMessage = plainArgumentsHelpMessage ?? string.Empty;
     } 
 
