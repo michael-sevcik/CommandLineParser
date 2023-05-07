@@ -4,7 +4,10 @@
 
 # OptionBuilder
 
-Object that enables creating of options using fluent syntax. To specify a option's configuration use the following listed methods:
+This is `OptionBuilder` class which represents object that enables user to create one of the default options. User just needs to use
+some of the OptionBuilder's methods to customize their desired option and consequently register the option to the particular `Parser`.
+
+## Methods
 
 - `public OptionBuilder WithShortSynonyms(params char[]? shortSynonyms)` -> Sets the short synonyms of the option, e.g. "-f".
 Default value is null.
