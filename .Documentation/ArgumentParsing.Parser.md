@@ -24,7 +24,7 @@ Unused (were not passed to any `IPlainArgument instance`) plain arguments can be
 Parser has two types of constructor:
 - `Parser ()` -> when this constructor is invoked, we do not expect any plain arguments on the command line. If there
 are any plain arguments present, they are saved and accessible via the `Parser.RemainingPlainArguments` property.
-- `Parser(IParametrizedOption[] plainArguments, string? plainArgumentsHelpMessage = null)` -> parameter 'plainArguments' 
+- `Parser(IParametrizedOption[]? plainArguments = null, string? plainArgumentsHelpMessage = null)` -> parameter 'plainArguments' 
 represents expected plain arguments present
 on the command line. Parser then passes first plain argument to the first object in the `plainArguments` and continues
 until there are any plain arguments left. If there is more plain arguments present on command line than objects in 
