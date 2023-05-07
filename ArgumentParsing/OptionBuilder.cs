@@ -355,7 +355,7 @@ namespace ArgumentParsing
                         requiresParameter,
                         separator
                         );
-                    return (IOption)instance!; // TODO: implement IDE suggestions and warnings.
+                    return (IOption)instance!; 
                 }
             }
             
