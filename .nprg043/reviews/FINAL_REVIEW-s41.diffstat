@@ -1,0 +1,7 @@
+ .gitlab-ci.yml                     |    5 ++
+ .nprg043/REVIEW.md                 |   60 +++++++++++++++++++++++++++++++
+ DateConverter/DateConverter.csproj |   14 +++++++
+ DateConverter/DateTimeParser.cs    |   71 +++++++++++++++++++++++++++++++++++++
+ DateConverter/Program.cs           |   22 +++++++++++
+ t12-api-design.sln                 |    6 +++
+ 6 files changed, 178 insertions(+)

@@ -112,3 +112,8 @@ tests:
   script:
     - 'dotnet test ./t12-api-design.sln --no-restore'
 
+run:
+  stage: .post
+  # ### Run the DateConvertor Extension program
+  script:
+    - 'dotnet run --project ./DateConverter/DateConverter.csproj'

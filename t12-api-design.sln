@@ -20,6 +20,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CommandLineParserTests", "C
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "UnitTests", "UnitTests\UnitTests.csproj", "{E39695F5-F34E-4136-B21A-8B63E588B1AA}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DateConverter", "DateConverter\DateConverter.csproj", "{AC9B7F8E-7AC6-4488-8DC5-94A1A12898F6}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -46,6 +48,10 @@ Global
 		{E39695F5-F34E-4136-B21A-8B63E588B1AA}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{E39695F5-F34E-4136-B21A-8B63E588B1AA}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{E39695F5-F34E-4136-B21A-8B63E588B1AA}.Release|Any CPU.Build.0 = Release|Any CPU
+		{AC9B7F8E-7AC6-4488-8DC5-94A1A12898F6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{AC9B7F8E-7AC6-4488-8DC5-94A1A12898F6}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{AC9B7F8E-7AC6-4488-8DC5-94A1A12898F6}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{AC9B7F8E-7AC6-4488-8DC5-94A1A12898F6}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
