@@ -1,4 +1,4 @@
-﻿# Command Line Parser Library
+# Command Line Parser Library
 The Command Line Parser Library offers an easy to use API for parsing command line arguments and storing option's parameters. 
 It also allows you to display a help screen and a simple syntax error feedback.
 
@@ -6,7 +6,7 @@ It also allows you to display a help screen and a simple syntax error feedback.
 
 Following program, when started with -g option or its long synonym --greeting, prints greeting from predefined set of greetings,
 which is represented with `Greeting` enum.
-```C#
+```c#
 
 enum Greeting {
     Hello,
@@ -75,7 +75,7 @@ Lets say we want to parse the following options on command line.
 
 ```
 Following program will do that for us.
-```C#
+```c#
 using ArgumentParsing;
 namespace ExampleProgramHard
 {
