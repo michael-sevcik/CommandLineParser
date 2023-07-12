@@ -11,8 +11,6 @@ referencni dokumentace.
 
   * Podobne projekty s priklady by bylo vhodne nejak seskupit.
 
-  * Nejsou zamergovane vetve se zaverecnymi review a priklady.
-
 `*` Knihovna jde prelozit, testy prochazi, existuje CI setup.
 
 
