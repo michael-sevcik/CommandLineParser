@@ -196,7 +196,7 @@ prikaz.
   * Je vhodne myslet i na to, ze pridani (pripadne odebrani) jednoho prikazu
     do bloku si vynucuje upravu formatovani.
 
-Kod slozeny z radku jsou ty nasledujici je velmi spatne citelny.
+Kod slozeny z radku jako ten nasledujici je velmi spatne citelny.
 ```
 if (!isOfSupportedTypesForParametrizedOption(typeof(TArgument)))throw new InvalidOperationException();
 ```
